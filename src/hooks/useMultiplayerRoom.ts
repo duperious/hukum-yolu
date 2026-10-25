@@ -110,7 +110,14 @@ export function useMultiplayerRoom(
         lastVersionRef.current = next.view.room.version;
         clearPending();
       }
-      if (!next.view && next.status === 'error') setLoading(false);
+      if (
+        !next.view &&
+        (next.status === 'error' ||
+          next.status === 'offline' ||
+          next.status === 'closed')
+      ) {
+        setLoading(false);
+      }
     });
 
     return () => {
