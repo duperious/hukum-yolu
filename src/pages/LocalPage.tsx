@@ -64,7 +64,7 @@ export default function LocalPage() {
 
       <main className="local-main">
         <section className="local-hero">
-          <p className="eyebrow">Supabase gerekmez</p>
+          <p className="eyebrow">Kurulum gerekmez</p>
           <h1>Yerel test oyunu</h1>
           <p>
             Botlara karşı tek başına oyna. Profilini seç, bot sayısını ayarla ve

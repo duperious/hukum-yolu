@@ -1,37 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { GameAction } from '../game';
-import {
-  fetchRoom,
-  heartbeat,
-  leaveRoom,
-  sendGameAction,
-  sendLobbyAction,
-  type LobbyAction,
-  type RoomSnapshot,
-} from '../lib/multiplayer';
-import { supabase } from '../lib/supabase';
+import { createRoomSession, type RoomSession } from '../net/session';
+import type { LobbyAction, RoomSnapshot } from '../net/types';
 import { clearSession, type MultiplayerSession } from '../lib/storage';
 
 export type ConnectionState = 'connecting' | 'live' | 'polling' | 'offline';
-
-const FATAL_PATTERNS = [
-  'oturum',
-  'oyuncu bulunamadı',
-  'geçersiz',
-  'oda bulunamadı',
-  'oda kodu',
-  'bu oda',
-];
-
-function isFatalRoomError(message: string): boolean {
-  const lower = message.toLocaleLowerCase('tr-TR');
-  return FATAL_PATTERNS.some((pattern) => lower.includes(pattern));
-}
-
-function errorMessage(error: unknown): string {
-  if (error instanceof Error && error.message.trim()) return error.message;
-  return 'Sunucuya ulaşılamadı. Bağlantınızı kontrol edin.';
-}
 
 export interface MultiplayerRoomController {
   snapshot: RoomSnapshot | null;
@@ -49,6 +22,17 @@ export interface MultiplayerRoomController {
   dismissError: () => void;
 }
 
+function mapConnection(status: string): ConnectionState {
+  if (status === 'online') return 'live';
+  if (status === 'connecting') return 'connecting';
+  return 'offline';
+}
+
+function errorMessage(error: unknown): string {
+  if (error instanceof Error && error.message.trim()) return error.message;
+  return 'Bağlantı sırasında bilinmeyen bir hata oluştu.';
+}
+
 export function useMultiplayerRoom(
   session: MultiplayerSession | null,
 ): MultiplayerRoomController {
@@ -59,11 +43,10 @@ export function useMultiplayerRoom(
   const [fatalError, setFatalError] = useState<string | null>(null);
   const [connection, setConnection] = useState<ConnectionState>('connecting');
 
-  const snapshotRef = useRef<RoomSnapshot | null>(null);
-  const inFlightRef = useRef(false);
-  const realtimeRef = useRef(false);
+  const sessionRef = useRef<RoomSession | null>(null);
   const mountedRef = useRef(true);
-  const channelSuffixRef = useRef(Math.random().toString(36).slice(2));
+  const lastVersionRef = useRef(-1);
+  const pendingTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -72,196 +55,141 @@ export function useMultiplayerRoom(
     };
   }, []);
 
-  const applySnapshot = useCallback((next: RoomSnapshot) => {
-    snapshotRef.current = next;
-    if (!mountedRef.current) return;
-    setSnapshot(next);
-    setLoading(false);
+  const clearPending = useCallback(() => {
+    if (pendingTimerRef.current !== null) {
+      window.clearTimeout(pendingTimerRef.current);
+      pendingTimerRef.current = null;
+    }
+    if (mountedRef.current) setActionPending(false);
   }, []);
 
-  const markFatal = useCallback((message: string) => {
-    clearSession();
-    if (!mountedRef.current) return;
-    setFatalError(message);
-    setLoading(false);
-    setConnection('offline');
-  }, []);
-
-  const refresh = useCallback(async () => {
+  useEffect(() => {
     if (!session) {
       setLoading(false);
+      setFatalError(
+        'Bu oda için oturum bulunamadı. Ana sayfadan yeni bir oda kurun veya katılın.',
+      );
       return;
     }
-    if (inFlightRef.current) return;
-    inFlightRef.current = true;
+
+    setLoading(true);
+    setFatalError(null);
+    setError(null);
+    setSnapshot(null);
+    setConnection('connecting');
+    setActionPending(false);
+    lastVersionRef.current = -1;
+
+    let roomSession: RoomSession;
     try {
-      const next = await fetchRoom(session);
-      applySnapshot(next);
-      setError(null);
-      setFatalError(null);
-      setConnection(realtimeRef.current ? 'live' : 'polling');
+      roomSession = createRoomSession(
+        session.isHost ? 'host' : 'client',
+        session.roomCode,
+        { name: session.playerName, avatarId: session.avatarId },
+      );
     } catch (caught) {
-      const message = errorMessage(caught);
-      if (isFatalRoomError(message)) {
-        markFatal(message);
-      } else {
-        if (mountedRef.current) {
-          setError(message);
-          setConnection('offline');
-          setLoading(false);
-        }
-      }
-    } finally {
-      inFlightRef.current = false;
-    }
-  }, [applySnapshot, markFatal, session]);
-
-  useEffect(() => {
-    if (!session) {
       setLoading(false);
-      setFatalError('Bu oda için oturum bulunamadı. Ana sayfadan yeni bir oda kurun veya katılın.');
+      setFatalError(errorMessage(caught));
       return;
     }
-    void refresh();
-    const timer = window.setInterval(() => {
-      void refresh();
-    }, 4000);
-    return () => {
-      window.clearInterval(timer);
-    };
-  }, [refresh, session]);
 
-  useEffect(() => {
-    if (!session) return;
-    const timer = window.setInterval(() => {
-      void heartbeat(session).catch(() => {
-        // Sessiz yoklama; bağlantı durumu get_state üzerinden güncellenir.
-      });
-    }, 20000);
-    return () => {
-      window.clearInterval(timer);
-    };
-  }, [session]);
-
-  const roomId = snapshot?.room.id;
-
-  useEffect(() => {
-    const client = supabase;
-    if (!client || !roomId) return;
-    const channel = client
-      .channel(`room:${roomId}:${channelSuffixRef.current}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'room_versions',
-          filter: `room_id=eq.${roomId}`,
-        },
-        () => {
-          void refresh();
-        },
-      )
-      .subscribe((status) => {
-        if (status === 'SUBSCRIBED') {
-          realtimeRef.current = true;
-          if (mountedRef.current) setConnection('live');
-        } else if (
-          status === 'CHANNEL_ERROR' ||
-          status === 'TIMED_OUT' ||
-          status === 'CLOSED'
-        ) {
-          realtimeRef.current = false;
-          if (mountedRef.current) setConnection('polling');
-        }
-      });
-
-    return () => {
-      realtimeRef.current = false;
-      void client.removeChannel(channel);
-    };
-  }, [refresh, roomId]);
-
-  const runLobbyAction = useCallback(
-    async (action: LobbyAction) => {
-      if (!session || actionPending) return;
-      setActionPending(true);
-      setError(null);
-      try {
-        const next = await sendLobbyAction(session, action);
-        applySnapshot(next);
-        setFatalError(null);
-      } catch (caught) {
-        const message = errorMessage(caught);
-        if (isFatalRoomError(message)) {
-          markFatal(message);
-        } else {
-          setError(message);
-          void refresh();
-        }
-      } finally {
-        if (mountedRef.current) setActionPending(false);
+    sessionRef.current = roomSession;
+    let active = true;
+    const unsubscribe = roomSession.subscribe((next) => {
+      if (!active) return;
+      if (next.view) {
+        setSnapshot(next.view);
+        setLoading(false);
       }
+      const fatal = next.status === 'error' || next.status === 'closed';
+      setFatalError(fatal ? next.error ?? 'Oda kapandı.' : null);
+      setError(fatal ? null : next.error);
+      setConnection(mapConnection(next.status));
+      if (next.error) clearPending();
+      if (next.view && next.view.room.version !== lastVersionRef.current) {
+        lastVersionRef.current = next.view.room.version;
+        clearPending();
+      }
+      if (!next.view && next.status === 'error') setLoading(false);
+    });
+
+    return () => {
+      active = false;
+      unsubscribe();
+      roomSession.dispose();
+      if (sessionRef.current === roomSession) sessionRef.current = null;
+      clearPending();
+    };
+  }, [clearPending, session]);
+
+  const beginPending = useCallback(() => {
+    if (pendingTimerRef.current !== null) {
+      window.clearTimeout(pendingTimerRef.current);
+    }
+    setActionPending(true);
+    pendingTimerRef.current = window.setTimeout(() => {
+      pendingTimerRef.current = null;
+      if (mountedRef.current) setActionPending(false);
+    }, 6000);
+  }, []);
+
+  const dispatch = useCallback(
+    (action: LobbyAction | GameAction) => {
+      const roomSession = sessionRef.current;
+      if (!roomSession) {
+        setError('Oda bağlantısı hazır değil. Yeniden dene.');
+        return;
+      }
+      setError(null);
+      beginPending();
+      roomSession.send(action);
     },
-    [actionPending, applySnapshot, markFatal, refresh, session],
+    [beginPending],
   );
 
   const sendGame = useCallback(
     async (action: GameAction) => {
-      if (!session || actionPending) return;
-      setActionPending(true);
-      setError(null);
-      try {
-        const next = await sendGameAction(session, action);
-        applySnapshot(next);
-        setFatalError(null);
-      } catch (caught) {
-        const message = errorMessage(caught);
-        if (isFatalRoomError(message)) {
-          markFatal(message);
-        } else {
-          setError(message);
-          void refresh();
-        }
-      } finally {
-        if (mountedRef.current) setActionPending(false);
-      }
+      dispatch(action);
     },
-    [actionPending, applySnapshot, markFatal, refresh, session],
+    [dispatch],
   );
 
   const sendLobby = useCallback(
     async (action: LobbyAction) => {
-      await runLobbyAction(action);
+      dispatch(action);
     },
-    [runLobbyAction],
+    [dispatch],
   );
 
   const restart = useCallback(async () => {
-    await runLobbyAction({ type: 'restart' });
-  }, [runLobbyAction]);
+    dispatch({ type: 'restart' });
+  }, [dispatch]);
+
+  const refresh = useCallback(async () => {
+    sessionRef.current?.retry();
+  }, []);
 
   const claimHost = useCallback(async () => {
-    await runLobbyAction({ type: 'claim_host' });
-  }, [runLobbyAction]);
+    setError('Bu sürümde oda sahibi doğrudan tarayıcıda çalışır; host devri desteklenmiyor.');
+  }, []);
 
   const leave = useCallback(async () => {
-    if (!session) {
-      clearSession();
-      return;
-    }
-    try {
-      await leaveRoom(session);
-    } catch {
-      // Ağ hatası olsa da istemci oturumunu temizle.
-    }
+    const roomSession = sessionRef.current;
+    sessionRef.current = null;
+    roomSession?.leave();
     clearSession();
-    snapshotRef.current = null;
     if (mountedRef.current) {
       setSnapshot(null);
       setConnection('offline');
+      setLoading(false);
+      setActionPending(false);
     }
-  }, [session]);
+  }, []);
+
+  const dismissError = useCallback(() => {
+    sessionRef.current?.clearError();
+    setError(null);
+  }, []);
 
   return {
     snapshot,
@@ -276,6 +204,6 @@ export function useMultiplayerRoom(
     restart,
     claimHost,
     leave,
-    dismissError: () => setError(null),
+    dismissError,
   };
 }

@@ -151,7 +151,7 @@ export default function GuidePage() {
               <span className="btn__label">Botlara Karşı Oyna</span>
             </Link>
             <Link to="/setup" className="btn btn--outline btn--md">
-              <span className="btn__label">Çok Oyunculu Kurulum</span>
+              <span className="btn__label">Online Rehber</span>
             </Link>
           </div>
         </section>
@@ -180,6 +180,9 @@ export default function GuidePage() {
                     </div>
                   </header>
                   <p className="role-guide-card__description">{info.description}</p>
+                  <p className="role-guide-card__mission">
+                    <strong>Görev:</strong> {info.mission}
+                  </p>
                   <div className="role-guide-card__section">
                     <strong>Yetenekler</strong>
                     <ul>
@@ -201,7 +204,7 @@ export default function GuidePage() {
 
         <section className="guide-section" id="dagilim">
           <SectionHeading
-            eyebrow="Kurulum"
+            eyebrow="Dağılım"
             title="Rol dağılımı"
             description="Oyuncu sayısına göre sabit dağılım aşağıdadır. Yerel test modunda botlar eksik oyuncuları doldurur; çok oyunculu odada insanlar ve eklenen botlar birlikte sayılır."
           />
@@ -433,7 +436,7 @@ export default function GuidePage() {
           <BookOpen size={16} />
           <span>
             Hüküm Yolu · Kurallar ve varsayımlar bu sayfada özetlenmiştir. Ayrıntılı
-            kurulum için <Link to="/setup">Kurulum</Link> sayfasına bak.
+            online oyunun nasıl çalıştığı için <Link to="/setup">Online Rehber</Link> sayfasına bak.
           </span>
         </footer>
       </main>

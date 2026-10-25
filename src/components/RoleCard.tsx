@@ -150,6 +150,11 @@ export function RoleCard({
         </span>
       </header>
 
+      <section className="role-card__mission">
+        <span className="role-card__mission-label">Görevin</span>
+        <p>{info.mission}</p>
+      </section>
+
       <p className="role-card__description">{info.description}</p>
 
       <div className="role-card__meta">

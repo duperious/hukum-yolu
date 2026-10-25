@@ -7,6 +7,8 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     team: 'otokrat',
     teamLabel: 'Otokrat Takımı',
     shortDescription: 'Kırmızı takımın gizli lideri.',
+    mission:
+      'Otokrat Reformları 7\'ye ulaştır. 4. Otokrat Reform\'dan sonra Başbakan seçilirsen de kazanırsın.',
     description:
       'Otokrat takımının gizli liderisin. Takım arkadaşlarını tanırsın. 7 Otokrat Reform yürürlüğe girerse veya 4. Otokrat Reform’dan sonra Başbakan seçilirsen Otokratlar kazanır. Suikastla öldürülürsen ve kırmızı Nötr liderliği devralmazsa Demokratlar kazanır.',
     abilities: [
@@ -25,6 +27,8 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     team: 'otokrat',
     teamLabel: 'Otokrat Takımı',
     shortDescription: 'Otokrat takımının sıradan üyesi.',
+    mission:
+      'Otokrat Reformları destekle. 7. reformda veya Lider\'in zaferinde kazanırsın.',
     description:
       'Otokrat takımının bir üyesisin. 5-6 oyunculu oyunlarda Lider’i ve diğer Otokratları tanırsın. 7-10 oyunculu oyunlarda diğer Otokratları tanırsın ama Lider’in kim olduğunu bilmezsin. Otokrat zaferi için çalışırsın.',
     abilities: [
@@ -43,6 +47,8 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     team: 'monarsi',
     teamLabel: 'Monarşi Görevlisi',
     shortDescription: 'İki oy gücüne sahip saray görevlisi.',
+    mission:
+      'İlk üç reformun sonucunu bekle. Demokratlar öndeyse onlara katıl; Otokratlar öndeyse idamdan kurtul.',
     description:
       'Başlangıçta 2 oy gücüne sahipsin. İlk üç reform sonunda Demokratlar öndeyse Demokratik tarafa geçer, Demokrat Parti Başkanı olur ve oy gücün 1’e düşer. Otokratlar öndeyse idam edilirsin. Bir oylamada engellenirsen oy gücün kalıcı olarak 0’a düşer.',
     abilities: [
@@ -61,6 +67,8 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     team: 'monarsi',
     teamLabel: 'Tarafsız',
     shortDescription: 'İlk üç reformdan sonra tarafını seçen gizemli figür.',
+    mission:
+      'İlk üç reformdan sonra gizlice mavi veya kırmızı tarafı seç ve seçtiğin tarafın zaferini sağla.',
     description:
       'İlk üç reform sonunda gizlice mavi veya kırmızı tarafı seçersin. Mavi seçersen Demokratlarla kazanırsın. Kırmızı seçersen Otokratları desteklersin; ancak normal Otokrat zaferinde otomatik kazanmazsın. Otokrat Lider ölürse ve kırmızı tarafı seçtiysen liderliği gizlice devralabilirsin. Liderliği devralırsan kişisel zafer koşulların devreye girer.',
     abilities: [
@@ -79,6 +87,8 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     team: 'demokrat',
     teamLabel: 'Demokrat Takımı',
     shortDescription: 'Gizli soruşturma yetkisine sahip Demokrat.',
+    mission:
+      'Soruşturma yetkini kullanarak Otokratları bul. Demokratik Reformları 6\'ya ulaştır.',
     description:
       'Demokrat takımındasın. 2. Otokrat Reform’dan sonra her tur bir oyuncuyu soruşturabilirsin. Sonuç yalnızca sana gösterilir. Ölürsen soruşturma yetkisi Demokrat Parti Başkanı’na geçer. Demokratik Reformlar 6’ya ulaşırsa veya Otokrat Lider öldürülürse kazanırsın.',
     abilities: [
@@ -97,6 +107,8 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     team: 'demokrat',
     teamLabel: 'Demokrat Takımı',
     shortDescription: 'Demokratik cephenin sıradan üyesi.',
+    mission:
+      'Demokratik Reformları 6\'ya ulaştır veya Otokrat Lider\'i idam ettir.',
     description:
       'Demokrat takımındasın. Özel bir gizli bilgin yoktur; oylar, hükümetler ve reformlar üzerinden çıkarım yaparsın. Demokratik Reformlar 6’ya ulaşırsa veya Otokrat Lider öldürülürse kazanırsın.',
     abilities: [

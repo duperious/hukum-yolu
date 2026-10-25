@@ -9,7 +9,6 @@ import {
   Play,
   Plus,
   Scale,
-  ShieldCheck,
   Smartphone,
   Sparkles,
   Users,
@@ -24,9 +23,9 @@ import { Logo } from '../components/ui/Logo';
 import { useInstallPrompt } from '../hooks/useInstallPrompt';
 import { useProfile } from '../hooks/useProfile';
 import { useToast } from '../components/ui/Toast';
-import { createRoom, joinRoom } from '../lib/multiplayer';
 import { normalizeName, type Profile } from '../lib/profile';
-import { isSupabaseConfigured } from '../lib/supabase';
+import { makeRoomCode } from '../net/roomCode';
+import { normalizeRoomCode } from '../lib/validation';
 import {
   clearSession,
   loadSession,
@@ -45,13 +44,6 @@ export default function HomePage() {
   const [session, setSession] = useState<MultiplayerSession | null>(() => loadSession());
 
   const openModal = (mode: 'create' | 'join') => {
-    if (!isSupabaseConfigured) {
-      toast.push(
-        'Çok oyunculu mod için Supabase yapılandırması gerekli. Yerel test modu kullanılabilir.',
-        'info',
-      );
-      return;
-    }
     setModalError(null);
     setModal(mode);
   };
@@ -62,35 +54,26 @@ export default function HomePage() {
     setModalError(null);
   };
 
-  const handleSubmit = async (nextProfile: Profile, roomCode: string) => {
+  const handleSubmit = (nextProfile: Profile, roomCode: string) => {
     setLoading(true);
     setModalError(null);
     try {
-      const result =
-        modal === 'create'
-          ? await createRoom({
-              name: normalizeName(nextProfile.name),
-              avatarId: nextProfile.avatarId,
-            })
-          : await joinRoom({
-              roomCode,
-              name: normalizeName(nextProfile.name),
-              avatarId: nextProfile.avatarId,
-            });
-
-      const nextSession: MultiplayerSession = {
-        roomCode: result.room.code,
-        playerId: result.you.playerId,
-        playerSecret: result.playerSecret,
-        playerName: result.you.name,
-        avatarId: result.you.avatarId,
-        savedAt: Date.now(),
+      const code = modal === 'create' ? makeRoomCode() : normalizeRoomCode(roomCode);
+      if (modal === 'join' && code.length !== 6) {
+        setModalError('Oda kodu 6 karakter olmalı.');
+        return;
+      }
+      const nextSession = {
+        roomCode: code,
+        playerName: normalizeName(nextProfile.name),
+        avatarId: nextProfile.avatarId,
+        isHost: modal === 'create',
       };
       saveSession(nextSession);
-      setSession(nextSession);
+      setSession({ ...nextSession, savedAt: Date.now() });
       setProfile(nextProfile);
       setModal(null);
-      navigate(`/room/${result.room.code}`);
+      navigate(`/room/${code}`);
     } catch (caught) {
       setModalError(
         caught instanceof Error
@@ -119,7 +102,7 @@ export default function HomePage() {
           </Link>
           <Link to="/setup" className="nav-link">
             <Key size={15} />
-            Kurulum
+            Online Rehber
           </Link>
           {canInstall ? (
             <Button
@@ -160,12 +143,6 @@ export default function HomePage() {
                 size="lg"
                 onClick={() => openModal('create')}
                 icon={<Plus size={18} />}
-                disabled={!isSupabaseConfigured}
-                title={
-                  isSupabaseConfigured
-                    ? undefined
-                    : 'Çok oyunculu mod için Supabase yapılandırması gerekli.'
-                }
               >
                 Oyun Oluştur
               </Button>
@@ -174,12 +151,6 @@ export default function HomePage() {
                 size="lg"
                 onClick={() => openModal('join')}
                 icon={<LogIn size={18} />}
-                disabled={!isSupabaseConfigured}
-                title={
-                  isSupabaseConfigured
-                    ? undefined
-                    : 'Çok oyunculu mod için Supabase yapılandırması gerekli.'
-                }
               >
                 Odaya Katıl
               </Button>
@@ -219,27 +190,25 @@ export default function HomePage() {
           </div>
         </section>
 
-        {!isSupabaseConfigured ? (
-          <section className="setup-notice">
-            <span className="setup-notice__icon">
-              <ShieldCheck size={22} />
-            </span>
-            <div>
-              <strong>Çok oyunculu mod yapılandırılmadı</strong>
-              <p>
-                Oda kurma ve arkadaşlarınla oynama için Supabase bağlantısı gerekir.
-                Yerel test modu Supabase olmadan çalışır; botlara karşı hemen
-                oynayabilirsin.
-              </p>
-            </div>
-            <Link to="/setup" className="btn btn--outline btn--sm">
-              Kurulumu Gör
-              <ArrowRight size={15} />
-            </Link>
-          </section>
-        ) : null}
+        <section className="setup-notice">
+          <span className="setup-notice__icon">
+            <Wifi size={22} />
+          </span>
+          <div>
+            <strong>Sunucusuz online: oda sahibi tarayıcısı</strong>
+            <p>
+              Oda sahibinin sekmesi açık kaldığı sürece arkadaşlarınla doğrudan
+              WebRTC üzerinden oynayabilirsin. Ek bir sunucu veya veritabanı
+              gerekmez; oda sahibi teknik olarak tüm rolleri görebilir.
+            </p>
+          </div>
+          <Link to="/setup" className="btn btn--outline btn--sm">
+            Nasıl Çalışır?
+            <ArrowRight size={15} />
+          </Link>
+        </section>
 
-        {session && isSupabaseConfigured ? (
+        {session ? (
           <section className="resume-card">
             <div className="resume-card__identity">
               <Avatar avatarId={session.avatarId} size="lg" ring="gold" />
@@ -279,10 +248,11 @@ export default function HomePage() {
             <span className="feature-card__icon feature-card__icon--blue">
               <Wifi size={20} />
             </span>
-            <h2>Sunucu doğrulamalı çok oyunculu</h2>
+            <h2>Oda sahibi yönetir, herkes kendi görünümünü alır</h2>
             <p>
-              Oda durumu ve gizli roller sunucuda tutulur. Her istemciye yalnızca
-              görmesi gereken veri gönderilir.
+              Oyun durumu oda sahibinin tarayıcısında tutulur; her oyuncuya
+              yalnızca görmesi gereken filtrelenmiş görünüm gönderilir. Oda
+              sahibinin sekmesi açık kalmalıdır.
             </p>
           </article>
           <article className="feature-card">
@@ -352,7 +322,6 @@ export default function HomePage() {
             <Button
               variant="outline"
               onClick={() => openModal('create')}
-              disabled={!isSupabaseConfigured}
               icon={<Plus size={16} />}
             >
               Oda Kur
@@ -366,7 +335,7 @@ export default function HomePage() {
         <p>Özgün bir sosyal çıkarım oyunu. Gizli roller, açık hesaplaşmalar.</p>
         <div className="site-footer__links">
           <Link to="/guide">Nasıl Oynanır?</Link>
-          <Link to="/setup">Supabase Kurulumu</Link>
+          <Link to="/setup">Online Rehber</Link>
         </div>
       </footer>
 

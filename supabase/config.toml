@@ -1,8 +1,0 @@
-# Hüküm Yolu — Supabase CLI yapılandırması
-# `supabase link --project-ref ...` ile kendi projenize bağlanın.
-project_id = "hukum-yolu"
-
-# Edge Function, Supabase'in anon key'i ile çağrılır. Fonksiyon ayrıca
-# kendi oyuncu sırrı doğrulamasını yapar.
-[functions.game]
-verify_jwt = true

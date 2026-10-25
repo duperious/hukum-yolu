@@ -11,14 +11,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "sync:engine": "node scripts/sync-engine.mjs",
     "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
     "@fontsource/cinzel": "^5.1.1",
     "@fontsource/manrope": "^5.1.1",
-    "@supabase/supabase-js": "^2.47.10",
     "lucide-react": "^0.468.0",
+    "peerjs": "^1.5.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.1"

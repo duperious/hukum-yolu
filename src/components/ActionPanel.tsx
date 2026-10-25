@@ -3,6 +3,7 @@ import {
   Check,
   Crosshair,
   Eye,
+  Flag,
   Gavel,
   Landmark,
   Scale,
@@ -16,6 +17,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { ROLE_INFO } from '../game';
 import type {
   GameAction,
   NotrSide,
@@ -129,6 +131,7 @@ export function ActionPanel({
   if (game.phase === 'gameOver') return null;
 
   const meta = PHASE_META[game.phase] ?? PHASE_META.roleReveal;
+  const roleInfo = ROLE_INFO[view.role];
   const byId = new Map(game.players.map((player) => [player.id, player]));
   const presidentName = playerName(game, game.presidentId);
   const chancellorName = playerName(game, game.chancellorId);
@@ -165,6 +168,18 @@ export function ActionPanel({
           Rolüm
         </button>
       </header>
+
+      <div className={cn('action-panel__mission', `action-panel__mission--${roleInfo.accent}`)}>
+        <span className="action-panel__mission-icon" aria-hidden="true">
+          <Flag size={18} />
+        </span>
+        <div>
+          <span className="action-panel__mission-kicker">
+            Görevin · {roleInfo.name}
+          </span>
+          <p>{roleInfo.mission}</p>
+        </div>
+      </div>
 
       {canAct ? <span className="turn-badge">Sıra sende</span> : null}
 
@@ -316,8 +331,10 @@ export function ActionPanel({
                     disabled={actionPending}
                     aria-pressed={pendingVote === true}
                   >
-                    <Check size={20} />
-                    <span>Kabul</span>
+                    <span className="vote-choice__icon" aria-hidden="true">
+                      <Check size={24} />
+                    </span>
+                    <span className="vote-choice__label">Evet</span>
                     <small>Hükümet kurulsun</small>
                   </button>
                   <button
@@ -330,16 +347,18 @@ export function ActionPanel({
                     disabled={actionPending}
                     aria-pressed={pendingVote === false}
                   >
-                    <X size={20} />
-                    <span>Ret</span>
+                    <span className="vote-choice__icon" aria-hidden="true">
+                      <X size={24} />
+                    </span>
+                    <span className="vote-choice__label">Hayır</span>
                     <small>Hükümet kurulmasın</small>
                   </button>
                 </div>
                 <div className="confirm-bar">
                   <span className="confirm-bar__hint">
                     {pendingVote === null
-                      ? 'Oyun gizli tutulur; yalnızca sonuç açıklanır.'
-                      : `Oyun: ${pendingVote ? 'Kabul' : 'Ret'}`}
+                      ? 'Evet veya Hayır seç. Oyun gizli tutulur; yalnızca sonuç açıklanır.'
+                      : `Oyun: ${pendingVote ? 'Evet' : 'Hayır'}`}
                   </span>
                   <Button
                     variant={pendingVote === false ? 'danger' : 'primary'}
@@ -359,7 +378,7 @@ export function ActionPanel({
               <div className="action-note action-note--success">
                 <Check size={16} />
                 <p>
-                  Oyun kaydedildi: <strong>{view.yourVote ? 'Kabul' : 'Ret'}</strong>.{' '}
+                  Oyun kaydedildi: <strong>{view.yourVote ? 'Evet' : 'Hayır'}</strong>.{' '}
                   {game.votesSubmitted}/{game.totalVoters} oy geldi.
                 </p>
               </div>

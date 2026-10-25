@@ -5,7 +5,7 @@ import {
   Key,
   LogIn,
   Play,
-  ShieldCheck,
+  Wifi,
   Users,
   X,
 } from 'lucide-react';
@@ -16,9 +16,7 @@ import { Avatar } from '../components/ui/Avatar';
 import { Button } from '../components/ui/Button';
 import { Logo } from '../components/ui/Logo';
 import { useProfile } from '../hooks/useProfile';
-import { joinRoom } from '../lib/multiplayer';
 import { normalizeName, validateName } from '../lib/profile';
-import { isSupabaseConfigured } from '../lib/supabase';
 import {
   clearSession,
   loadSession,
@@ -51,14 +49,8 @@ export default function JoinPage() {
     setSession(null);
   };
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (!isSupabaseConfigured) {
-      setError(
-        'Çok oyunculu mod için Supabase yapılandırması gerekli. Kurulum sayfasına bakabilirsin.',
-      );
-      return;
-    }
     const nameError = validateName(profile.name);
     if (nameError) {
       setError(nameError);
@@ -73,23 +65,16 @@ export default function JoinPage() {
     setLoading(true);
     setError(null);
     try {
-      const result = await joinRoom({
+      const nextSession = {
         roomCode,
-        name: normalizeName(profile.name),
+        playerName: normalizeName(profile.name),
         avatarId: profile.avatarId,
-      });
-      const nextSession: MultiplayerSession = {
-        roomCode: result.room.code,
-        playerId: result.you.playerId,
-        playerSecret: result.playerSecret,
-        playerName: result.you.name,
-        avatarId: result.you.avatarId,
-        savedAt: Date.now(),
+        isHost: false,
       };
       saveSession(nextSession);
-      setSession(nextSession);
+      setSession({ ...nextSession, savedAt: Date.now() });
       setProfile({ ...profile, name: normalizeName(profile.name) });
-      navigate(`/room/${result.room.code}`);
+      navigate(`/room/${roomCode}`);
     } catch (caught) {
       setError(
         caught instanceof Error
@@ -127,23 +112,21 @@ export default function JoinPage() {
           </p>
         </section>
 
-        {!isSupabaseConfigured ? (
-          <div className="setup-notice setup-notice--compact">
-            <span className="setup-notice__icon">
-              <ShieldCheck size={20} />
-            </span>
-            <div>
-              <strong>Çok oyunculu mod yapılandırılmadı</strong>
-              <p>
-                Odaya katılmak için Supabase bağlantısı gerekir. Yerel test modu
-                Supabase olmadan çalışır.
-              </p>
-            </div>
-            <Link to="/setup" className="text-link">
-              Kurulum
-            </Link>
+        <div className="setup-notice setup-notice--compact">
+          <span className="setup-notice__icon">
+            <Wifi size={20} />
+          </span>
+          <div>
+            <strong>Doğrudan bağlantı</strong>
+            <p>
+              Oda sahibinin sekmesi açık olmalı. Bağlantı WebRTC üzerinden
+              kurulur; ayrı bir sunucu gerekmez.
+            </p>
           </div>
-        ) : null}
+          <Link to="/setup" className="text-link">
+            Nasıl çalışır?
+          </Link>
+        </div>
 
         {session ? (
           <section className="session-notice">
@@ -242,7 +225,6 @@ export default function JoinPage() {
               size="lg"
               fullWidth
               loading={loading}
-              disabled={!isSupabaseConfigured}
               icon={<LogIn size={18} />}
             >
               Odaya Katıl

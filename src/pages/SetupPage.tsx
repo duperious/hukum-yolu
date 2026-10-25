@@ -3,41 +3,32 @@ import {
   ArrowLeft,
   BookOpen,
   CheckCircle2,
-  Database,
   Github,
+  Globe2,
   Key,
-  Lock,
-  Server,
+  RefreshCw,
   ShieldCheck,
+  Smartphone,
   Terminal,
+  Users,
+  Wifi,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { CodeBlock } from '../components/ui/CodeBlock';
 import { Logo } from '../components/ui/Logo';
 import { SectionHeading } from '../components/ui/SectionHeading';
 
-const MIGRATION_COMMAND = `npx supabase link --project-ref PROJE_REF
-npx supabase db push
-
-# Edge Function için motor dosyalarını eşitle
-npm run sync:engine
-
-# Servis rolü anahtarı yalnızca Edge Function ortamında kalır
-npx supabase functions deploy game`;
-
-const ENV_EXAMPLE = `# .env — yalnızca istemciye açık değerler
-VITE_SUPABASE_URL=https://PROJE.supabase.co
-VITE_SUPABASE_ANON_KEY=ANON_KEY
-
-# Service role anahtarını ASLA buraya koymayın.
-# Supabase Edge Function ortamı SUPABASE_SERVICE_ROLE_KEY'i kendisi sağlar.`;
-
-const PAGES_COMMAND = `git init
-git add .
+const PAGES_COMMAND = `git add .
 git commit -m "Hüküm Yolu"
-git branch -M main
-git remote add origin https://github.com/duperious/hukum-yolu.git
-git push -u origin main`;
+git push origin main`;
+
+const DEV_COMMAND = `npm install
+npm run dev`;
+
+const TEST_COMMAND = `npm test
+npm run typecheck
+npm run build
+npm run preview`;
 
 export default function SetupPage() {
   return (
@@ -58,22 +49,23 @@ export default function SetupPage() {
 
       <main className="docs-main">
         <section className="docs-hero">
-          <p className="eyebrow">Kurulum</p>
-          <h1>Hüküm Yolu’nu yayına al</h1>
+          <p className="eyebrow">Online rehber</p>
+          <h1>Sunucusuz oda, doğrudan bağlantı</h1>
           <p>
-            Bu sayfa, projeyi kendi bilgisayarında çalıştırmak, Supabase ile çok
-            oyunculu modu açmak ve GitHub Pages’e yayınlamak için adım adım
-            yönergeler içerir. Yerel test modu Supabase olmadan da çalışır.
+            Hüküm Yolu’nun online modu Supabase veya ayrı bir sunucu gerektirmez.
+            Oda sahibinin tarayıcısı oyunu yönetir; oyuncular WebRTC üzerinden
+            doğrudan birbirine bağlanır. GitHub Pages’e yüklediğinizde ek bir
+            ortam değişkeni veya backend kurulumu gerekmez.
           </p>
           <div className="docs-hero__chips">
             <span className="chip">
-              <CheckCircle2 size={13} /> Yerel test: kurulum gerekmez
+              <CheckCircle2 size={13} /> Kurulum gerekmez
             </span>
             <span className="chip">
-              <Server size={13} /> Çok oyunculu: Supabase gerekir
+              <Wifi size={13} /> WebRTC + PeerJS
             </span>
             <span className="chip">
-              <Github size={13} /> Yayın: GitHub Pages
+              <Github size={13} /> GitHub Pages
             </span>
           </div>
         </section>
@@ -81,19 +73,49 @@ export default function SetupPage() {
         <section className="docs-section">
           <SectionHeading
             eyebrow="01"
-            title="Projeyi çalıştır"
-            description="Node.js 20 veya üzeri gerekir. Terminalde proje klasörüne gir ve bağımlılıkları kur."
+            title="Nasıl çalışır?"
+            description="Oda sahibi yetkili tarayıcıdır. Diğer oyuncular yalnızca kendi güvenli görünümlerini alır."
           />
-          <CodeBlock
-            label="Terminal"
-            code={`npm install\nnpm run dev`}
-          />
+          <ol className="docs-steps">
+            <li>
+              <span>1</span>
+              <div>
+                <strong>Oda oluşturulur.</strong> Oda sahibi “Oyun Oluştur” der.
+                Altı karakterlik bir oda kodu üretilir ve oda durumu oda sahibinin
+                tarayıcısında tutulur.
+              </div>
+            </li>
+            <li>
+              <span>2</span>
+              <div>
+                <strong>Oyuncular eşleşir.</strong> Kod veya davet bağlantısı
+                paylaşılır. PeerJS’in genel sinyal sunucusu ve STUN/TURN
+                sunucuları üzerinden WebRTC bağlantısı kurulur.
+              </div>
+            </li>
+            <li>
+              <span>3</span>
+              <div>
+                <strong>Herkes kendi ekranını görür.</strong> Roller, desteler,
+                oylar ve özel yetkiler oda sahibinde kalır. Her istemciye yalnızca
+                görmesi gereken filtrelenmiş görünüm gönderilir.
+              </div>
+            </li>
+            <li>
+              <span>4</span>
+              <div>
+                <strong>Oda sahibi sekmesi açık kalmalı.</strong> Oda sahibi
+                sekmeyi kapatırsa yeni katılım ve oyun akışı durur. Sekme
+                yenilenirse oda durumu aynı tarayıcıda geri yüklenir.
+              </div>
+            </li>
+          </ol>
           <div className="docs-note">
-            <CheckCircle2 size={18} />
+            <ShieldCheck size={18} />
             <p>
-              Tarayıcıda <strong>http://localhost:5173</strong> adresini aç.
-              Ana sayfadaki <strong>Yerel Test Oyunu</strong> ile botlara karşı
-              hemen oynayabilirsin. Bu mod için Supabase gerekmez.
+              Bu model <strong>host-authoritative</strong> çalışır: kuralları oda
+              sahibinin tarayıcısı uygular. Sunucu tarafından doğrulanan bir oyun
+              değildir; oda sahibi teknik olarak tüm rolleri görebilir.
             </p>
           </div>
         </section>
@@ -101,39 +123,49 @@ export default function SetupPage() {
         <section className="docs-section">
           <SectionHeading
             eyebrow="02"
-            title="Supabase projesi oluştur"
-            description="Çok oyunculu odalar, gizli roller ve sunucu doğrulaması Supabase üzerinde çalışır."
+            title="Oda kur ve arkadaşlarını çağır"
+            description="Online oyun için hesap, e-posta veya veritabanı gerekmez."
           />
           <ol className="docs-steps">
             <li>
               <span>1</span>
               <div>
-                <strong>supabase.com</strong> üzerinden yeni bir proje oluştur.
-                Bölge olarak sana yakın bir bölge seç.
+                Ana sayfada <strong>Oyun Oluştur</strong> seçin. Profilinizi
+                girdikten sonra oda lobisi açılır.
               </div>
             </li>
             <li>
               <span>2</span>
               <div>
-                Proje ayarlarından <strong>Project URL</strong> ve{' '}
-                <strong>anon public key</strong> değerlerini al.
+                Oda kodunu veya <strong>Davet linki</strong>ni paylaşın.
+                Arkadaşlarınız ana sayfada <strong>Odaya Katıl</strong> ile kodu
+                girebilir.
               </div>
             </li>
             <li>
               <span>3</span>
               <div>
-                Proje kökünde <code>.env.example</code> dosyasını{' '}
-                <code>.env</code> olarak kopyala ve değerleri doldur.
+                En az 5, en fazla 10 oyuncu gerekir. Eksik oyuncuları{' '}
+                <strong>Bot ekle</strong> ile tamamlayabilirsiniz. Tüm insan
+                oyuncular <strong>Hazırım</strong> dediğinde oda sahibi oyunu
+                başlatır.
+              </div>
+            </li>
+            <li>
+              <span>4</span>
+              <div>
+                Oylamada büyük <strong>Evet</strong> ve <strong>Hayır</strong>{' '}
+                kartlarından birini seçip oyunuzu gönderin. Oylar gizlidir;
+                yalnızca sonuç açıklanır.
               </div>
             </li>
           </ol>
-          <CodeBlock label=".env" language="dotenv" code={ENV_EXAMPLE} />
-          <div className="docs-warning">
-            <Lock size={18} />
+          <div className="docs-note">
+            <Users size={18} />
             <p>
-              <strong>Service role anahtarını frontend’e koyma.</strong> Bu anahtar
-              RLS’yi atlar. Yalnızca Supabase Edge Function ortamında bulunur.
-              İstemciye yalnızca anon key gider.
+              Aynı tarayıcıda iki sekme açacaksanız her sekme kendi oturumunu
+              kullanır. Oda sahibi sekmesini kapatmadan diğer sekmede odaya
+              katılabilirsiniz; bu yalnızca yerel test için önerilir.
             </p>
           </div>
         </section>
@@ -141,87 +173,63 @@ export default function SetupPage() {
         <section className="docs-section">
           <SectionHeading
             eyebrow="03"
-            title="Veritabanını ve güvenlik kurallarını kur"
-            description="Migration; odalar, oyuncular, oyun durumu ve Realtime tablolarını oluşturur. RLS varsayılan olarak hassas tabloları kapatır."
+            title="Bağlantı koparsa ne olur?"
+            description="Kısa kopmalar tolere edilir; uzun kopmalarda oyun devam eder."
           />
-          <p>
-            Supabase CLI ile:
-          </p>
-          <CodeBlock label="Supabase CLI" code={MIGRATION_COMMAND} />
-          <p>
-            CLI kullanmak istemiyorsan Supabase panelindeki{' '}
-            <strong>SQL Editor</strong> içine{' '}
-            <code>supabase/migrations/0001_hukum_yolu.sql</code> dosyasının
-            tamamını yapıştırıp çalıştırabilirsin. Edge Function’ı yine de CLI ile
-            deploy etmen gerekir.
-          </p>
-          <div className="docs-note">
-            <Database size={18} />
-            <p>
-              <strong>room_versions</strong> tablosu yalnızca sürüm numarası,
-              durum ve zaman damgası içerir; Realtime aboneliği için herkese
-              okunabilir. Roller, desteler, oylar ve oyuncu sırları{' '}
-              <strong>room_state</strong> / <strong>room_players</strong>{' '}
-              tablolarındadır ve anon erişimine kapalıdır.
-            </p>
-          </div>
+          <ul className="docs-limitations">
+            <li>
+              <RefreshCw size={16} />
+              Bağlantısı kopan insan oyuncu için 45 saniyelik bir bekleme süresi
+              vardır. Bu süre içinde geri dönerse aynı oyuncu olarak devam eder.
+            </li>
+            <li>
+              <Smartphone size={16} />
+              Süre dolarsa lobideyse odadan çıkarılır; oyun sırasındaysa rolü bot
+              tarafından devralınır. Aynı oyuncu oyun sırasında yeni kimlikle
+              yeniden katılamaz.
+            </li>
+            <li>
+              <Key size={16} />
+              İstemci yeniden bağlanma anahtarı bu cihazda saklanır. Oda sahibi
+              sekmesini yenilerse oda durumu aynı tarayıcıdan geri yüklenir.
+            </li>
+            <li>
+              <Globe2 size={16} />
+              Bazı kurumsal ağlar ve VPN’ler WebRTC’yi engelleyebilir. STUN/TURN
+              sunucuları çoğu ev ağında yeterlidir; katı ağlarda bağlantı
+              kurulamayabilir.
+            </li>
+          </ul>
         </section>
 
         <section className="docs-section">
           <SectionHeading
             eyebrow="04"
-            title="Edge Function’ı deploy et"
-            description="Oyun motoru Edge Function içinde çalışır. İstemci yalnızca redakte edilmiş görünümü alır."
-          />
-          <p>
-            Oyun motorunu Edge Function klasörüne eşitlemek için:
-          </p>
-          <CodeBlock label="Terminal" code={`npm run sync:engine\nnpx supabase functions deploy game`} />
-          <p>
-            Motoru değiştirdiğinde <code>npm run sync:engine</code> komutunu tekrar
-            çalıştır ve fonksiyonu yeniden deploy et. <code>src/game</code> tek
-            kaynaktır; kopya dosyaları elle düzenleme.
-          </p>
-          <div className="docs-note">
-            <ShieldCheck size={18} />
-            <p>
-              Edge Function her istekte oyuncu kimliğini ve yüksek entropili
-              oyuncu sırrını doğrular. Rol dağıtımı, oy sayımı, yetki kontrolü ve
-              kazanma koşulları sunucuda çalışır. İstemciden gelen “ben şu rolüm”
-              gibi bir veri kabul edilmez.
-            </p>
-          </div>
-        </section>
-
-        <section className="docs-section">
-          <SectionHeading
-            eyebrow="05"
             title="GitHub Pages’e yayınla"
-            description="Depoyu GitHub’a gönder; Actions workflow’u testleri çalıştırıp dist klasörünü Pages’e yükler."
+            description="Depo zaten GitHub Actions ile test edip yayınlayacak şekilde hazır."
           />
           <CodeBlock label="Terminal" code={PAGES_COMMAND} />
           <ol className="docs-steps">
             <li>
               <span>1</span>
               <div>
-                GitHub deposunda <strong>Settings → Pages</strong> bölümüne git.
-                <strong> Source</strong> olarak <strong>GitHub Actions</strong> seç.
+                GitHub deposunda <strong>Settings → Pages</strong> bölümüne gidin
+                ve <strong>Source: GitHub Actions</strong> seçin.
               </div>
             </li>
             <li>
               <span>2</span>
               <div>
-                <strong>Settings → Secrets and variables → Actions → Variables</strong>{' '}
-                bölümüne <code>VITE_SUPABASE_URL</code> ve{' '}
-                <code>VITE_SUPABASE_ANON_KEY</code> ekle.
+                <code>main</code> dalına push yapın. Workflow testleri çalıştırır,
+                üretim derlemesini alır ve <code>dist/</code> klasörünü Pages’e
+                yükler.
               </div>
             </li>
             <li>
               <span>3</span>
               <div>
-                <code>main</code> dalına push yap. Workflow tamamlandığında site{' '}
-                <code>https://duperious.github.io/hukum-yolu/</code> adresinde
-                yayınlanır.
+                Site <code>https://KULLANICI.github.io/hukum-yolu/</code>{' '}
+                adresinde yayınlanır. Supabase anahtarı veya ek secret gerekmez.
               </div>
             </li>
           </ol>
@@ -229,64 +237,89 @@ export default function SetupPage() {
             <Github size={18} />
             <p>
               Proje <strong>HashRouter</strong> ve <code>base: './'</code> kullanır.
-              Böylece alt dizinde yayınlansa bile sayfa yenilemeleri 404 vermez.
-              PWA manifestindeki <code>start_url</code> ve <code>scope</code>{' '}
-              değerleri göreli tutulmuştur.
+              Böylece alt dizinde yayınlansa bile oda bağlantıları ve sayfa
+              yenilemeleri 404 vermez.
             </p>
           </div>
         </section>
 
         <section className="docs-section">
           <SectionHeading
-            eyebrow="06"
-            title="Test ve derleme"
-            description="Kod değişikliğinden sonra testleri ve üretim derlemesini çalıştır."
+            eyebrow="05"
+            title="Yerel geliştirme ve test"
+            description="Kod değişikliğinden sonra testleri ve üretim derlemesini çalıştırın."
           />
-          <CodeBlock
-            label="Terminal"
-            code={`npm test\nnpm run typecheck\nnpm run build\nnpm run preview`}
-          />
+          <CodeBlock label="Terminal" code={DEV_COMMAND} />
+          <CodeBlock label="Terminal" code={TEST_COMMAND} />
           <p>
             Testler oyun kurallarını, rol dağılımını, oy ağırlıklarını, üç ret
-            kuralını, geçişleri, kazanma koşullarını, tasfiyeyi, redaksiyonu ve
-            botları kapsar. Arayüz testleri bu sürümde yoktur; canlı Supabase
-            entegrasyonu bu geliştirme ortamında uçtan uca doğrulanamamıştır.
+            kuralını, geçişleri, kazanma koşullarını, tasfiyeyi, redaksiyonu,
+            botları ve oda sahibi yetkili oda akışını kapsar.
           </p>
         </section>
 
         <section className="docs-section">
           <SectionHeading
-            eyebrow="07"
-            title="Bilinen sınırlamalar"
-            description="Dürüst olalım: bu bir üretim sertleştirmesi değil, çalışan bir oyun uygulamasıdır."
+            eyebrow="06"
+            title="Dürüst sınırlamalar"
+            description="Bu bir üretim sertleştirmesi değil, çalışan bir sosyal oyun uygulamasıdır."
           />
           <ul className="docs-limitations">
             <li>
               <AlertTriangle size={16} />
-              Canlı Supabase bağlantısı ve Edge Function deploy’u bu ortamda
-              uçtan uca test edilmedi. Yerel test modu ve motor testleri çalışıyor.
+              Oda sahibinin sekmesi açık kalmalıdır. Sekme kapanırsa oda kapanır;
+              oyuncular yeniden bağlanamaz.
             </li>
             <li>
               <AlertTriangle size={16} />
-              Oda işlemlerinde iyimser sürüm kontrolü vardır. Oyuncu/bot ekleme
-              ve oyun durumu yazımı atomiktir; hazır durumu, profil güncelleme ve
-              oyuncu çıkarma gibi bazı lobi değişiklikleri ayrı işlemlerdir. Yoğun
-              eşzamanlı tıklamalarda istemci yenileme isteyebilir.
+              Roller sunucuda değil, oda sahibinin tarayıcısında tutulur. Oda
+              sahibi tarayıcı geliştirici araçlarıyla tüm rolleri görebilir. Bu
+              yüzden arkadaşlar arasında oynarken güvenilir bir oda sahibi seçin.
             </li>
             <li>
               <AlertTriangle size={16} />
-              Rate limiting, moderasyon, sohbet ve sesli iletişim yoktur.
+              WebRTC bağlantısı ağ koşullarına bağlıdır. Simetrik NAT, güvenlik
+              duvarı veya VPN bağlantıyı engelleyebilir; bu durumda farklı bir ağ
+              deneyin.
             </li>
             <li>
               <AlertTriangle size={16} />
-              Oyuncu kimliği bu cihazdaki localStorage sırrına bağlıdır. Tarayıcı
-              verisi silinirse aynı oyuncu kimliğiyle dönüş garanti değildir.
+              Sohbet, sesli iletişim, moderasyon, hesap sistemi ve kalıcı oda
+              geçmişi yoktur.
             </li>
             <li>
               <AlertTriangle size={16} />
-              Oyun sırasında bağlantısı kopan (sekmesini kapatan) insan oyuncunun
-              yerini bot almaz; sıra onda kalırsa oyun bekleyebilir. “Ayrıl” ile
-              ayrılan oyuncunun rolü ise bot tarafından devralınır.
+              Oda sahibi tarayıcısı arka planda uzun süre kalırsa mobil işletim
+              sistemleri sekmeyi askıya alabilir. Oyun sırasında oda sahibi
+              sekmesini ön planda tutmak en güvenlisidir.
+            </li>
+          </ul>
+        </section>
+
+        <section className="docs-section">
+          <SectionHeading
+            eyebrow="07"
+            title="Sorun giderme"
+            description="En sık görülen üç durum ve hızlı çözümleri."
+          />
+          <ul className="docs-limitations">
+            <li>
+              <Wifi size={16} />
+              <strong>“Oda bulunamadı”</strong> — Kodu kontrol edin ve oda
+              sahibinin sekmesinin açık olduğundan emin olun. Oda sahibi sekmeyi
+              yenilediyse birkaç saniye bekleyip tekrar deneyin.
+            </li>
+            <li>
+              <RefreshCw size={16} />
+              <strong>“Odaya bağlanılıyor”</strong> — Ağ bağlantısını kontrol edin.
+              Birkaç saniye sonra otomatik yeniden deneme başlar; yine olmazsa
+              sayfayı yenileyin.
+            </li>
+            <li>
+              <Terminal size={16} />
+              <strong>Oda sahibi oyunu kaybetti</strong> — Oda sahibi aynı
+              tarayıcıda <code>#/room/KOD</code> adresine dönerse oda durumu
+              depodan geri yüklenir. Tarayıcı verisi silindiyse oda kurtarılamaz.
             </li>
           </ul>
         </section>

@@ -1483,3 +1483,17 @@
 .guide-footer a:hover {
   text-decoration: underline;
 }
+
+.role-guide-card__mission {
+  padding: 8px 10px;
+  border-left: 2px solid var(--role-accent, var(--gold));
+  border-radius: 0 8px 8px 0;
+  background: var(--role-tint, rgba(148, 163, 184, 0.06));
+  color: var(--text-soft);
+  font-size: 10.5px;
+  line-height: 1.55;
+}
+
+.role-guide-card__mission strong {
+  color: var(--role-accent, var(--gold-bright));
+}

@@ -4,7 +4,6 @@ import {
   Home,
   LogIn,
   RefreshCw,
-  ShieldCheck,
   WifiOff,
 } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
@@ -17,7 +16,6 @@ import { Logo } from '../components/ui/Logo';
 import { Spinner } from '../components/ui/Spinner';
 import { useMultiplayerRoom } from '../hooks/useMultiplayerRoom';
 import { normalizeName, type Profile } from '../lib/profile';
-import { isSupabaseConfigured } from '../lib/supabase';
 import { loadSession } from '../lib/storage';
 import { normalizeRoomCode } from '../lib/validation';
 
@@ -88,30 +86,6 @@ export default function RoomPage() {
     });
     setEditOpen(false);
   };
-
-  if (!isSupabaseConfigured) {
-    return (
-      <StatusShell
-        eyebrow="Kurulum"
-        title="Çok oyunculu mod yapılandırılmadı"
-        description="Odaya bağlanmak için VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY ortam değişkenleri gerekli. Yerel test modu Supabase olmadan çalışır."
-        icon={<ShieldCheck size={28} />}
-        actions={
-          <>
-            <Link to="/setup" className="btn btn--primary btn--md">
-              <span className="btn__label">Kurulumu Gör</span>
-            </Link>
-            <Link to="/local" className="btn btn--outline btn--md">
-              <span className="btn__label">Yerel Test</span>
-            </Link>
-            <Link to="/" className="btn btn--ghost btn--md">
-              <span className="btn__label">Ana Sayfa</span>
-            </Link>
-          </>
-        }
-      />
-    );
-  }
 
   if (!validSession) {
     return (
@@ -190,7 +164,7 @@ export default function RoomPage() {
         title="Oda durumu alınamadı"
         description={
           room.error ??
-          'Sunucudan oda bilgisi alınamadı. Bağlantını kontrol edip yeniden dene.'
+          'Oda sahibinden oda bilgisi alınamadı. Bağlantını kontrol edip yeniden dene.'
         }
         icon={<AlertTriangle size={28} />}
         actions={

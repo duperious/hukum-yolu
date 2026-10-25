@@ -1,8 +1,7 @@
 /**
  * Hüküm Yolu — çekirdek oyun tipleri.
  *
- * Bu dosya hem tarayıcıda hem de Supabase Edge Function içinde çalışacak
- * şekilde bağımsız tutulur. UI bileşenleri bu tipleri doğrudan kullanmaz;
+ * Bu dosya tarayıcıda ve testlerde çalışacak şekilde bağımsız tutulur. UI bileşenleri bu tipleri doğrudan kullanmaz;
  * kullanıcıya gösterilen veri `redact.ts` içindeki görünümlerden gelir.
  */
 
@@ -308,6 +307,8 @@ export interface RoleInfo {
   team: Team;
   teamLabel: string;
   shortDescription: string;
+  /** Oyuncunun kendi ekranında öne çıkan kısa zafer görevi. */
+  mission: string;
   description: string;
   abilities: string[];
   investigation: InvestigationResult;

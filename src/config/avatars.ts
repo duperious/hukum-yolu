@@ -29,7 +29,7 @@ export interface AvatarDef {
 }
 
 /**
- * 16 profil avatarı. Kimlikler sunucuda yalnızca biçim olarak doğrulanır;
+ * 16 profil avatarı. Kimlikler istemcide yalnızca biçim olarak doğrulanır;
  * ikon eşlemesi tamamen istemci tarafındadır.
  */
 export const AVATARS: AvatarDef[] = [

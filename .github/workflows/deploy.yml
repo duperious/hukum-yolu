@@ -36,12 +36,6 @@ jobs:
 
       - name: Tip kontrolü ve üretim derlemesi
         run: npm run build
-        env:
-          # Bu değerler yoksa da derleme başarılı olur; uygulama yalnızca
-          # yerel bot modunu gösterir. Depo ayarlarında Actions variables
-          # altında tanımlayın.
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
 
       - name: Pages'i hazırla
         uses: actions/configure-pages@v5
