@@ -1,0 +1,94 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
+import sharp from 'sharp';
+
+const root = resolve(import.meta.dirname, '..');
+const publicDir = resolve(root, 'public');
+const iconDir = resolve(publicDir, 'icons');
+
+/**
+ * Marka amblemi: terazi + taç. Metin kullanılmaz; böylece ikon üretimi
+ * sistemdeki fontlara bağlı kalmaz. Maskable sürümde tüm tuval doldurulur
+ * ve amblem güvenli alanın içinde kalır.
+ */
+function emblemSvg({ maskable = false } = {}) {
+  const radius = maskable ? 0 : 112;
+  const scale = maskable ? 0.86 : 1;
+  const offset = (512 - 512 * scale) / 2;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="42%" cy="28%" r="86%">
+      <stop offset="0" stop-color="#172235"/>
+      <stop offset="0.55" stop-color="#0b111b"/>
+      <stop offset="1" stop-color="#05080d"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="55%">
+      <stop offset="0" stop-color="#c9a25b" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#c9a25b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f3e0b0"/>
+      <stop offset="0.5" stop-color="#c9a25b"/>
+      <stop offset="1" stop-color="#8a6d3b"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="${radius}" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="${radius}" fill="url(#glow)"/>
+  <g transform="translate(${offset} ${offset}) scale(${scale})">
+    <circle cx="256" cy="256" r="188" fill="none" stroke="#c9a25b" stroke-opacity="0.55" stroke-width="5"/>
+    <circle cx="256" cy="256" r="158" fill="none" stroke="#e7c987" stroke-opacity="0.18" stroke-width="2" stroke-dasharray="5 9"/>
+    <circle cx="256" cy="256" r="130" fill="#c9a25b" opacity="0.07" filter="url(#soft)"/>
+    <g stroke="url(#gold)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M256 160 V348"/>
+      <path d="M256 348 H214"/>
+      <path d="M256 348 H298"/>
+      <path d="M186 204 H326"/>
+      <path d="M186 204 L156 270"/>
+      <path d="M186 204 L216 270"/>
+      <path d="M326 204 L296 270"/>
+      <path d="M326 204 L356 270"/>
+      <path d="M126 270 Q186 318 246 270"/>
+      <path d="M266 270 Q326 318 386 270"/>
+    </g>
+    <g fill="url(#gold)">
+      <path d="M208 154 L226 116 L256 140 L286 116 L304 154 Z"/>
+      <circle cx="256" cy="154" r="7"/>
+    </g>
+    <circle cx="256" cy="204" r="12" fill="#0b111b" stroke="url(#gold)" stroke-width="7"/>
+  </g>
+</svg>`;
+}
+
+async function main() {
+  await mkdir(iconDir, { recursive: true });
+
+  const regular = emblemSvg();
+  const maskable = emblemSvg({ maskable: true });
+
+  await writeFile(resolve(publicDir, 'favicon.svg'), regular, 'utf8');
+
+  const targets = [
+    { name: 'icon-192.png', size: 192, svg: regular },
+    { name: 'icon-512.png', size: 512, svg: regular },
+    { name: 'icon-maskable-512.png', size: 512, svg: maskable },
+    { name: 'icon-180.png', size: 180, svg: regular },
+  ];
+
+  for (const target of targets) {
+    await sharp(Buffer.from(target.svg))
+      .resize(target.size, target.size)
+      .png({ compressionLevel: 9 })
+      .toFile(resolve(iconDir, target.name));
+    console.log(`✓ public/icons/${target.name}`);
+  }
+
+  console.log('✓ public/favicon.svg');
+}
+
+main().catch((error) => {
+  console.error('İkon üretimi başarısız:', error);
+  process.exitCode = 1;
+});

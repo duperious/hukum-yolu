@@ -1,0 +1,808 @@
+/* =========================================================
+   Duyarlı yerleşim
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .game-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .game-aside {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .game-aside .action-panel {
+    grid-column: 1 / -1;
+  }
+
+  .game-aside .game-log {
+    grid-column: 1 / -1;
+  }
+
+  .game-main {
+    margin-top: 2px;
+  }
+}
+
+@media (max-width: 980px) {
+  .home-hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+    padding-top: 38px;
+  }
+
+  .home-hero__art {
+    min-height: 300px;
+    order: -1;
+  }
+
+  .hero-seal {
+    width: min(280px, 68vw);
+  }
+
+  .home-features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-features .feature-card:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .home-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lobby-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lobby-code-card {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .local-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .local-aside {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .guide-tracks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --page-pad: clamp(14px, 4vw, 28px);
+  }
+
+  body {
+    font-size: 14.5px;
+  }
+
+  .site-nav {
+    padding-block: 12px;
+  }
+
+  .brand__tagline {
+    display: none;
+  }
+
+  .site-nav__links {
+    gap: 3px;
+  }
+
+  .nav-link {
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+
+  .home-hero {
+    padding-top: 30px;
+  }
+
+  .home-hero__title {
+    font-size: clamp(54px, 16vw, 86px);
+  }
+
+  .home-hero__art {
+    min-height: 250px;
+  }
+
+  .hero-seal {
+    width: min(240px, 62vw);
+  }
+
+  .hero-seal__crown {
+    width: 38px;
+    height: 38px;
+  }
+
+  .hero-seal__label {
+    font-size: 9px;
+  }
+
+  .home-actions .btn {
+    flex: 1 1 170px;
+  }
+
+  .home-features {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-features .feature-card:last-child {
+    grid-column: auto;
+  }
+
+  .home-steps__list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .home-cta__actions {
+    width: 100%;
+  }
+
+  .home-cta__actions .btn {
+    flex: 1 1 150px;
+  }
+
+  .setup-notice {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .setup-notice > .btn,
+  .setup-notice > .text-link {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .resume-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .resume-card__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .site-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .game-topbar {
+    padding-block: 8px;
+  }
+
+  .game-topbar__left,
+  .game-topbar__right {
+    gap: 5px;
+  }
+
+  .game-layout {
+    padding: 12px var(--page-pad) 40px;
+  }
+
+  .game-aside {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .game-aside .action-panel,
+  .game-aside .game-log {
+    grid-column: auto;
+  }
+
+  .game-tracks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .viewer-identity > span:last-child {
+    display: none;
+  }
+
+  .action-panel {
+    padding: 15px;
+  }
+
+  .action-panel__title {
+    font-size: 21px;
+  }
+
+  .action-panel__description {
+    font-size: 11.5px;
+  }
+
+  .government-panel {
+    padding: 14px;
+  }
+
+  .player-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .policy-track__steps {
+    grid-auto-columns: minmax(62px, 1fr);
+  }
+
+  .role-card {
+    padding: 18px;
+  }
+
+  .role-card__name {
+    font-size: 28px;
+  }
+
+  .role-card__icon {
+    width: 52px;
+    height: 52px;
+  }
+
+  .privacy-gate {
+    padding: 12px;
+  }
+
+  .privacy-gate__locked {
+    padding: 22px 18px;
+  }
+
+  .end-screen {
+    padding: 18px 14px;
+  }
+
+  .end-screen__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .end-screen__icon {
+    width: 70px;
+    height: 70px;
+  }
+
+  .lobby-main {
+    padding-top: 16px;
+  }
+
+  .lobby-code-card__code {
+    font-size: 30px;
+  }
+
+  .lobby-player-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lobby-info-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lobby-controls__main .btn {
+    flex: 1 1 180px;
+  }
+
+  .local-main,
+  .join-main,
+  .docs-main,
+  .guide-main {
+    padding-top: 24px;
+  }
+
+  .local-aside {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .local-hero h1,
+  .join-hero h1,
+  .docs-hero h1,
+  .guide-hero h1 {
+    font-size: clamp(31px, 9vw, 46px);
+  }
+
+  .join-card,
+  .local-form-card {
+    padding: 17px;
+  }
+
+  .session-notice {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .session-notice__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .join-card__footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .status-card {
+    margin-top: 7vh;
+    padding: 22px 18px;
+  }
+
+  .not-found {
+    margin-top: 9vh;
+  }
+
+  .docs-cta,
+  .guide-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .docs-cta__actions,
+  .guide-cta__actions {
+    width: 100%;
+  }
+
+  .docs-cta__actions .btn,
+  .guide-cta__actions .btn {
+    flex: 1 1 150px;
+  }
+
+  .modal-overlay {
+    align-items: end;
+    justify-items: stretch;
+    padding: 0;
+  }
+
+  .modal {
+    max-width: 100%;
+    max-height: 92dvh;
+    border-radius: 20px 20px 0 0;
+    border-bottom: 0;
+  }
+
+  .modal__header {
+    padding: 18px 18px 0;
+  }
+
+  .modal__title {
+    font-size: 21px;
+  }
+
+  .modal__body {
+    padding: 16px 18px;
+  }
+
+  .modal__footer {
+    padding: 12px 18px max(16px, env(safe-area-inset-bottom));
+  }
+
+  .toast-stack {
+    right: 10px;
+    left: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    width: auto;
+  }
+
+  .role-guide-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .phase-list__item {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-nav .nav-link {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    justify-content: center;
+    gap: 0;
+    font-size: 0;
+  }
+
+  .site-nav .nav-link svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .site-nav__links .btn--sm {
+    min-height: 32px;
+    padding: 7px 10px;
+    font-size: 10.5px;
+  }
+
+  .brand__title {
+    font-size: 12.5px;
+    letter-spacing: 0.09em;
+  }
+
+  .brand__mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .home-hero__title {
+    font-size: clamp(50px, 17vw, 74px);
+  }
+
+  .home-hero__subtitle {
+    font-size: 16px;
+  }
+
+  .home-hero__description {
+    font-size: 12.5px;
+  }
+
+  .home-actions {
+    flex-direction: column;
+  }
+
+  .home-actions .btn {
+    width: 100%;
+    flex: none;
+  }
+
+  .home-hero__meta {
+    font-size: 10.5px;
+  }
+
+  .home-features {
+    margin: 30px 0;
+  }
+
+  .home-steps {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .home-cta {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .game-topbar .brand__text {
+    display: none;
+  }
+
+  .game-topbar .brand--compact {
+    gap: 0;
+  }
+
+  .game-topbar .brand__mark {
+    width: 30px;
+    height: 30px;
+  }
+
+  .game-topbar__right .btn--sm {
+    min-height: 32px;
+    padding: 7px 9px;
+    font-size: 10.5px;
+  }
+
+  .room-code-pill {
+    padding: 5px 8px;
+  }
+
+  .room-code-pill__label {
+    display: none;
+  }
+
+  .room-code-pill strong {
+    font-size: 11px;
+  }
+
+  .connection-pill span {
+    display: none;
+  }
+
+  .connection-pill {
+    width: 28px;
+    height: 28px;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .action-panel__header {
+    flex-direction: column;
+  }
+
+  .role-peek-btn {
+    align-self: flex-start;
+  }
+
+  .government-panel__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .government-panel__arrow {
+    transform: rotate(90deg);
+    justify-self: center;
+  }
+
+  .player-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .policy-choice-grid,
+  .policy-choice-grid--peek {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .peek-card-wrap__order {
+    text-align: left;
+  }
+
+  .notr-choices {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .vote-choice small {
+    font-size: 9px;
+  }
+
+  .confirm-bar {
+    align-items: stretch;
+  }
+
+  .confirm-bar .btn {
+    width: 100%;
+  }
+
+  .role-card__header {
+    gap: 10px;
+  }
+
+  .role-card__name {
+    font-size: 25px;
+  }
+
+  .role-card__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .role-card__icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .role-card__meta .chip {
+    font-size: 9.5px;
+  }
+
+  .privacy-gate__locked {
+    border-radius: 18px;
+  }
+
+  .privacy-gate__actions .btn {
+    width: 100%;
+  }
+
+  .end-screen__hero h1 {
+    font-size: 30px;
+  }
+
+  .end-screen__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .end-screen__actions .btn {
+    width: 100%;
+  }
+
+  .end-screen__wait {
+    text-align: center;
+  }
+
+  .lobby-player-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lobby-controls__main {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lobby-controls__main .btn {
+    width: 100%;
+  }
+
+  .lobby-code-card__code {
+    font-size: 27px;
+  }
+
+  .local-hero__chips,
+  .guide-hero__meta {
+    gap: 5px;
+  }
+
+  .guide-hero > p:not(.eyebrow) {
+    font-size: 12.5px;
+  }
+
+  .guide-section {
+    margin: 30px 0;
+  }
+
+  .section-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .section-heading__title {
+    font-size: 25px;
+  }
+
+  .section-heading__description {
+    font-size: 12px;
+  }
+
+  .docs-steps > li {
+    padding: 10px;
+  }
+
+  .docs-note,
+  .docs-warning {
+    padding: 10px 11px;
+  }
+
+  .docs-cta__actions,
+  .guide-cta__actions {
+    flex-direction: column;
+  }
+
+  .docs-cta__actions .btn,
+  .guide-cta__actions .btn {
+    width: 100%;
+    flex: none;
+  }
+
+  .join-card .input--code-large {
+    font-size: 25px;
+  }
+
+  .profile-preview {
+    align-items: flex-start;
+  }
+
+  .avatar-grid {
+    gap: 5px;
+  }
+
+  .avatar-option {
+    border-radius: 8px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+  }
+
+  .modal-actions__cancel {
+    margin-right: 0;
+  }
+
+  .status-card {
+    margin-top: 5vh;
+  }
+
+  .status-card__actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .status-card__actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .brand__title {
+    font-size: 11px;
+  }
+
+  .home-hero__title {
+    font-size: 48px;
+  }
+
+  .hero-seal {
+    width: 210px;
+  }
+
+  .game-topbar__left {
+    gap: 3px;
+  }
+
+  .game-topbar__right {
+    gap: 3px;
+  }
+
+  .viewer-identity .avatar {
+    display: none;
+  }
+
+  .action-panel {
+    padding: 13px;
+  }
+
+  .policy-track {
+    padding: 11px;
+  }
+
+  .policy-track__steps {
+    grid-auto-columns: minmax(56px, 1fr);
+  }
+
+  .policy-step__label {
+    font-size: 7.5px;
+  }
+
+  .role-card {
+    padding: 15px;
+  }
+
+  .role-card__name {
+    font-size: 22px;
+  }
+
+  .privacy-gate {
+    padding: 8px;
+  }
+
+  .privacy-gate__locked {
+    padding: 18px 14px;
+  }
+
+  .lobby-code-card {
+    padding: 14px;
+  }
+
+  .lobby-code-card__code {
+    font-size: 24px;
+  }
+
+  .local-form-card,
+  .join-card {
+    padding: 14px;
+  }
+
+  .avatar-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .avatar-option svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

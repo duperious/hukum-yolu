@@ -1,0 +1,1922 @@
+/* =========================================================
+   Oyun ekranı
+   ========================================================= */
+
+.game-screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background:
+    radial-gradient(900px 500px at 8% 0%, rgba(33, 67, 105, 0.2), transparent 60%),
+    radial-gradient(800px 460px at 92% 4%, rgba(110, 49, 40, 0.12), transparent 58%);
+}
+
+.game-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px var(--nav-pad);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(7, 10, 16, 0.86);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.game-topbar__left,
+.game-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.game-topbar__right {
+  justify-content: flex-end;
+}
+
+.room-code-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid rgba(201, 162, 91, 0.3);
+  border-radius: 999px;
+  background: rgba(201, 162, 91, 0.08);
+  color: var(--gold-bright);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.room-code-pill:hover {
+  background: rgba(201, 162, 91, 0.14);
+  border-color: rgba(201, 162, 91, 0.48);
+}
+
+.room-code-pill strong {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+}
+
+.room-code-pill__label {
+  color: var(--gold-deep);
+  font-family: var(--font-body);
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.viewer-identity {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: var(--text-soft);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.viewer-identity > span:last-child {
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.game-topbar__leave:hover {
+  background: rgba(192, 71, 79, 0.12);
+  color: var(--red-bright);
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: 390px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  width: 100%;
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 18px var(--page-pad) 54px;
+}
+
+.game-aside,
+.game-main {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.game-tracks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* ---------- eylem paneli ---------- */
+
+.action-panel {
+  padding: 18px;
+}
+
+.action-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.action-panel__phase-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.phase-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border: 1px solid rgba(74, 163, 223, 0.3);
+  border-radius: 999px;
+  background: rgba(74, 163, 223, 0.1);
+  color: var(--blue-bright);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.action-panel__round {
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.action-panel__title {
+  margin-top: 10px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.action-panel__description {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.role-peek-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  padding: 7px 9px;
+  border: 1px solid var(--panel-border);
+  border-radius: 9px;
+  background: rgba(148, 163, 184, 0.05);
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.role-peek-btn:hover {
+  border-color: rgba(201, 162, 91, 0.4);
+  color: var(--gold-bright);
+}
+
+.turn-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 11px;
+  padding: 5px 9px;
+  border: 1px solid rgba(201, 162, 91, 0.32);
+  border-radius: 999px;
+  background: rgba(201, 162, 91, 0.1);
+  color: var(--gold-bright);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.action-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 11px;
+  padding: 10px 11px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: rgba(148, 163, 184, 0.05);
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.action-note svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.action-note--dead {
+  border-color: rgba(192, 71, 79, 0.28);
+  background: rgba(192, 71, 79, 0.08);
+  color: #e6aeb3;
+}
+
+.action-note--success {
+  border-color: rgba(75, 191, 135, 0.26);
+  background: rgba(75, 191, 135, 0.07);
+  color: #a9e5c7;
+}
+
+.action-panel .form-alert {
+  margin-top: 11px;
+}
+
+.action-panel__body {
+  margin-top: 15px;
+}
+
+.action-block {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.action-block > h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.action-block > p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.action-illustration {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 1px solid rgba(74, 163, 223, 0.26);
+  border-radius: 15px;
+  background: rgba(74, 163, 223, 0.09);
+  color: var(--blue-bright);
+}
+
+.waiting-illustration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 22px 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.2);
+  border-radius: 13px;
+  background: rgba(4, 8, 14, 0.32);
+  color: var(--muted);
+  font-size: 11.5px;
+  text-align: center;
+}
+
+.waiting-illustration svg {
+  color: var(--dim);
+}
+
+.government-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px;
+  border: 1px solid var(--panel-border);
+  border-radius: 13px;
+  background: rgba(4, 8, 14, 0.35);
+}
+
+.government-card__seat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.government-card__seat > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.government-card__seat span {
+  color: var(--dim);
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.government-card__seat strong {
+  overflow: hidden;
+  color: var(--text-soft);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.government-card__arrow {
+  flex-shrink: 0;
+  color: var(--gold);
+  font-size: 15px;
+}
+
+.vote-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.vote-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 13px 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 13px;
+  background: rgba(4, 8, 14, 0.4);
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.vote-choice:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.vote-choice span {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.vote-choice small {
+  color: var(--dim);
+  font-size: 9.5px;
+}
+
+.vote-choice--yes:hover:not(:disabled),
+.vote-choice--yes.vote-choice--selected {
+  border-color: rgba(75, 191, 135, 0.55);
+  background: rgba(75, 191, 135, 0.1);
+  color: #a9e5c7;
+}
+
+.vote-choice--no:hover:not(:disabled),
+.vote-choice--no.vote-choice--selected {
+  border-color: rgba(192, 71, 79, 0.55);
+  background: rgba(192, 71, 79, 0.1);
+  color: #f0b7bc;
+}
+
+.vote-choice--selected {
+  box-shadow: 0 0 0 2px rgba(201, 162, 91, 0.18);
+}
+
+.vote-choice:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.confirm-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 2px;
+}
+
+.confirm-bar__hint {
+  flex: 1;
+  min-width: 130px;
+  color: var(--dim);
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.policy-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(138px, 1fr));
+  gap: 9px;
+}
+
+.policy-choice-grid--peek {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.peek-card-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.peek-card-wrap__order {
+  color: var(--dim);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.notr-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.notr-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 14px;
+  border: 1px solid var(--panel-border);
+  border-radius: 13px;
+  background: rgba(4, 8, 14, 0.4);
+  color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.notr-choice:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.notr-choice strong {
+  font-size: 13px;
+}
+
+.notr-choice span {
+  color: var(--dim);
+  font-size: 9.5px;
+  line-height: 1.4;
+}
+
+.notr-choice--blue:hover:not(:disabled),
+.notr-choice--blue.notr-choice--selected {
+  border-color: rgba(74, 163, 223, 0.55);
+  background: rgba(74, 163, 223, 0.1);
+  color: var(--blue-bright);
+}
+
+.notr-choice--red:hover:not(:disabled),
+.notr-choice--red.notr-choice--selected {
+  border-color: rgba(192, 71, 79, 0.55);
+  background: rgba(192, 71, 79, 0.1);
+  color: var(--red-bright);
+}
+
+.notr-choice--selected {
+  box-shadow: 0 0 0 2px rgba(201, 162, 91, 0.16);
+}
+
+.notr-choice:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.target-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.target-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: rgba(4, 8, 14, 0.35);
+  color: var(--text-soft);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.target-option:hover:not(:disabled) {
+  border-color: rgba(74, 163, 223, 0.4);
+  background: rgba(74, 163, 223, 0.06);
+}
+
+.target-option--selected {
+  border-color: rgba(201, 162, 91, 0.6);
+  background: rgba(201, 162, 91, 0.08);
+  box-shadow: 0 0 0 2px rgba(201, 162, 91, 0.12);
+}
+
+.target-option--danger:hover:not(:disabled) {
+  border-color: rgba(192, 71, 79, 0.5);
+  background: rgba(192, 71, 79, 0.07);
+}
+
+.target-option .muted {
+  margin-left: auto;
+  font-size: 9.5px;
+}
+
+.target-option:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---------- reform kartı ---------- */
+
+.policy-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 13px;
+  background: rgba(4, 8, 14, 0.4);
+  color: var(--text-soft);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.policy-card:hover:not(.policy-card--disabled) {
+  transform: translateY(-1px);
+}
+
+.policy-card--demokratik {
+  border-color: rgba(74, 163, 223, 0.26);
+  background:
+    radial-gradient(120px 80px at 0% 0%, rgba(74, 163, 223, 0.14), transparent 70%),
+    rgba(6, 12, 20, 0.55);
+}
+
+.policy-card--otokrat {
+  border-color: rgba(192, 71, 79, 0.28);
+  background:
+    radial-gradient(120px 80px at 0% 0%, rgba(192, 71, 79, 0.14), transparent 70%),
+    rgba(6, 12, 20, 0.55);
+}
+
+.policy-card--selected {
+  border-color: rgba(201, 162, 91, 0.65);
+  box-shadow:
+    0 0 0 2px rgba(201, 162, 91, 0.18),
+    0 10px 24px -16px rgba(0, 0, 0, 0.9);
+}
+
+.policy-card--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.policy-card__icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(148, 163, 184, 0.06);
+}
+
+.policy-card--demokratik .policy-card__icon {
+  border-color: rgba(74, 163, 223, 0.3);
+  background: rgba(74, 163, 223, 0.1);
+  color: var(--blue-bright);
+}
+
+.policy-card--otokrat .policy-card__icon {
+  border-color: rgba(192, 71, 79, 0.3);
+  background: rgba(192, 71, 79, 0.1);
+  color: var(--red-bright);
+}
+
+.policy-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.policy-card__title {
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.policy-card__subtitle {
+  color: var(--dim);
+  font-size: 9.5px;
+  line-height: 1.35;
+}
+
+.policy-card__check {
+  margin-left: auto;
+  color: var(--gold-bright);
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.policy-card--sm {
+  gap: 7px;
+  padding: 9px;
+  border-radius: 10px;
+}
+
+.policy-card--sm .policy-card__icon {
+  width: 29px;
+  height: 29px;
+  border-radius: 8px;
+}
+
+.policy-card--sm .policy-card__title {
+  font-size: 10.5px;
+}
+
+.policy-card--sm .policy-card__subtitle {
+  display: none;
+}
+
+.policy-card--lg {
+  padding: 16px;
+}
+
+.policy-card--lg .policy-card__icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+}
+
+.policy-card--lg .policy-card__title {
+  font-size: 14px;
+}
+
+/* ---------- reform çizelgesi ---------- */
+
+.policy-track {
+  padding: 14px;
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  background: var(--panel-bg);
+  box-shadow: var(--shadow-soft);
+}
+
+.policy-track__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.policy-track__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.policy-track__title h3 {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  line-height: 1.25;
+}
+
+.policy-track__icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.policy-track--demokratik .policy-track__icon {
+  border-color: rgba(74, 163, 223, 0.3);
+  background: rgba(74, 163, 223, 0.1);
+  color: var(--blue-bright);
+}
+
+.policy-track--otokrat .policy-track__icon {
+  border-color: rgba(192, 71, 79, 0.3);
+  background: rgba(192, 71, 79, 0.1);
+  color: var(--red-bright);
+}
+
+.policy-track__count {
+  flex-shrink: 0;
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.policy-track__steps {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(56px, 1fr);
+  gap: 5px;
+  margin-top: 10px;
+  padding-bottom: 2px;
+  overflow-x: auto;
+}
+
+.policy-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 3px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 8px;
+  background: rgba(4, 8, 14, 0.35);
+  color: var(--dim);
+  text-align: center;
+}
+
+.policy-step__num {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.policy-step__label {
+  font-size: 8px;
+  line-height: 1.2;
+}
+
+.policy-track--demokratik .policy-step--filled {
+  border-color: rgba(74, 163, 223, 0.42);
+  background: rgba(74, 163, 223, 0.16);
+  color: #bfe3fb;
+}
+
+.policy-track--otokrat .policy-step--filled {
+  border-color: rgba(192, 71, 79, 0.42);
+  background: rgba(192, 71, 79, 0.16);
+  color: #f1c2c6;
+}
+
+.policy-step--current {
+  border-color: rgba(201, 162, 91, 0.45);
+  box-shadow: inset 0 0 0 1px rgba(201, 162, 91, 0.12);
+  color: var(--gold-bright);
+}
+
+.policy-step--win {
+  border-style: dashed;
+}
+
+.policy-step--win .policy-step__num {
+  color: var(--gold);
+}
+
+.policy-track__hint {
+  margin-top: 8px;
+  color: var(--dim);
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+/* ---------- hükümet paneli ---------- */
+
+.government-panel {
+  padding: 16px 18px;
+}
+
+.government-panel__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.government-seat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.government-seat__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--dim);
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.government-seat__person {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.government-seat__person > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.government-seat__person strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.government-seat__person span {
+  color: var(--dim);
+  font-size: 9.5px;
+}
+
+.government-panel__arrow {
+  color: var(--gold-deep);
+}
+
+.government-panel__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(148, 163, 184, 0.09);
+}
+
+.failed-votes {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 9.5px;
+}
+
+.failed-votes__label {
+  font-weight: 700;
+}
+
+.failed-votes__dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.failed-votes__dot {
+  width: 7px;
+  height: 7px;
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  border-radius: 50%;
+  background: transparent;
+}
+
+.failed-votes__dot--filled {
+  border-color: rgba(224, 106, 114, 0.7);
+  background: var(--red-bright);
+}
+
+.failed-votes--danger {
+  color: var(--red-bright);
+}
+
+.failed-votes strong {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+}
+
+.result-badge {
+  padding: 3px 7px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.result-badge--accept {
+  border-color: rgba(75, 191, 135, 0.28);
+  background: rgba(75, 191, 135, 0.08);
+  color: #a9e5c7;
+}
+
+.result-badge--reject {
+  border-color: rgba(192, 71, 79, 0.28);
+  background: rgba(192, 71, 79, 0.08);
+  color: #f0b7bc;
+}
+
+.government-panel__note {
+  margin-top: 8px;
+  color: var(--dim);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.government-panel__note strong {
+  color: var(--muted);
+}
+
+/* ---------- oyuncular ---------- */
+
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 8px;
+}
+
+.player-tile {
+  padding: 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: rgba(4, 8, 14, 0.32);
+  transition:
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    opacity 0.16s ease;
+}
+
+.player-tile--viewer {
+  border-color: rgba(154, 123, 214, 0.42);
+  background: rgba(154, 123, 214, 0.05);
+}
+
+.player-tile--dead {
+  opacity: 0.52;
+}
+
+.player-tile--winner {
+  border-color: rgba(201, 162, 91, 0.45);
+  box-shadow: 0 0 0 1px rgba(201, 162, 91, 0.12);
+}
+
+.player-tile__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.player-tile__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.player-tile__name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-soft);
+  font-size: 11.5px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-tile__sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--dim);
+  font-size: 9px;
+}
+
+.player-tile__winner {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--gold-bright);
+}
+
+.player-tile__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 7px;
+}
+
+.you-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 5px;
+  border: 1px solid rgba(201, 162, 91, 0.35);
+  border-radius: 999px;
+  background: rgba(201, 162, 91, 0.12);
+  color: var(--gold-bright);
+  font-size: 7.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.mini-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 5px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
+.mini-badge--gold {
+  border-color: rgba(201, 162, 91, 0.3);
+  background: rgba(201, 162, 91, 0.1);
+  color: var(--gold-bright);
+}
+
+.mini-badge--blue {
+  border-color: rgba(74, 163, 223, 0.3);
+  background: rgba(74, 163, 223, 0.1);
+  color: var(--blue-bright);
+}
+
+.mini-badge--red {
+  border-color: rgba(192, 71, 79, 0.3);
+  background: rgba(192, 71, 79, 0.1);
+  color: var(--red-bright);
+}
+
+.mini-badge--violet {
+  border-color: rgba(154, 123, 214, 0.3);
+  background: rgba(154, 123, 214, 0.1);
+  color: #c3aef0;
+}
+
+.mini-badge--dead {
+  border-color: rgba(148, 163, 184, 0.2);
+  background: rgba(148, 163, 184, 0.06);
+  color: var(--dim);
+}
+
+/* ---------- oyun günlüğü ---------- */
+
+.game-log {
+  padding: 15px;
+}
+
+.game-log__scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.log-entry {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: start;
+  gap: 6px;
+  padding: 6px 7px;
+  border-left: 2px solid transparent;
+  border-radius: 7px;
+  background: rgba(4, 8, 14, 0.26);
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.log-entry__icon {
+  display: grid;
+  place-items: center;
+  color: var(--dim);
+}
+
+.log-entry__round {
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+.log-entry__text {
+  min-width: 0;
+  word-break: break-word;
+}
+
+.log-entry--vote {
+  border-left-color: rgba(74, 163, 223, 0.5);
+}
+
+.log-entry--vote .log-entry__icon {
+  color: var(--blue);
+}
+
+.log-entry--policy {
+  border-left-color: rgba(201, 162, 91, 0.5);
+}
+
+.log-entry--policy .log-entry__icon {
+  color: var(--gold);
+}
+
+.log-entry--death {
+  border-left-color: rgba(192, 71, 79, 0.6);
+}
+
+.log-entry--death .log-entry__icon {
+  color: var(--red-bright);
+}
+
+.log-entry--win {
+  border-left-color: rgba(201, 162, 91, 0.7);
+  background: rgba(201, 162, 91, 0.06);
+  color: var(--gold-bright);
+}
+
+.log-entry--win .log-entry__icon {
+  color: var(--gold-bright);
+}
+
+.log-entry--power,
+.log-entry--transition {
+  border-left-color: rgba(154, 123, 214, 0.5);
+}
+
+.log-entry--power .log-entry__icon,
+.log-entry--transition .log-entry__icon {
+  color: var(--violet);
+}
+
+.log-entry--bot {
+  opacity: 0.75;
+}
+
+.log-entry--government .log-entry__icon {
+  color: var(--muted);
+}
+
+/* ---------- özel yetkiler ---------- */
+
+.power-panel {
+  padding: 16px;
+}
+
+.power-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin-bottom: 10px;
+  padding: 9px 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 9px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.power-alert--red {
+  border-color: rgba(192, 71, 79, 0.28);
+  background: rgba(192, 71, 79, 0.08);
+  color: #e6aeb3;
+}
+
+.power-alert svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.power-block {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 11px;
+  border: 1px solid var(--panel-border);
+  border-radius: 11px;
+  background: rgba(4, 8, 14, 0.28);
+}
+
+.power-block + .power-block {
+  margin-top: 9px;
+}
+
+.power-block__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.power-block__icon {
+  display: grid;
+  place-items: center;
+  width: 31px;
+  height: 31px;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+  border-radius: 9px;
+}
+
+.power-block__icon--blue {
+  border-color: rgba(74, 163, 223, 0.28);
+  background: rgba(74, 163, 223, 0.09);
+  color: var(--blue-bright);
+}
+
+.power-block__icon--red {
+  border-color: rgba(192, 71, 79, 0.28);
+  background: rgba(192, 71, 79, 0.09);
+  color: var(--red-bright);
+}
+
+.power-block__header h4 {
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+.power-block__header p {
+  margin-top: 1px;
+  color: var(--dim);
+  font-size: 9.5px;
+  line-height: 1.45;
+}
+
+.power-block__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.power-note {
+  color: var(--muted);
+  font-size: 10.5px;
+}
+
+.power-note strong {
+  color: var(--text-soft);
+}
+
+.investigation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.investigation-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 7px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 10px;
+}
+
+.investigation-list__item--iyi {
+  border-color: rgba(74, 163, 223, 0.18);
+  background: rgba(74, 163, 223, 0.06);
+}
+
+.investigation-list__item--kotu {
+  border-color: rgba(192, 71, 79, 0.2);
+  background: rgba(192, 71, 79, 0.06);
+}
+
+.investigation-list__item strong {
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.investigation-list__item--iyi strong {
+  color: var(--blue-bright);
+}
+
+.investigation-list__item--kotu strong {
+  color: var(--red-bright);
+}
+
+/* ---------- rol kartı ---------- */
+
+.role-card {
+  position: relative;
+  overflow: hidden;
+  padding: 22px;
+  border: 1px solid var(--role-border, rgba(148, 163, 184, 0.24));
+  border-radius: 20px;
+  background:
+    radial-gradient(420px 220px at 100% 0%, var(--role-tint, rgba(148, 163, 184, 0.08)), transparent 65%),
+    linear-gradient(165deg, #121b29 0%, #080c13 80%);
+  box-shadow: var(--shadow);
+}
+
+.role-card--blue {
+  --role-accent: var(--blue-bright);
+  --role-tint: rgba(74, 163, 223, 0.16);
+  --role-border: rgba(74, 163, 223, 0.32);
+}
+
+.role-card--red {
+  --role-accent: var(--red-bright);
+  --role-tint: rgba(192, 71, 79, 0.16);
+  --role-border: rgba(192, 71, 79, 0.34);
+}
+
+.role-card--gold {
+  --role-accent: var(--gold-bright);
+  --role-tint: rgba(201, 162, 91, 0.16);
+  --role-border: rgba(201, 162, 91, 0.36);
+}
+
+.role-card--violet {
+  --role-accent: #c3aef0;
+  --role-tint: rgba(154, 123, 214, 0.16);
+  --role-border: rgba(154, 123, 214, 0.34);
+}
+
+.role-card__watermark {
+  position: absolute;
+  top: -34px;
+  right: -30px;
+  z-index: 0;
+  color: var(--role-accent);
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+.role-card__header,
+.role-card__description,
+.role-card__meta,
+.role-card__section,
+.role-card__footer {
+  position: relative;
+  z-index: 1;
+}
+
+.role-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.role-card__name {
+  margin-top: 5px;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4.4vw, 36px);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--text);
+}
+
+.role-card__team {
+  margin-top: 4px;
+  color: var(--role-accent);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.role-card__icon {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  flex-shrink: 0;
+  border: 1px solid var(--role-border);
+  border-radius: 16px;
+  background: var(--role-tint);
+  color: var(--role-accent);
+}
+
+.role-card__description {
+  margin-top: 14px;
+  color: var(--text-soft);
+  font-size: 12.5px;
+  line-height: 1.65;
+}
+
+.role-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 12px;
+}
+
+.role-card__section {
+  margin-top: 16px;
+}
+
+.role-card__section h3 {
+  margin-bottom: 7px;
+  color: var(--role-accent);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.role-card__list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding-left: 16px;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+.role-card__list li::marker {
+  color: var(--role-accent);
+}
+
+.known-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.known-list__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 7px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 8px;
+  background: rgba(4, 8, 14, 0.28);
+}
+
+.known-list__item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.known-list__item strong {
+  color: var(--text-soft);
+  font-size: 11px;
+}
+
+.known-list__item span {
+  color: var(--dim);
+  font-size: 9px;
+}
+
+.known-list__dead {
+  margin-left: auto;
+  color: var(--red-bright) !important;
+  font-size: 8.5px !important;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.status-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.status-note {
+  padding: 8px 10px;
+  border-left: 3px solid var(--panel-border-strong);
+  border-radius: 0 8px 8px 0;
+  background: rgba(4, 8, 14, 0.3);
+}
+
+.status-note strong {
+  display: block;
+  color: var(--text-soft);
+  font-size: 10.5px;
+}
+
+.status-note p {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.status-note--gold {
+  border-left-color: var(--gold);
+}
+
+.status-note--blue {
+  border-left-color: var(--blue);
+}
+
+.status-note--red {
+  border-left-color: var(--red-bright);
+}
+
+.status-note--violet {
+  border-left-color: var(--violet);
+}
+
+.role-card__footer {
+  margin-top: 18px;
+  padding-top: 13px;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.role-card__privacy {
+  color: var(--dim);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.role-card__footer .btn {
+  margin-top: 11px;
+}
+
+/* ---------- gizli rol kapısı ---------- */
+
+.privacy-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  padding: 20px;
+  overflow-y: auto;
+  background:
+    radial-gradient(700px 400px at 50% 0%, rgba(33, 67, 105, 0.22), transparent 60%),
+    rgba(3, 6, 10, 0.93);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.privacy-gate__inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 700px;
+  min-height: 100%;
+  margin: 0 auto;
+}
+
+.privacy-gate__locked {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 30px;
+  border: 1px solid var(--panel-border-strong);
+  border-radius: 22px;
+  background:
+    radial-gradient(500px 240px at 50% 0%, rgba(201, 162, 91, 0.1), transparent 65%),
+    linear-gradient(165deg, #111a29, #080c13);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.privacy-gate__icon {
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  margin: 0 auto 14px;
+  border: 1px solid rgba(201, 162, 91, 0.35);
+  border-radius: 50%;
+  background: rgba(201, 162, 91, 0.09);
+  color: var(--gold-bright);
+}
+
+.privacy-gate__locked h2 {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: clamp(25px, 4.6vw, 33px);
+  line-height: 1.15;
+}
+
+.privacy-gate__locked > p:not(.eyebrow) {
+  max-width: 38ch;
+  margin: 10px auto 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.privacy-gate__actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.privacy-gate__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.privacy-gate__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--dim);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.privacy-gate__revealed {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.privacy-gate__revealed > .btn {
+  align-self: center;
+  min-width: 190px;
+}
+
+/* ---------- oyun sonu ---------- */
+
+.end-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  padding: 24px;
+  overflow-y: auto;
+  background:
+    radial-gradient(800px 420px at 50% 0%, var(--end-tint, rgba(74, 163, 223, 0.16)), transparent 62%),
+    rgba(4, 7, 11, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.end-screen--blue {
+  --end-accent: var(--blue-bright);
+  --end-tint: rgba(74, 163, 223, 0.18);
+}
+
+.end-screen--red {
+  --end-accent: var(--red-bright);
+  --end-tint: rgba(192, 71, 79, 0.18);
+}
+
+.end-screen--violet {
+  --end-accent: #c3aef0;
+  --end-tint: rgba(154, 123, 214, 0.18);
+}
+
+.end-screen__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+  max-width: 940px;
+  margin: 0 auto;
+}
+
+.end-screen__hero {
+  text-align: center;
+}
+
+.end-screen__icon {
+  display: grid;
+  place-items: center;
+  width: 86px;
+  height: 86px;
+  margin: 0 auto 16px;
+  border: 1px solid var(--end-accent, var(--gold));
+  border-radius: 50%;
+  background: var(--end-tint, rgba(201, 162, 91, 0.12));
+  color: var(--end-accent, var(--gold-bright));
+  box-shadow: 0 0 40px -8px var(--end-tint, rgba(201, 162, 91, 0.3));
+}
+
+.end-screen__hero h1 {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: clamp(31px, 5.8vw, 54px);
+  line-height: 1.05;
+  color: var(--text);
+}
+
+.end-screen__subtitle {
+  margin-top: 7px;
+  color: var(--end-accent, var(--gold-bright));
+  font-family: var(--font-display);
+  font-size: clamp(15px, 2.2vw, 19px);
+}
+
+.end-screen__reason {
+  max-width: 62ch;
+  margin: 8px auto 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+.outcome-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 14px;
+  padding: 5px 11px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.outcome-badge--win {
+  border-color: rgba(201, 162, 91, 0.35);
+  background: rgba(201, 162, 91, 0.1);
+  color: var(--gold-bright);
+}
+
+.outcome-badge--lose {
+  border-color: rgba(148, 163, 184, 0.2);
+  background: rgba(148, 163, 184, 0.06);
+  color: var(--muted);
+}
+
+.outcome-badge span {
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.end-screen__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.end-screen__section {
+  padding: 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  background: rgba(9, 14, 22, 0.72);
+}
+
+.end-screen__section h2 {
+  margin-bottom: 10px;
+  color: var(--dim);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.winner-list,
+.reveal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.winner-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 7px;
+  border-radius: 7px;
+  background: rgba(201, 162, 91, 0.06);
+  color: var(--text-soft);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.winner-list small {
+  margin-left: auto;
+  color: var(--red-bright);
+  font-size: 8.5px;
+  text-transform: uppercase;
+}
+
+.reveal-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 7px;
+  border-left: 2px solid transparent;
+  border-radius: 0 7px 7px 0;
+  background: rgba(4, 8, 14, 0.3);
+}
+
+.reveal-list li > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.reveal-list strong {
+  color: var(--text-soft);
+  font-size: 11px;
+}
+
+.reveal-list span {
+  color: var(--dim);
+  font-size: 9px;
+}
+
+.reveal-list__item--blue {
+  border-left-color: var(--blue);
+}
+
+.reveal-list__item--red {
+  border-left-color: var(--red-bright);
+}
+
+.reveal-list__item--gold {
+  border-left-color: var(--gold);
+}
+
+.reveal-list__item--violet {
+  border-left-color: var(--violet);
+}
+
+.reveal-list__crown {
+  margin-left: auto;
+  color: var(--gold-bright);
+}
+
+.end-screen__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.end-screen__wait {
+  color: var(--muted);
+  font-size: 11.5px;
+}

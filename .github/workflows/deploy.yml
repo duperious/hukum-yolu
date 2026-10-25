@@ -1,0 +1,67 @@
+name: GitHub Pages'e dağıt
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Test et ve derle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Depoyu al
+        uses: actions/checkout@v4
+
+      - name: Node.js kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Bağımlılıkları kur
+        run: npm ci
+
+      - name: Testleri çalıştır
+        run: npm test
+
+      - name: Tip kontrolü ve üretim derlemesi
+        run: npm run build
+        env:
+          # Bu değerler yoksa da derleme başarılı olur; uygulama yalnızca
+          # yerel bot modunu gösterir. Depo ayarlarında Actions variables
+          # altında tanımlayın.
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+
+      - name: Pages'i hazırla
+        uses: actions/configure-pages@v5
+        with:
+          # Pages daha önce açılmamışsa ilk çalıştırmada açar.
+          enablement: true
+
+      - name: Derleme çıktısını yükle
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Yayınla
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: GitHub Pages'e dağıt
+        id: deployment
+        uses: actions/deploy-pages@v4

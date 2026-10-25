@@ -1,0 +1,6 @@
+/* Hüküm Yolu — stil giriş noktası */
+@import './base.css';
+@import './home.css';
+@import './game.css';
+@import './pages.css';
+@import './responsive.css';
