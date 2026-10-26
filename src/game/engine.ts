@@ -631,7 +631,14 @@ function resolveVote(state: GameState, rng: () => number): void {
     presidentId: state.presidentId ?? '',
     chancellorId: state.chancellorId ?? '',
   };
-  addLog(state, 'vote', accepted ? 'Hükümet kabul edildi.' : 'Hükümet reddedildi.');
+  const chancellorName = getPlayer(state, state.chancellorId ?? '')?.name ?? 'Bilinmeyen';
+  addLog(
+    state,
+    'vote',
+    accepted
+      ? `${chancellorName} hükümeti kabul edildi. Oylar kullanıldı — Evet: ${yes}, Hayır: ${no}.`
+      : `${chancellorName} hükümeti reddedildi. Oylar kullanıldı — Evet: ${yes}, Hayır: ${no}.`,
+  );
   if (state.pendingBlock) state.pendingBlock = null;
   maybeBotSpeakAfterEvent(state, rng);
 
@@ -745,7 +752,14 @@ function presidentDiscardMut(
   state.legislative.chancellorCards = remaining;
   state.legislative.presidentCards = [];
   state.phase = 'chancellorEnact';
-  addLog(state, 'government', 'Başkan bir reform kartını eledi.');
+  const presidentName = getPlayer(state, actorId)?.name ?? 'Başkan';
+  const chancellorName =
+    getPlayer(state, state.legislative.chancellorId ?? '')?.name ?? 'Başbakan';
+  addLog(
+    state,
+    'government',
+    `Başkan ${presidentName} bir reform kartını eledi; kalan iki kart Başbakan ${chancellorName}’a geçti.`,
+  );
 }
 
 function chancellorEnactMut(
@@ -795,10 +809,13 @@ function enactPolicy(
     policy: card,
     auto: meta.auto,
   });
+  const chancellorName = getPlayer(state, meta.chancellorId)?.name ?? 'Başbakan';
   addLog(
     state,
     'policy',
-    `${policyLabel(card)} yürürlüğe girdi. Demokratik: ${state.enacted.democratic}/${GAME_CONFIG.democraticWinThreshold}, Otokrat: ${state.enacted.fascist}/${GAME_CONFIG.fascistTrackLength}.`,
+    meta.auto
+      ? `${policyLabel(card)} yürürlüğe girdi. Demokratik: ${state.enacted.democratic}/${GAME_CONFIG.democraticWinThreshold}, Otokrat: ${state.enacted.fascist}/${GAME_CONFIG.fascistTrackLength}.`
+      : `Başbakan ${chancellorName}, ${policyLabel(card)} reformunu yürürlüğe koydu. Demokratik: ${state.enacted.democratic}/${GAME_CONFIG.democraticWinThreshold}, Otokrat: ${state.enacted.fascist}/${GAME_CONFIG.fascistTrackLength}.`,
   );
   maybeBotSpeakAfterEvent(state, rng);
   applyPolicyEffects(state, card, meta, rng);
@@ -890,6 +907,11 @@ function investigateMut(state: GameState, actorId: string, targetId: string): vo
   state.investigations[actorId][targetId] = result;
   if (!state.investigatedThisRound[actorId]) state.investigatedThisRound[actorId] = [];
   state.investigatedThisRound[actorId].push(targetId);
+  addLog(
+    state,
+    'power',
+    `Başkan ${getPlayer(state, actorId)?.name ?? '—'}, ${target.name}’i sorguya çekti.`,
+  );
 }
 
 function useBlockMut(state: GameState, actorId: string, targetId: string): void {
@@ -908,6 +930,11 @@ function useBlockMut(state: GameState, actorId: string, targetId: string): void 
   if (target.role === 'buyuk_vezir') {
     target.votePower = 0;
   }
+  addLog(
+    state,
+    'power',
+    `${getPlayer(state, actorId)?.name ?? '—'}, ${target.name}’in oyunu engelledi.`,
+  );
 }
 
 function skipBlockMut(state: GameState, actorId: string): void {
@@ -915,6 +942,11 @@ function skipBlockMut(state: GameState, actorId: string): void {
     throw new GameError('BLOCK_UNAVAILABLE', 'Oy engelleme yetkiniz şu anda kullanılamıyor.');
   }
   if (state.pendingBlock) state.pendingBlock.used = true;
+  addLog(
+    state,
+    'power',
+    `${getPlayer(state, actorId)?.name ?? '—'} oy engelleme yetkisini kullanmadı.`,
+  );
 }
 
 function ackPeekMut(state: GameState, actorId: string, rng: () => number): void {

@@ -1,4 +1,4 @@
-import { Bot, Crown, Gavel, ShieldCheck, Skull, Users } from 'lucide-react';
+import { Bot, Crown, Gavel, ShieldCheck, Skull } from 'lucide-react';
 import { ROLE_INFO } from '../game';
 import type { PublicGameState } from '../game';
 import { cn } from '../lib/cn';
@@ -42,25 +42,10 @@ export function PlayerCircle({
               )}
               aria-label={`${player.name}${isViewer ? ' (sen)' : ''}`}
             >
-              <div className={cn('seat-card__office', office && `seat-card__office--${office}`)}>
-                {player.isPresident ? (
-                  <>
-                    <ShieldCheck size={12} /> Başkan
-                  </>
-                ) : player.isChancellor ? (
-                  <>
-                    <Gavel size={12} /> Başbakan
-                  </>
-                ) : (
-                  <span className="seat-card__office-empty" aria-hidden="true" />
-                )}
-              </div>
-
-              <div className="seat-card__portrait">
-                <span className="seat-card__portrait-glow" aria-hidden="true" />
+              <span className="seat-card__portrait">
                 <Avatar
                   avatarId={player.avatarId}
-                  size="xl"
+                  size="lg"
                   ring={
                     player.isPresident
                       ? 'gold'
@@ -74,43 +59,54 @@ export function PlayerCircle({
                 />
                 {!player.alive ? (
                   <span className="seat-card__stamp seat-card__stamp--dead">
-                    <Skull size={12} /> Ölü
+                    <Skull size={10} /> Ölü
                   </span>
-                ) : null}
-                {isViewer && player.alive ? (
-                  <span className="seat-card__stamp seat-card__stamp--you">Sen</span>
                 ) : null}
                 {isWinner ? (
-                  <Crown className="seat-card__crown" size={16} aria-label="Kazandı" />
+                  <Crown className="seat-card__crown" size={13} aria-label="Kazandı" />
                 ) : null}
-              </div>
+              </span>
 
               <div className="seat-card__info">
-                <strong className="seat-card__name">{player.name}</strong>
+                <strong className="seat-card__name">
+                  {player.name}
+                  {isViewer ? <em className="seat-card__you"> (sen)</em> : null}
+                </strong>
                 <span className="seat-card__meta">
-                  {player.isBot ? (
+                  <span className="seat-card__kind">
+                    {player.isBot ? (
+                      <>
+                        <Bot size={10} /> Bot
+                      </>
+                    ) : (
+                      'Oyuncu'
+                    )}
+                  </span>
+                  {roleInfo ? (
+                    <span className={`seat-card__role seat-card__role--${roleInfo.accent}`}>
+                      {roleInfo.name}
+                    </span>
+                  ) : null}
+                </span>
+              </div>
+
+              {office ? (
+                <span className={cn('seat-card__office', `seat-card__office--${office}`)}>
+                  {player.isPresident ? (
                     <>
-                      <Bot size={11} /> Bot
+                      <ShieldCheck size={11} /> Başkan
                     </>
                   ) : (
-                    'Oyuncu'
+                    <>
+                      <Gavel size={11} /> Başbakan
+                    </>
                   )}
                 </span>
-                {roleInfo ? (
-                  <span className={`seat-card__role seat-card__role--${roleInfo.accent}`}>
-                    {roleInfo.name}
-                  </span>
-                ) : null}
-              </div>
+              ) : null}
             </article>
           );
         })}
       </div>
-
-      <p className="player-stage__count">
-        <Users size={12} />
-        {game.livingPlayers} / {game.totalPlayers} hayatta
-      </p>
     </section>
   );
 }

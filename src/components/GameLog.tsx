@@ -14,7 +14,7 @@ import { useEffect, useRef } from 'react';
 import type { LogEntry, LogKind } from '../game';
 import { cn } from '../lib/cn';
 
-const LOG_ICONS: Record<LogKind, LucideIcon> = {
+export const LOG_ICONS: Record<LogKind, LucideIcon> = {
   system: Info,
   government: Gavel,
   vote: Vote,

@@ -105,6 +105,7 @@ export function ActionPanel({
   error = null,
   onDismissError,
   onOpenRole,
+  onOpenVoteStage,
 }: {
   game: PublicGameState;
   view: PrivateView;
@@ -113,6 +114,7 @@ export function ActionPanel({
   error?: string | null;
   onDismissError?: () => void;
   onOpenRole: () => void;
+  onOpenVoteStage?: () => void;
 }) {
   const [selectedNominee, setSelectedNominee] = useState<string | null>(null);
   const [pendingVote, setPendingVote] = useState<boolean | null>(null);
@@ -320,6 +322,16 @@ export function ActionPanel({
 
             {view.canVote ? (
               <>
+                {onOpenVoteStage ? (
+                  <button
+                    type="button"
+                    className="vote-stage-hint"
+                    onClick={onOpenVoteStage}
+                  >
+                    <Vote size={14} />
+                    Merkez oylama kartını aç
+                  </button>
+                ) : null}
                 <div className="vote-choices">
                   <button
                     type="button"
@@ -408,7 +420,7 @@ export function ActionPanel({
                 <div className="policy-choice-grid">
                   {view.legislativeCards.map((card, index) => (
                     <PolicyCard
-                      key={`${card}-${index}`}
+                      key={`${game.round}-${game.phase}-${card}-${index}`}
                       type={card}
                       selected={selectedCard === card}
                       onClick={() => setSelectedCard(card)}
@@ -458,7 +470,7 @@ export function ActionPanel({
                 <div className="policy-choice-grid">
                   {view.legislativeCards.map((card, index) => (
                     <PolicyCard
-                      key={`${card}-${index}`}
+                      key={`${game.round}-${game.phase}-${card}-${index}`}
                       type={card}
                       selected={selectedCard === card}
                       onClick={() => setSelectedCard(card)}
@@ -576,7 +588,7 @@ export function ActionPanel({
               <>
                 <div className="policy-choice-grid policy-choice-grid--peek">
                   {view.pendingPeekCards.map((card, index) => (
-                    <div key={`${card}-${index}`} className="peek-card-wrap">
+                    <div key={`${game.round}-${game.phase}-${card}-${index}`} className="peek-card-wrap">
                       <span className="peek-card-wrap__order">{index + 1}. kart</span>
                       <PolicyCard type={card} size="sm" showSubtitle={false} />
                     </div>

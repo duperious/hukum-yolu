@@ -59,7 +59,7 @@ export function PolicyTrack({
           </div>
         </div>
         <span className="policy-track__count">
-          <strong>{safeEnacted}</strong>
+          <strong key={safeEnacted}>{safeEnacted}</strong>
           <span>/ {length}</span>
         </span>
       </header>
@@ -72,6 +72,7 @@ export function PolicyTrack({
         {Array.from({ length }, (_, index) => {
           const filled = index < safeEnacted;
           const current = index === safeEnacted;
+          const just = index === safeEnacted - 1;
           const win = index === length - 1;
           return (
             <div
@@ -81,6 +82,7 @@ export function PolicyTrack({
                 'policy-step',
                 filled && 'policy-step--filled',
                 current && 'policy-step--current',
+                just && 'policy-step--just',
                 win && 'policy-step--win',
               )}
               title={resolvedLabels[index]}
