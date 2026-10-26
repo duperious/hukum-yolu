@@ -67,12 +67,13 @@ export function VoteStage({
         <h2 className="vote-stage__title">Hükümet kurulmalı mı?</h2>
 
         <div className="vote-stage__government">
-          <div className="vote-stage__seat">
-            <Avatar
-              avatarId={president?.avatarId ?? 'avatar-1'}
-              size="lg"
-              ring="gold"
-            />
+          <div className="vote-stage__seat vote-stage__seat--president">
+            <span className="vote-stage__avatar">
+              <Avatar
+                avatarId={president?.avatarId ?? 'avatar-1'}
+                size="lg"
+              />
+            </span>
             <div>
               <span>Başkan</span>
               <strong>{president?.name ?? '—'}</strong>
@@ -81,12 +82,13 @@ export function VoteStage({
           <span className="vote-stage__arrow" aria-hidden="true">
             →
           </span>
-          <div className="vote-stage__seat">
-            <Avatar
-              avatarId={chancellor?.avatarId ?? 'avatar-1'}
-              size="lg"
-              ring="blue"
-            />
+          <div className="vote-stage__seat vote-stage__seat--chancellor">
+            <span className="vote-stage__avatar">
+              <Avatar
+                avatarId={chancellor?.avatarId ?? 'avatar-1'}
+                size="lg"
+              />
+            </span>
             <div>
               <span>Başbakan adayı</span>
               <strong>{chancellor?.name ?? '—'}</strong>

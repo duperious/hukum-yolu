@@ -50,12 +50,12 @@ export const PHASE_META: Record<
     icon: Vote,
   },
   presidentDiscard: {
-    title: 'Başkanın Eli',
+    title: 'Kart Eleme',
     description: 'Başkan üç karttan birini eliyor.',
     icon: Landmark,
   },
   chancellorEnact: {
-    title: 'Başbakanın Eli',
+    title: 'Reform Seçimi',
     description: 'Başbakan kalan iki karttan birini yürürlüğe koyuyor.',
     icon: Gavel,
   },
@@ -132,7 +132,6 @@ export function ActionPanel({
 
   if (game.phase === 'gameOver') return null;
 
-  const meta = PHASE_META[game.phase] ?? PHASE_META.roleReveal;
   const roleInfo = ROLE_INFO[view.role];
   const byId = new Map(game.players.map((player) => [player.id, player]));
   const presidentName = playerName(game, game.presidentId);
@@ -162,8 +161,6 @@ export function ActionPanel({
             <PhaseBadge phase={game.phase} />
             <span className="action-panel__round">Tur {game.round}</span>
           </div>
-          <h2 className="action-panel__title">{meta.title}</h2>
-          <p className="action-panel__description">{meta.description}</p>
         </div>
         <button type="button" className="role-peek-btn" onClick={onOpenRole}>
           <Eye size={16} />

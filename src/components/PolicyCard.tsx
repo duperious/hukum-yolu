@@ -2,14 +2,19 @@ import { Scale, Swords } from 'lucide-react';
 import type { PolicyCard as PolicyCardType } from '../game';
 import { cn } from '../lib/cn';
 
-const LABELS: Record<PolicyCardType, { title: string; subtitle: string }> = {
+const LABELS: Record<
+  PolicyCardType,
+  { title: string; subtitle: string; ribbon: string }
+> = {
   demokratik: {
     title: 'Demokratik Reform',
     subtitle: 'Demokratik çizelgeyi ilerletir.',
+    ribbon: 'Mavi Hat',
   },
   otokrat: {
     title: 'Otokrat Reform',
     subtitle: 'Otokrat çizelgeyi ilerletir.',
+    ribbon: 'Kızıl Hat',
   },
 };
 
@@ -35,8 +40,13 @@ export function PolicyCard({
   const interactive = Boolean(onClick);
   const content = (
     <>
-      <span className="policy-card__icon" aria-hidden="true">
-        <Icon size={size === 'lg' ? 30 : size === 'md' ? 24 : 18} strokeWidth={1.8} />
+      <span className="policy-card__ribbon" aria-hidden="true">
+        {info.ribbon}
+      </span>
+      <span className="policy-card__seal" aria-hidden="true">
+        <span className="policy-card__icon">
+          <Icon size={size === 'lg' ? 30 : size === 'md' ? 24 : 18} strokeWidth={1.8} />
+        </span>
       </span>
       <span className="policy-card__text">
         <span className="policy-card__title">{info.title}</span>

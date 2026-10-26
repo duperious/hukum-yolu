@@ -7,7 +7,7 @@ import {
   Users,
   Vote,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ConnectionState } from '../hooks/useMultiplayerRoom';
 import type { GameAction, RedactedGameState } from '../game';
 import { FASCIST_TRACK_LABELS } from '../game';
@@ -62,6 +62,7 @@ export function GameScreen({
   const [roleGate, setRoleGate] = useState<'reveal' | 'inspect' | null>(null);
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [voteStageOpen, setVoteStageOpen] = useState(false);
+  const roleAutoOpenRef = useRef<string | null>(null);
   const toast = useToast();
   const viewer = game.players.find((player) => player.id === viewerId);
   const phaseMeta = PHASE_META[game.phase] ?? PHASE_META.roleReveal;
@@ -72,6 +73,20 @@ export function GameScreen({
   useEffect(() => {
     setVoteStageOpen(view.canVote);
   }, [view.canVote, game.round, game.chancellorId]);
+
+  // Oyuna girildiğinde rol kartı doğrudan ortada açılır; oyuncu kapatırsa
+  // aynı oyun içinde tekrar kendiliğinden açılmaz.
+  useEffect(() => {
+    const key = `${game.createdAt}-${game.round}`;
+    if (
+      game.phase === 'roleReveal' &&
+      !view.roleRevealAcknowledged &&
+      roleAutoOpenRef.current !== key
+    ) {
+      roleAutoOpenRef.current = key;
+      setRoleGate('reveal');
+    }
+  }, [game.phase, game.createdAt, game.round, view.roleRevealAcknowledged]);
 
   const playerName = (id: string | null | undefined) =>
     game.players.find((player) => player.id === id)?.name ?? '—';
