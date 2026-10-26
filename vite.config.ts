@@ -20,8 +20,8 @@ export default defineConfig({
         orientation: 'any',
         start_url: './',
         scope: './',
-        theme_color: '#080b12',
-        background_color: '#080b12',
+        theme_color: '#17110d',
+        background_color: '#17110d',
         categories: ['games', 'social'],
         icons: [
           {

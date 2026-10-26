@@ -1,6 +1,10 @@
 import '@fontsource/cinzel/600.css';
 import '@fontsource/cinzel/700.css';
 import '@fontsource/cinzel/900.css';
+import '@fontsource/bebas-neue/latin-ext-400.css';
+import '@fontsource/roboto-slab/latin-ext-400.css';
+import '@fontsource/roboto-slab/latin-ext-600.css';
+import '@fontsource/roboto-slab/latin-ext-700.css';
 import '@fontsource/manrope/400.css';
 import '@fontsource/manrope/500.css';
 import '@fontsource/manrope/600.css';

@@ -30,7 +30,7 @@ import { Avatar } from './ui/Avatar';
 import { Button } from './ui/Button';
 import { PolicyCard } from './PolicyCard';
 
-const PHASE_META: Record<
+export const PHASE_META: Record<
   string,
   { title: string; description: string; icon: LucideIcon }
 > = {
@@ -153,7 +153,7 @@ export function ActionPanel({
     (game.phase === 'peek' && Boolean(view.pendingPeekCards));
 
   return (
-    <section className="action-panel panel">
+    <section className={cn('action-panel panel', canAct && 'action-panel--active')}>
       <header className="action-panel__header">
         <div>
           <div className="action-panel__phase-row">

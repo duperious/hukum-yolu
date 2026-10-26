@@ -226,6 +226,8 @@ export interface PublicGameState {
   previousChancellorId: string | null;
   failedVotes: number;
   enacted: { democratic: number; fascist: number };
+  deckCount: number;
+  discardCount: number;
   policyHistory: PolicyCard[];
   governmentHistory: GovernmentRecord[];
   log: LogEntry[];

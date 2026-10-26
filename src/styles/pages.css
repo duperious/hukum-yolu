@@ -326,6 +326,193 @@
   color: var(--gold);
 }
 
+/* =========================================================
+   Referans arayüzü — lobi ve sayfa başlıkları
+   ========================================================= */
+
+.lobby-hero__intro h1,
+.local-hero h1,
+.join-hero h1,
+.docs-hero h1,
+.guide-hero h1,
+.not-found h1 {
+  color: var(--parchment);
+  font-family: var(--font-poster);
+  font-size: clamp(46px, 7vw, 82px);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 0.88;
+  text-transform: uppercase;
+}
+
+.lobby-code-card {
+  border-color: rgba(201, 162, 75, 0.3);
+  background:
+    radial-gradient(280px 150px at 50% 0%, rgba(201, 162, 75, 0.14), transparent 70%),
+    linear-gradient(165deg, rgba(44, 32, 26, 0.9), rgba(23, 17, 13, 0.95));
+  box-shadow:
+    inset 0 1px 0 rgba(246, 236, 217, 0.05),
+    0 18px 40px -28px #000;
+}
+
+.lobby-code-card__code {
+  color: var(--parchment);
+  font-family: var(--font-poster);
+  font-size: 48px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+  line-height: 1;
+}
+
+.lobby-code-card__label {
+  color: var(--gold);
+}
+
+.lobby-section__header h2 {
+  color: var(--parchment);
+  font-family: var(--font-poster);
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.lobby-player-card {
+  border-color: #bda77f;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(255, 255, 255, 0.5), transparent 60%),
+    linear-gradient(180deg, #f6ecd9, #e8d6b6);
+  color: #24170e;
+  box-shadow:
+    0 14px 30px -22px #000,
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.lobby-player-card--host {
+  border-color: #c9a24b;
+  box-shadow:
+    0 0 0 2px rgba(201, 162, 75, 0.2),
+    0 14px 30px -22px #000;
+}
+
+.lobby-player-card--viewer {
+  border-color: rgba(124, 84, 152, 0.7);
+}
+
+.lobby-player-card--offline {
+  opacity: 0.6;
+}
+
+.lobby-player-card__identity > strong {
+  color: #24170e;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.lobby-player-card__meta {
+  color: #705b43;
+}
+
+.lobby-player-card__status .muted {
+  color: #705b43;
+}
+
+.lobby-player-card .icon-btn {
+  border-color: rgba(36, 23, 14, 0.18);
+  background: rgba(255, 255, 255, 0.18);
+  color: #5f4a33;
+}
+
+.lobby-player-card .icon-btn:hover {
+  border-color: rgba(143, 43, 43, 0.45);
+  background: rgba(143, 43, 43, 0.08);
+  color: #8f2b2b;
+}
+
+.ready-badge--ready {
+  border-color: rgba(47, 93, 70, 0.34);
+  background: rgba(75, 191, 135, 0.16);
+  color: #2f5d46;
+}
+
+.ready-badge--waiting {
+  border-color: rgba(143, 108, 42, 0.34);
+  background: rgba(201, 162, 75, 0.16);
+  color: #7d5b1e;
+}
+
+.ready-badge--offline {
+  border-color: rgba(143, 43, 43, 0.3);
+  background: rgba(143, 43, 43, 0.09);
+  color: #8f2b2b;
+}
+
+.lobby-add-bot {
+  border-color: rgba(201, 162, 75, 0.26);
+  background: rgba(16, 11, 8, 0.3);
+}
+
+.lobby-add-bot:hover:not(:disabled) {
+  border-color: rgba(231, 204, 138, 0.6);
+  background: rgba(201, 162, 75, 0.07);
+  color: var(--parchment);
+}
+
+.lobby-add-bot__icon {
+  border-color: rgba(201, 162, 75, 0.26);
+}
+
+.lobby-controls .btn--primary,
+.lobby-controls .btn--gold {
+  font-family: var(--font-poster);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* ---------- giriş, yerel test ve rehber başlıkları ---------- */
+
+.local-hero,
+.join-hero,
+.docs-hero,
+.guide-hero {
+  border-bottom-color: rgba(201, 162, 75, 0.12);
+}
+
+.local-hero > p,
+.join-hero > p,
+.docs-hero > p,
+.guide-hero > p {
+  color: var(--muted);
+}
+
+.setup-card,
+.profile-card,
+.local-panel,
+.join-card,
+.guide-card {
+  border-color: rgba(201, 162, 75, 0.18);
+}
+
+@media (max-width: 760px) {
+  .lobby-hero__intro h1,
+  .local-hero h1,
+  .join-hero h1,
+  .docs-hero h1,
+  .guide-hero h1,
+  .not-found h1 {
+    font-size: clamp(42px, 13vw, 64px);
+  }
+
+  .lobby-code-card__code {
+    font-size: 42px;
+  }
+}
+
 .rule-list + .text-link {
   margin-top: 10px;
 }

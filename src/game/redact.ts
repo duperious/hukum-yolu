@@ -58,6 +58,8 @@ export function getPublicGameState(state: GameState): PublicGameState {
     previousChancellorId: state.previousChancellorId,
     failedVotes: state.failedVotes,
     enacted: { ...state.enacted },
+    deckCount: state.deck.length,
+    discardCount: state.discardPile.length,
     policyHistory: [...state.policyHistory],
     governmentHistory: state.governmentHistory.map((g) => ({ ...g })),
     log: state.log.map((l) => ({ ...l })),

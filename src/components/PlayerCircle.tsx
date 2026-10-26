@@ -14,19 +14,9 @@ export function PlayerCircle({
   className?: string;
 }) {
   return (
-    <section className={cn('player-panel panel', className)}>
-      <header className="panel__header">
-        <div>
-          <p className="eyebrow">Masa</p>
-          <h3 className="panel__title">Oyuncular</h3>
-        </div>
-        <span className="chip">
-          <Users size={13} />
-          {game.livingPlayers} / {game.totalPlayers} hayatta
-        </span>
-      </header>
-
-      <div className="player-grid">
+    <section className={cn('player-stage', className)} aria-label="Oyuncular">
+      <h2 className="sr-only">Oyuncular</h2>
+      <div className="player-stage__rail">
         {game.players.map((player) => {
           const isViewer = player.id === viewerId;
           const isWinner =
@@ -34,21 +24,43 @@ export function PlayerCircle({
           const roleInfo = player.revealedRole
             ? ROLE_INFO[player.revealedRole]
             : null;
+          const office = player.isPresident
+            ? 'president'
+            : player.isChancellor
+              ? 'chancellor'
+              : null;
+
           return (
             <article
               key={player.id}
               className={cn(
-                'player-tile',
-                !player.alive && 'player-tile--dead',
-                isViewer && 'player-tile--viewer',
-                isWinner && 'player-tile--winner',
+                'seat-card',
+                !player.alive && 'seat-card--dead',
+                isViewer && 'seat-card--viewer',
+                isWinner && 'seat-card--winner',
+                office && `seat-card--${office}`,
               )}
               aria-label={`${player.name}${isViewer ? ' (sen)' : ''}`}
             >
-              <div className="player-tile__top">
+              <div className={cn('seat-card__office', office && `seat-card__office--${office}`)}>
+                {player.isPresident ? (
+                  <>
+                    <ShieldCheck size={12} /> Başkan
+                  </>
+                ) : player.isChancellor ? (
+                  <>
+                    <Gavel size={12} /> Başbakan
+                  </>
+                ) : (
+                  <span className="seat-card__office-empty" aria-hidden="true" />
+                )}
+              </div>
+
+              <div className="seat-card__portrait">
+                <span className="seat-card__portrait-glow" aria-hidden="true" />
                 <Avatar
                   avatarId={player.avatarId}
-                  size="md"
+                  size="xl"
                   ring={
                     player.isPresident
                       ? 'gold'
@@ -60,44 +72,32 @@ export function PlayerCircle({
                   }
                   dimmed={!player.alive}
                 />
-                <div className="player-tile__identity">
-                  <strong className="player-tile__name">
-                    {player.name}
-                    {isViewer ? <span className="you-badge">Sen</span> : null}
-                  </strong>
-                  <span className="player-tile__sub">
-                    {player.isBot ? (
-                      <>
-                        <Bot size={12} /> Bot
-                      </>
-                    ) : (
-                      'Oyuncu'
-                    )}
+                {!player.alive ? (
+                  <span className="seat-card__stamp seat-card__stamp--dead">
+                    <Skull size={12} /> Ölü
                   </span>
-                </div>
+                ) : null}
+                {isViewer && player.alive ? (
+                  <span className="seat-card__stamp seat-card__stamp--you">Sen</span>
+                ) : null}
                 {isWinner ? (
-                  <Crown className="player-tile__winner" size={18} aria-label="Kazandı" />
+                  <Crown className="seat-card__crown" size={16} aria-label="Kazandı" />
                 ) : null}
               </div>
 
-              <div className="player-tile__badges">
-                {player.isPresident ? (
-                  <span className="mini-badge mini-badge--gold">
-                    <ShieldCheck size={11} /> Başkan
-                  </span>
-                ) : null}
-                {player.isChancellor ? (
-                  <span className="mini-badge mini-badge--blue">
-                    <Gavel size={11} /> Başbakan
-                  </span>
-                ) : null}
-                {!player.alive ? (
-                  <span className="mini-badge mini-badge--dead">
-                    <Skull size={11} /> Ölü
-                  </span>
-                ) : null}
+              <div className="seat-card__info">
+                <strong className="seat-card__name">{player.name}</strong>
+                <span className="seat-card__meta">
+                  {player.isBot ? (
+                    <>
+                      <Bot size={11} /> Bot
+                    </>
+                  ) : (
+                    'Oyuncu'
+                  )}
+                </span>
                 {roleInfo ? (
-                  <span className={`mini-badge mini-badge--${roleInfo.accent}`}>
+                  <span className={`seat-card__role seat-card__role--${roleInfo.accent}`}>
                     {roleInfo.name}
                   </span>
                 ) : null}
@@ -106,6 +106,11 @@ export function PlayerCircle({
           );
         })}
       </div>
+
+      <p className="player-stage__count">
+        <Users size={12} />
+        {game.livingPlayers} / {game.totalPlayers} hayatta
+      </p>
     </section>
   );
 }

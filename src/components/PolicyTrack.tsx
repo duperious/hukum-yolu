@@ -41,21 +41,29 @@ export function PolicyTrack({
       ? DEFAULT_DEMOCRATIC_LABELS.slice(0, length)
       : DEFAULT_FASCIST_LABELS.slice(0, length));
   const title = type === 'demokratik' ? 'Demokratik Reformlar' : 'Otokrat Reformlar';
+  const kicker = type === 'demokratik' ? 'Mavi hat' : 'Kızıl hat';
   const safeEnacted = Math.max(0, Math.min(enacted, length));
 
   return (
     <section className={cn('policy-track', `policy-track--${type}`, className)}>
+      <Icon className="policy-track__watermark" size={180} strokeWidth={0.7} aria-hidden="true" />
+
       <header className="policy-track__header">
         <div className="policy-track__title">
           <span className="policy-track__icon" aria-hidden="true">
-            <Icon size={18} strokeWidth={1.9} />
+            <Icon size={19} strokeWidth={1.8} />
           </span>
-          <h3>{title}</h3>
+          <div>
+            <span className="policy-track__kicker">{kicker}</span>
+            <h3>{title}</h3>
+          </div>
         </div>
         <span className="policy-track__count">
-          {safeEnacted} / {length}
+          <strong>{safeEnacted}</strong>
+          <span>/ {length}</span>
         </span>
       </header>
+
       <div
         className="policy-track__steps"
         role="list"
@@ -83,16 +91,12 @@ export function PolicyTrack({
           );
         })}
       </div>
-      {type === 'demokratik' ? (
-        <p className="policy-track__hint">
-          {length}. reform Demokratik zaferi getirir. Eşik tek kaynaktan yönetilir.
-        </p>
-      ) : (
-        <p className="policy-track__hint">
-          {length}. reform Otokrat zaferi getirir. 4. reformdan sonra Lider Başbakan
-          seçilirse Otokratlar kazanır.
-        </p>
-      )}
+
+      <p className="policy-track__hint">
+        {type === 'demokratik'
+          ? `${length}. reform Demokratik zaferi getirir.`
+          : `${length}. reform Otokrat zaferi getirir. 4. reformdan sonra Lider Başbakan seçilirse Otokratlar kazanır.`}
+      </p>
     </section>
   );
 }

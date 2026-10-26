@@ -77,7 +77,7 @@ export function GovernmentPanel({ game }: { game: PublicGameState }) {
       <div className="government-panel__meta">
         <div className={cn('failed-votes', game.failedVotes >= 3 && 'failed-votes--danger')}>
           <span className="failed-votes__label">Üst üste ret</span>
-          <span className="failed-votes__dots" aria-label={`${game.failedVotes} / 3 ret`}>
+          <span className="failed-votes__dots" aria-hidden="true">
             {[0, 1, 2].map((index) => (
               <span
                 key={index}
