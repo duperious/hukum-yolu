@@ -63,6 +63,14 @@ export function VoteStage({
       }}
     >
       <div className={cn('vote-stage', done && 'vote-stage--done')}>
+        <button
+          type="button"
+          className="icon-btn vote-stage__close"
+          onClick={onClose}
+          aria-label="Oylama kartını kapat"
+        >
+          <X size={18} />
+        </button>
         <span className="vote-stage__kicker">Tur {game.round} · Hükümet Oylaması</span>
         <h2 className="vote-stage__title">Hükümet kurulmalı mı?</h2>
 

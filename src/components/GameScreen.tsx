@@ -15,6 +15,7 @@ import { copyText, roomInviteUrl } from '../lib/validation';
 import { ActionPanel, PHASE_META } from './ActionPanel';
 import { EndScreen } from './EndScreen';
 import { EventBanner } from './EventBanner';
+import { EventStage } from './EventStage';
 import { GameLog } from './GameLog';
 import { GovernmentPanel } from './GovernmentPanel';
 import { PlayerCircle } from './PlayerCircle';
@@ -297,7 +298,17 @@ export function GameScreen({
         </div>
       </main>
 
-      <EventBanner entries={game.log} />
+      <EventBanner entries={game.log.filter((entry) => entry.kind === 'bot')} />
+
+      <EventStage
+        entries={game.log}
+        gameKey={String(game.createdAt)}
+        paused={
+          roleGate !== null ||
+          leaveOpen ||
+          game.phase === 'gameOver'
+        }
+      />
 
       <VoteStage
         game={game}

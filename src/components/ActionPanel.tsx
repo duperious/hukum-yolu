@@ -117,14 +117,12 @@ export function ActionPanel({
   onOpenVoteStage?: () => void;
 }) {
   const [selectedNominee, setSelectedNominee] = useState<string | null>(null);
-  const [pendingVote, setPendingVote] = useState<boolean | null>(null);
   const [selectedCard, setSelectedCard] = useState<PolicyCardType | null>(null);
   const [selectedSide, setSelectedSide] = useState<NotrSide | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
 
   useEffect(() => {
     setSelectedNominee(null);
-    setPendingVote(null);
     setSelectedCard(null);
     setSelectedSide(null);
     setSelectedTarget(null);
@@ -319,69 +317,22 @@ export function ActionPanel({
 
             {view.canVote ? (
               <>
-                {onOpenVoteStage ? (
-                  <button
-                    type="button"
-                    className="vote-stage-hint"
-                    onClick={onOpenVoteStage}
-                  >
-                    <Vote size={14} />
-                    Merkez oylama kartını aç
-                  </button>
-                ) : null}
-                <div className="vote-choices">
-                  <button
-                    type="button"
-                    className={cn(
-                      'vote-choice vote-choice--yes',
-                      pendingVote === true && 'vote-choice--selected',
-                    )}
-                    onClick={() => setPendingVote(true)}
-                    disabled={actionPending}
-                    aria-pressed={pendingVote === true}
-                  >
-                    <span className="vote-choice__icon" aria-hidden="true">
-                      <Check size={24} />
-                    </span>
-                    <span className="vote-choice__label">Evet</span>
-                    <small>Hükümet kurulsun</small>
-                  </button>
-                  <button
-                    type="button"
-                    className={cn(
-                      'vote-choice vote-choice--no',
-                      pendingVote === false && 'vote-choice--selected',
-                    )}
-                    onClick={() => setPendingVote(false)}
-                    disabled={actionPending}
-                    aria-pressed={pendingVote === false}
-                  >
-                    <span className="vote-choice__icon" aria-hidden="true">
-                      <X size={24} />
-                    </span>
-                    <span className="vote-choice__label">Hayır</span>
-                    <small>Hükümet kurulmasın</small>
-                  </button>
+                <div className="action-note action-note--vote">
+                  <Vote size={16} />
+                  <p>
+                    Oylama kartı ekranın ortasında açılır. Evet veya Hayır seçerek
+                    oyunu gönder. Oyun gizli tutulur; yalnızca toplam sonuç açıklanır.
+                  </p>
                 </div>
-                <div className="confirm-bar">
-                  <span className="confirm-bar__hint">
-                    {pendingVote === null
-                      ? 'Evet veya Hayır seç. Oyun gizli tutulur; yalnızca sonuç açıklanır.'
-                      : `Oyun: ${pendingVote ? 'Evet' : 'Hayır'}`}
-                  </span>
+                {onOpenVoteStage ? (
                   <Button
-                    variant={pendingVote === false ? 'danger' : 'primary'}
-                    onClick={() => {
-                      if (pendingVote === null) return;
-                      onAction({ type: 'vote', choice: pendingVote });
-                    }}
-                    disabled={pendingVote === null || actionPending}
-                    loading={actionPending}
+                    variant="primary"
+                    onClick={onOpenVoteStage}
                     icon={<Vote size={16} />}
                   >
-                    Oyumu Gönder
+                    Oylama Kartını Aç
                   </Button>
-                </div>
+                ) : null}
               </>
             ) : view.hasVoted ? (
               <div className="action-note action-note--success">

@@ -636,8 +636,8 @@ function resolveVote(state: GameState, rng: () => number): void {
     state,
     'vote',
     accepted
-      ? `${chancellorName} hükümeti kabul edildi. Oylar kullanıldı — Evet: ${yes}, Hayır: ${no}.`
-      : `${chancellorName} hükümeti reddedildi. Oylar kullanıldı — Evet: ${yes}, Hayır: ${no}.`,
+      ? `Hükümet kabul edildi. Başbakan: ${chancellorName}. Oylar kullanıldı — Evet: ${yes}, Hayır: ${no}.`
+      : `Hükümet reddedildi. Başbakan: ${chancellorName}. Oylar kullanıldı — Evet: ${yes}, Hayır: ${no}.`,
   );
   if (state.pendingBlock) state.pendingBlock = null;
   maybeBotSpeakAfterEvent(state, rng);
@@ -758,7 +758,12 @@ function presidentDiscardMut(
   addLog(
     state,
     'government',
-    `Başkan ${presidentName} bir reform kartını eledi; kalan iki kart Başbakan ${chancellorName}’a geçti.`,
+    `Başkan ${presidentName} bir reform kartını eledi; kalan iki kart Başbakan ${chancellorName} için ayrıldı.`,
+  );
+  addLog(
+    state,
+    'government',
+    `Başbakan ${chancellorName} kalan iki reform kartını değerlendiriyor.`,
   );
 }
 
