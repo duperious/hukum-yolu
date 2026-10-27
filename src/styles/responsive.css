@@ -26,6 +26,12 @@
   }
 }
 
+@media (max-width: 1000px) {
+  .game-tracks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 980px) {
   .home-hero {
     grid-template-columns: minmax(0, 1fr);
