@@ -1,6 +1,7 @@
 import { ArrowRight, IdCard, X } from 'lucide-react';
 import { useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
+import type { Role } from '../game';
 import buyukVezirArt from '../assets/cards/buyuk-vezir.jpg';
 import demokratBaskanArt from '../assets/cards/demokrat-parti-baskani.jpg';
 import demokratUyeArt from '../assets/cards/demokrat-parti-uyesi.jpg';
@@ -21,7 +22,7 @@ export interface PlayerCardInfo {
   image: string;
 }
 
-export const PLAYER_CARDS: PlayerCardInfo[] = [
+export const PLAYER_CARDS = [
   {
     id: 'istihbarat-baskani',
     name: 'İstihbarat Başkanı',
@@ -78,7 +79,26 @@ export const PLAYER_CARDS: PlayerCardInfo[] = [
     note: 'İki oy gücüne sahip saray görevlisi',
     image: buyukVezirArt,
   },
-];
+] as const satisfies readonly PlayerCardInfo[];
+
+type PlayerCardId = (typeof PLAYER_CARDS)[number]['id'];
+
+const ROLE_PLAYER_CARD: Record<Role, PlayerCardId> = {
+  otokrat_lider: 'otokrat-parti-baskani',
+  otokrat: 'otokrat-parti-uyesi',
+  buyuk_vezir: 'buyuk-vezir',
+  notr: 'kararsiz',
+  istihbarat_baskani: 'istihbarat-baskani',
+  sade_demokrat: 'demokrat-parti-uyesi',
+};
+
+const playerCardById = new Map<string, PlayerCardInfo>(
+  PLAYER_CARDS.map((card) => [card.id, card]),
+);
+
+export function playerCardForRole(role: Role): PlayerCardInfo {
+  return playerCardById.get(ROLE_PLAYER_CARD[role]) ?? PLAYER_CARDS[0];
+}
 
 export function PlayerCardGallery({
   open,

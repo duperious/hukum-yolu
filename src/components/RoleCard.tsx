@@ -10,6 +10,7 @@ import {
 import { ROLE_INFO, ROLE_NAMES } from '../game';
 import type { PrivateView, PublicPlayer, Role, Team } from '../game';
 import { cn } from '../lib/cn';
+import { playerCardForRole } from './PlayerCards';
 import { Avatar } from './ui/Avatar';
 import { Button } from './ui/Button';
 
@@ -128,6 +129,7 @@ export function RoleCard({
   acknowledged?: boolean;
 }) {
   const info = ROLE_INFO[role];
+  const card = playerCardForRole(role);
   const Icon = ROLE_ICONS[info.icon] ?? Scale;
   const notes = statusNotes(role, view);
   const playerById = new Map(players.map((player) => [player.id, player]));
@@ -139,35 +141,61 @@ export function RoleCard({
         <Icon size={220} strokeWidth={0.8} />
       </div>
 
-      <header className="role-card__header">
-        <div>
-          <p className="eyebrow">{mode === 'reveal' ? 'Gizli rolün' : 'Rol kartın'}</p>
-          <h2 className="role-card__name">{info.name}</h2>
-          <p className="role-card__team">{info.teamLabel}</p>
+      <header className="role-card__hero">
+        <div className="role-card__identity">
+          <div className="role-card__identity-head">
+            <div>
+              <p className="eyebrow">
+                {mode === 'reveal' ? 'Gizli rolün' : 'Rol kartın'}
+              </p>
+              <h2 className="role-card__name">{info.name}</h2>
+              <p className="role-card__team">{info.teamLabel}</p>
+            </div>
+            <span className="role-card__icon" aria-hidden="true">
+              <Icon size={38} strokeWidth={1.5} />
+            </span>
+          </div>
+
+          <section className="role-card__mission">
+            <span className="role-card__mission-label">Görevin</span>
+            <p>{info.mission}</p>
+          </section>
+
+          <p className="role-card__description">{info.description}</p>
+
+          <div className="role-card__meta">
+            <span className="chip">
+              Şu anki taraf: <strong>{TEAM_LABELS[view.effectiveTeam]}</strong>
+            </span>
+            <span className="chip">
+              Oy gücü: <strong>{view.votePower}</strong>
+            </span>
+            <span className="chip">
+              Soruşturma:{' '}
+              <strong>{info.investigation === 'kotu' ? 'Kötü' : 'İyi'}</strong>
+            </span>
+          </div>
         </div>
-        <span className="role-card__icon" aria-hidden="true">
-          <Icon size={38} strokeWidth={1.5} />
-        </span>
+
+        <figure className={`role-card__card role-card__card--${card.team}`}>
+          <div className="role-card__card-frame">
+            <img
+              src={card.image}
+              alt={`${card.teamLabel} ${card.name} oyuncu kartı`}
+              width={324}
+              height={454}
+              loading={mode === 'reveal' ? 'eager' : 'lazy'}
+              decoding="async"
+              draggable={false}
+            />
+          </div>
+          <figcaption>
+            <span>Oyuncu kartın</span>
+            <strong>{card.name}</strong>
+            <small>{card.note}</small>
+          </figcaption>
+        </figure>
       </header>
-
-      <section className="role-card__mission">
-        <span className="role-card__mission-label">Görevin</span>
-        <p>{info.mission}</p>
-      </section>
-
-      <p className="role-card__description">{info.description}</p>
-
-      <div className="role-card__meta">
-        <span className="chip">
-          Şu anki taraf: <strong>{TEAM_LABELS[view.effectiveTeam]}</strong>
-        </span>
-        <span className="chip">
-          Oy gücü: <strong>{view.votePower}</strong>
-        </span>
-        <span className="chip">
-          Soruşturma: <strong>{info.investigation === 'kotu' ? 'Kötü' : 'İyi'}</strong>
-        </span>
-      </div>
 
       <section className="role-card__section">
         <h3>Yeteneklerin</h3>
