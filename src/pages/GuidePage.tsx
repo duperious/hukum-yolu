@@ -1,6 +1,5 @@
 import {
   ArrowLeft,
-  ArrowRight,
   BookOpen,
   Crown,
   Crosshair,
@@ -424,10 +423,10 @@ export default function GuidePage() {
               <span className="btn__label">Yerel Test</span>
             </Link>
             <Link to="/" className="btn btn--outline btn--md">
-              <span className="btn__label">
-                Oda Kur
-                <ArrowRight size={16} />
+              <span className="btn__icon" aria-hidden="true">
+                <Users size={16} />
               </span>
+              <span className="btn__label">Oda Kur</span>
             </Link>
           </div>
         </section>
@@ -435,7 +434,7 @@ export default function GuidePage() {
         <footer className="guide-footer">
           <BookOpen size={16} />
           <span>
-            Hüküm Yolu · Kurallar ve varsayımlar bu sayfada özetlenmiştir. Ayrıntılı
+            Hüküm Yolu: Kurallar ve varsayımlar bu sayfada özetlenmiştir. Ayrıntılı
             online oyunun nasıl çalıştığı için <Link to="/setup">Online Rehber</Link> sayfasına bak.
           </span>
         </footer>

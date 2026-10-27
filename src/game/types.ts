@@ -234,6 +234,8 @@ export interface PublicGameState {
   lastVoteResult: VoteResult | null;
   lastGovernment: { presidentId: string; chancellorId: string } | null;
   votesSubmitted: number;
+  /** Oyunu oylayan oyuncular. Oy tercihleri asla bu listeden çıkarılamaz. */
+  votedPlayerIds: string[];
   totalVoters: number;
   notrChoicePending: boolean;
   notrChoiceResolved: boolean;

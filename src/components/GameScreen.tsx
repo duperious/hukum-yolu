@@ -2,12 +2,14 @@ import {
   Copy,
   Eye,
   LogOut,
+  Moon,
   ScrollText,
   ShieldCheck,
+  Sun,
   Users,
   Vote,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ConnectionState } from '../hooks/useMultiplayerRoom';
 import type { GameAction, RedactedGameState } from '../game';
 import { FASCIST_TRACK_LABELS } from '../game';
@@ -18,6 +20,7 @@ import { EventBanner } from './EventBanner';
 import { EventStage } from './EventStage';
 import { GameLog } from './GameLog';
 import { GovernmentPanel } from './GovernmentPanel';
+import { NomineeStage } from './NomineeStage';
 import { PlayerCircle } from './PlayerCircle';
 import { PolicyTrack } from './PolicyTrack';
 import { PowerPanel } from './PowerPanel';
@@ -63,17 +66,55 @@ export function GameScreen({
   const [roleGate, setRoleGate] = useState<'reveal' | 'inspect' | null>(null);
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [voteStageOpen, setVoteStageOpen] = useState(false);
+  const [nomineeStageOpen, setNomineeStageOpen] = useState(false);
+  const [eraShift, setEraShift] = useState(false);
   const roleAutoOpenRef = useRef<string | null>(null);
+  const eraRef = useRef<'light' | 'dark'>(
+    game.firstThreeResolved ? 'dark' : 'light',
+  );
   const toast = useToast();
   const viewer = game.players.find((player) => player.id === viewerId);
   const phaseMeta = PHASE_META[game.phase] ?? PHASE_META.roleReveal;
   const reformsEnacted = game.enacted.democratic + game.enacted.fascist;
+  const era: 'light' | 'dark' = game.firstThreeResolved ? 'dark' : 'light';
+  const eraLabel =
+    era === 'light'
+      ? 'Saray Dönemi'
+      : game.bigVezirOutcome === 'idam'
+        ? 'Yas Gecesi'
+        : 'Hüküm Gecesi';
+
+  const closeVoteStage = useCallback(() => setVoteStageOpen(false), []);
+  const closeNomineeStage = useCallback(() => setNomineeStageOpen(false), []);
 
   // Oylama sırası gelince merkez oylama kartı otomatik açılır; kapatılsa
   // bile yeni oylama turunda yeniden açılır.
   useEffect(() => {
     setVoteStageOpen(view.canVote);
   }, [view.canVote, game.round, game.chancellorId]);
+
+  // Adaylık sırası Başkan'a geldiğinde seçim ekranın ortasında açılır.
+  useEffect(() => {
+    setNomineeStageOpen(view.canNominate);
+  }, [view.canNominate, game.round]);
+
+  // Tema portal bileşenlerine de ulaşsın diye body üzerinde tutulur.
+  useEffect(() => {
+    document.body.dataset.era = era;
+    const previous = eraRef.current;
+    eraRef.current = era;
+    if (previous === 'light' && era === 'dark') {
+      setEraShift(true);
+      const timer = window.setTimeout(() => setEraShift(false), 3200);
+      return () => {
+        window.clearTimeout(timer);
+        delete document.body.dataset.era;
+      };
+    }
+    return () => {
+      delete document.body.dataset.era;
+    };
+  }, [era]);
 
   // Oyuna girildiğinde rol kartı doğrudan ortada açılır; oyuncu kapatırsa
   // aynı oyun içinde tekrar kendiliğinden açılmaz.
@@ -94,7 +135,7 @@ export function GameScreen({
 
   const phaseNarrative: Partial<Record<string, string>> = {
     nomination: `${playerName(game.presidentId)} bir Başbakan adayı gösteriyor.`,
-    voting: `${playerName(game.presidentId)} → ${playerName(game.chancellorId)} hükümeti oylanıyor.`,
+    voting: `${playerName(game.presidentId)} başkanlığında ${playerName(game.chancellorId)} hükümeti oylanıyor.`,
     presidentDiscard: `${playerName(game.presidentId)} üç reform kartından birini eliyor.`,
     chancellorEnact: `${playerName(game.chancellorId)} reformu yürürlüğe koyuyor.`,
     peek: `${playerName(game.presidentId)} destenin üstündeki üç kartı inceliyor.`,
@@ -126,7 +167,18 @@ export function GameScreen({
   };
 
   return (
-    <div className={`game-screen game-screen--${mode}`}>
+    <div
+      className={`game-screen game-screen--${mode} game-screen--${era}${
+        game.firstThreeResolved && game.bigVezirOutcome === 'idam'
+          ? ' game-screen--mourning'
+          : ''
+      }`}
+      data-era={era}
+    >
+      <div className={`era-ambience era-ambience--${era}`} aria-hidden="true">
+        <span className="era-ambience__glow" />
+        <span className="era-ambience__motes" />
+      </div>
       <header className="game-topbar">
         <div className="game-topbar__left">
           <Logo compact />
@@ -149,6 +201,17 @@ export function GameScreen({
           {mode === 'multiplayer' && connection ? (
             <ConnectionPill connection={connection} />
           ) : null}
+          <span
+            className={`era-chip era-chip--${era}`}
+            title={
+              era === 'light'
+                ? 'Monarşi dönemi: sarayın ışıkları yanıyor.'
+                : 'Monarşi sona erdi: hüküm gecesi başladı.'
+            }
+          >
+            {era === 'light' ? <Sun size={13} /> : <Moon size={13} />}
+            {eraLabel}
+          </span>
         </div>
 
         <div className="game-topbar__right">
@@ -181,7 +244,7 @@ export function GameScreen({
         <section className="table-stage">
           <div className="table-stage__head">
             <div className="table-stage__brand">
-              <span className="table-stage__kicker">Hüküm Yolu · Tur {game.round}</span>
+              <span className="table-stage__kicker">Tur {game.round} tutanağı</span>
               <h1 className="table-stage__title">Masa</h1>
             </div>
             <div className="table-stage__meta">
@@ -282,6 +345,9 @@ export function GameScreen({
               onDismissError={onDismissError}
               onOpenRole={() => openRole()}
               onOpenVoteStage={view.canVote ? () => setVoteStageOpen(true) : undefined}
+              onOpenNomineeStage={
+                view.canNominate ? () => setNomineeStageOpen(true) : undefined
+              }
             />
           </div>
 
@@ -306,6 +372,8 @@ export function GameScreen({
         paused={
           roleGate !== null ||
           leaveOpen ||
+          nomineeStageOpen ||
+          voteStageOpen ||
           game.phase === 'gameOver'
         }
       />
@@ -315,9 +383,33 @@ export function GameScreen({
         view={view}
         onAction={onAction}
         actionPending={actionPending}
+        error={error}
         open={voteStageOpen}
-        onClose={() => setVoteStageOpen(false)}
+        onClose={closeVoteStage}
       />
+
+      <NomineeStage
+        game={game}
+        view={view}
+        onAction={onAction}
+        actionPending={actionPending}
+        error={error}
+        open={nomineeStageOpen}
+        onClose={closeNomineeStage}
+      />
+
+      {eraShift ? (
+        <div
+          className={`era-shift${
+            game.bigVezirOutcome === 'idam' ? ' era-shift--idam' : ''
+          }`}
+          aria-hidden="true"
+        >
+          <span className="era-shift__light" />
+          <span className="era-shift__dark" />
+          <span className="era-shift__line" />
+        </div>
+      ) : null}
 
       <PrivacyGate
         open={roleGate !== null}

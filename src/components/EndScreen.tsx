@@ -79,8 +79,7 @@ export function EndScreen({
           ) : null}
           <div className={cn('outcome-badge', viewerWon ? 'outcome-badge--win' : 'outcome-badge--lose')}>
             {viewerWon ? <Crown size={16} /> : null}
-            {viewerWon ? 'Kazandın' : 'Kaybettin'}
-            {viewer ? <span>· {viewer.name}</span> : null}
+            {`${viewerWon ? 'Kazandın' : 'Kaybettin'}${viewer ? `, ${viewer.name}` : ''}`}
           </div>
         </div>
 

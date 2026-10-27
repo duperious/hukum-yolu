@@ -435,7 +435,7 @@ export function EventStage({
         </div>
         <div className="event-stage__body">
           <span className="event-stage__kicker">
-            Tur {current.round || 1} · {info.kicker}
+            Tur {current.round || 1}, {info.kicker}
           </span>
           <h2 className="event-stage__title">{info.title}</h2>
           <p className="event-stage__text">{current.text}</p>

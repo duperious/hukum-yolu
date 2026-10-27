@@ -19,7 +19,7 @@ export function Logo({
       <span className="brand__text">
         <span className="brand__title">HÜKÜM YOLU</span>
         {!compact ? (
-          <span className="brand__tagline">Gizli roller · Tek hüküm</span>
+          <span className="brand__tagline">Gizli roller, tek hüküm</span>
         ) : null}
       </span>
     </span>

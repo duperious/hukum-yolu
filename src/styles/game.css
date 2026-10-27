@@ -2639,7 +2639,7 @@
 .vote-stage-overlay {
   position: fixed;
   inset: 0;
-  z-index: 140;
+  z-index: 155;
   display: grid;
   place-items: center;
   padding: 18px;
@@ -4042,6 +4042,12 @@
 
   .game-rail .game-log {
     grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1100px) {
+  .seat-card {
+    min-width: 128px;
   }
 }
 

@@ -43,9 +43,10 @@ export function getPublicGameState(state: GameState): PublicGameState {
     ...(revealed[p.id] ? { revealedRole: revealed[p.id] } : {}),
   }));
 
-  const votesSubmitted = living.filter(
-    (p) => state.votes[p.id] !== undefined,
-  ).length;
+  const votedPlayerIds = living
+    .filter((p) => state.votes[p.id] !== undefined)
+    .map((p) => p.id);
+  const votesSubmitted = votedPlayerIds.length;
 
   return {
     id: state.id,
@@ -66,6 +67,7 @@ export function getPublicGameState(state: GameState): PublicGameState {
     lastVoteResult: state.lastVoteResult,
     lastGovernment: state.lastGovernment ? { ...state.lastGovernment } : null,
     votesSubmitted,
+    votedPlayerIds,
     totalVoters: living.length,
     notrChoicePending: state.notrChoicePending,
     notrChoiceResolved: state.notrSide !== null,

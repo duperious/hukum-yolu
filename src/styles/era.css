@@ -1,0 +1,1384 @@
+/* =========================================================
+   Hüküm Yolu — dönem teması
+   İlk üç reform: sarayın aydınlık, mermer ve kâğıt dönemi.
+   Monarşi sona erdiğinde: ani gece geçişi, soğuk taş ve kor.
+   ========================================================= */
+
+/* ---------- aydınlık saray dönemi ---------- */
+
+body[data-era='light'] {
+  --bg: #f2e8d5;
+  --bg-soft: #faf3e4;
+  --panel: #fffaf0;
+  --panel-2: #f7edd9;
+  --panel-border: rgba(120, 86, 32, 0.26);
+  --panel-border-strong: rgba(120, 86, 32, 0.46);
+  --text: #2b1e12;
+  --text-soft: #3f2d1b;
+  --muted: #6a5238;
+  --dim: #7f674c;
+  --gold: #8a5f16;
+  --gold-bright: #6f4a0c;
+  --gold-deep: #c9a45f;
+  --blue: #2d5c83;
+  --blue-bright: #1e567b;
+  --teal: #247a74;
+  --red: #8b2a2a;
+  --red-bright: #9b2f35;
+  --violet: #6c4780;
+  --green: #3f7f5c;
+  --ink: #2b1e12;
+  --parchment: #2b1e12;
+  --parchment-2: #473522;
+  --parchment-3: #776046;
+  --ember: #b74e2a;
+  --ember-bright: #c15f36;
+  --shadow: 0 30px 80px -40px rgba(91, 65, 25, 0.38);
+  --shadow-soft: 0 16px 40px -24px rgba(91, 65, 25, 0.3);
+  --panel-bg: linear-gradient(
+    160deg,
+    rgba(255, 252, 245, 0.98),
+    rgba(247, 238, 221, 0.98)
+  );
+  background:
+    radial-gradient(1100px 620px at 50% -12%, rgba(255, 255, 255, 0.92), transparent 62%),
+    radial-gradient(900px 580px at 100% 108%, rgba(213, 176, 110, 0.18), transparent 64%),
+    radial-gradient(760px 520px at -8% 82%, rgba(114, 158, 188, 0.14), transparent 62%),
+    linear-gradient(180deg, #f8f0df 0%, #f0e4cd 100%);
+  background-attachment: fixed;
+  box-shadow: inset 0 3px 0 rgba(183, 142, 66, 0.9);
+  color: var(--text);
+}
+
+body[data-era='light']::before {
+  opacity: 0.34;
+  background-image:
+    linear-gradient(rgba(94, 68, 28, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(94, 68, 28, 0.035) 1px, transparent 1px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+}
+
+body[data-era='light'] ::selection {
+  background: rgba(169, 124, 42, 0.24);
+  color: #2b1e12;
+}
+
+body[data-era='light'] ::-webkit-scrollbar-track {
+  background: rgba(120, 86, 32, 0.08);
+}
+
+body[data-era='light'] ::-webkit-scrollbar-thumb {
+  background: rgba(120, 86, 32, 0.28);
+}
+
+body[data-era='light'] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 86, 32, 0.45);
+}
+
+body[data-era='light'] .game-screen {
+  background:
+    radial-gradient(1100px 620px at 50% -18%, rgba(255, 255, 255, 0.96), transparent 62%),
+    radial-gradient(900px 620px at 100% 100%, rgba(214, 176, 108, 0.18), transparent 62%),
+    radial-gradient(720px 520px at 0% 76%, rgba(119, 161, 190, 0.12), transparent 62%);
+}
+
+body[data-era='light'] .game-topbar {
+  border-bottom-color: rgba(139, 101, 35, 0.18);
+  background: linear-gradient(180deg, rgba(255, 250, 240, 0.97), rgba(249, 241, 226, 0.9));
+  box-shadow: 0 22px 48px -36px rgba(92, 64, 22, 0.45);
+}
+
+body[data-era='light'] .room-code-pill {
+  border-color: rgba(169, 124, 42, 0.32);
+  background: rgba(201, 162, 75, 0.1);
+  color: var(--gold-bright);
+}
+
+body[data-era='light'] .viewer-identity {
+  color: var(--text-soft);
+}
+
+body[data-era='light'] .game-topbar__leave {
+  color: var(--muted);
+}
+
+body[data-era='light'] .game-topbar__leave:hover {
+  border-color: rgba(139, 101, 35, 0.25);
+  background: rgba(120, 86, 32, 0.06);
+  color: var(--text);
+}
+
+body[data-era='light'] .panel {
+  border-color: var(--panel-border);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 252, 246, 0.98),
+    rgba(247, 238, 221, 0.98)
+  );
+  box-shadow:
+    0 18px 40px -26px rgba(91, 65, 25, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+body[data-era='light'] .panel::before {
+  border-color: rgba(169, 124, 42, 0.12);
+}
+
+body[data-era='light'] .panel__header-icon {
+  color: var(--gold);
+}
+
+body[data-era='light'] .table-stage {
+  border-color: rgba(139, 101, 35, 0.34);
+  background:
+    radial-gradient(900px 240px at 50% -40%, rgba(201, 162, 75, 0.16), transparent 70%),
+    linear-gradient(180deg, #fbf4e6 0%, #f3e7d1 58%, #e9d8ba 100%);
+  box-shadow:
+    0 28px 70px -44px rgba(91, 65, 25, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+body[data-era='light'] .table-stage::before {
+  border-color: rgba(169, 124, 42, 0.14);
+}
+
+body[data-era='light'] .table-stage__head {
+  border-bottom-color: rgba(169, 124, 42, 0.16);
+}
+
+body[data-era='light'] .table-stage__title {
+  color: var(--text);
+  text-shadow: 0 2px 20px rgba(201, 162, 75, 0.18);
+}
+
+body[data-era='light'] .table-stat {
+  border-color: rgba(169, 124, 42, 0.22);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--muted);
+}
+
+body[data-era='light'] .table-stat strong {
+  color: var(--text);
+}
+
+body[data-era='light'] .table-stat--vote {
+  border-color: rgba(46, 92, 131, 0.28);
+  color: var(--blue-bright);
+}
+
+body[data-era='light'] .seat-card {
+  background:
+    linear-gradient(180deg, #fffdf8 0%, #f8efdd 54%, #eddfc3 100%);
+  border-color: rgba(139, 101, 35, 0.45);
+  box-shadow:
+    0 10px 20px -16px rgba(91, 65, 25, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+body[data-era='light'] .phase-band {
+  border-color: rgba(169, 124, 42, 0.22);
+  border-left-color: var(--ember);
+  background:
+    linear-gradient(90deg, rgba(183, 78, 42, 0.08), transparent 36%),
+    rgba(255, 250, 240, 0.78);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+body[data-era='light'] .phase-band__main h2 {
+  color: var(--text);
+}
+
+body[data-era='light'] .phase-band__stats strong {
+  color: var(--gold-bright);
+}
+
+body[data-era='light'] .policy-board {
+  border-color: rgba(169, 124, 42, 0.3);
+  background:
+    radial-gradient(900px 260px at 50% -30%, rgba(201, 162, 75, 0.14), transparent 66%),
+    linear-gradient(180deg, #fffdf8 0%, #f8eedb 100%);
+  box-shadow:
+    0 26px 60px -44px rgba(91, 65, 25, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body[data-era='light'] .policy-board::before {
+  border-color: rgba(169, 124, 42, 0.14);
+}
+
+body[data-era='light'] .policy-board__head {
+  border-bottom-color: rgba(169, 124, 42, 0.18);
+}
+
+body[data-era='light'] .policy-board__title strong {
+  color: var(--text);
+  text-shadow: 0 2px 22px rgba(201, 162, 75, 0.18);
+}
+
+body[data-era='light'] .deck-art > span {
+  border-color: rgba(139, 101, 35, 0.45);
+  background: linear-gradient(160deg, #fffaf0, #e8d7b8);
+}
+
+body[data-era='light'] .deck-art > span:nth-child(3) {
+  background:
+    linear-gradient(160deg, rgba(169, 124, 42, 0.18), rgba(255, 250, 240, 0.95));
+}
+
+body[data-era='light'] .deck-art--discard > span {
+  border-color: rgba(43, 30, 18, 0.18);
+  background: linear-gradient(160deg, #f6ecd9, #e2d0b0);
+}
+
+body[data-era='light'] .policy-track--demokratik {
+  border-color: rgba(46, 92, 131, 0.3);
+  background:
+    radial-gradient(180px 100px at 100% 0%, rgba(74, 163, 223, 0.18), transparent 70%),
+    linear-gradient(145deg, #edf6f9 0%, #d3e6ef 100%);
+}
+
+body[data-era='light'] .policy-track--otokrat {
+  border-color: rgba(143, 43, 43, 0.28);
+  background:
+    radial-gradient(180px 100px at 100% 0%, rgba(224, 138, 134, 0.18), transparent 70%),
+    linear-gradient(145deg, #fbf0eb 0%, #efd8cf 100%);
+}
+
+body[data-era='light'] .policy-track__kicker,
+body[data-era='light'] .policy-track__hint {
+  color: rgba(43, 30, 18, 0.72);
+}
+
+body[data-era='light'] .policy-track__title h3,
+body[data-era='light'] .policy-track__count {
+  color: var(--text);
+}
+
+body[data-era='light'] .policy-track__count span {
+  color: rgba(43, 30, 18, 0.55);
+}
+
+body[data-era='light'] .policy-track__icon {
+  border-color: rgba(43, 30, 18, 0.18);
+  background: rgba(255, 255, 255, 0.45);
+  color: var(--text);
+}
+
+body[data-era='light'] .policy-step {
+  border-color: rgba(43, 30, 18, 0.16);
+  background: rgba(255, 255, 255, 0.38);
+  color: rgba(43, 30, 18, 0.58);
+}
+
+body[data-era='light'] .policy-step--current {
+  border-color: rgba(169, 124, 42, 0.7);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px rgba(169, 124, 42, 0.2);
+}
+
+body[data-era='light'] .policy-step--win .policy-step__num {
+  color: var(--gold-bright);
+}
+
+body[data-era='light'] .action-panel {
+  border-color: rgba(169, 124, 42, 0.26);
+  background:
+    radial-gradient(700px 300px at 50% -30%, rgba(201, 162, 75, 0.14), transparent 66%),
+    linear-gradient(165deg, rgba(255, 252, 245, 0.98), rgba(248, 239, 222, 0.98));
+}
+
+body[data-era='light'] .action-panel--active {
+  border-color: rgba(169, 124, 42, 0.48);
+  box-shadow:
+    0 0 0 1px rgba(169, 124, 42, 0.1),
+    0 26px 60px -38px rgba(91, 65, 25, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body[data-era='light'] .action-panel__round {
+  color: var(--dim);
+}
+
+body[data-era='light'] .phase-badge {
+  border-color: rgba(46, 92, 131, 0.28);
+  background: rgba(74, 163, 223, 0.1);
+  color: var(--blue-bright);
+}
+
+body[data-era='light'] .role-peek-btn {
+  border-color: var(--panel-border);
+  background: rgba(120, 86, 32, 0.05);
+  color: var(--muted);
+}
+
+body[data-era='light'] .role-peek-btn:hover {
+  border-color: rgba(169, 124, 42, 0.42);
+  color: var(--gold-bright);
+}
+
+body[data-era='light'] .action-panel__mission {
+  background:
+    linear-gradient(135deg, var(--mission-tint), rgba(255, 255, 255, 0.58));
+}
+
+body[data-era='light'] .action-panel__mission p {
+  color: var(--text-soft);
+}
+
+body[data-era='light'] .turn-badge {
+  border-color: rgba(169, 124, 42, 0.34);
+  background: rgba(201, 162, 75, 0.12);
+  color: var(--gold-bright);
+}
+
+body[data-era='light'] .action-note {
+  border-color: var(--panel-border);
+  background: rgba(120, 86, 32, 0.05);
+  color: var(--muted);
+}
+
+body[data-era='light'] .action-note--dead {
+  border-color: rgba(143, 43, 43, 0.24);
+  background: rgba(143, 43, 43, 0.07);
+  color: #7d2424;
+}
+
+body[data-era='light'] .action-note--success {
+  border-color: rgba(63, 127, 92, 0.28);
+  background: rgba(63, 127, 92, 0.08);
+  color: #2f6548;
+}
+
+body[data-era='light'] .action-note--vote {
+  border-color: rgba(169, 124, 42, 0.3);
+  background: rgba(201, 162, 75, 0.1);
+  color: #6f4d14;
+}
+
+body[data-era='light'] .action-note--nominate {
+  border-color: rgba(169, 124, 42, 0.28);
+  background: rgba(201, 162, 75, 0.09);
+  color: #6f4d14;
+}
+
+body[data-era='light'] .action-illustration {
+  border-color: rgba(46, 92, 131, 0.26);
+  background: rgba(74, 163, 223, 0.09);
+  color: var(--blue-bright);
+}
+
+body[data-era='light'] .waiting-illustration {
+  border-color: rgba(120, 86, 32, 0.24);
+  background: rgba(120, 86, 32, 0.05);
+  color: var(--muted);
+}
+
+body[data-era='light'] .waiting-illustration svg {
+  color: var(--dim);
+}
+
+body[data-era='light'] .government-card {
+  border-color: var(--panel-border);
+  background: rgba(120, 86, 32, 0.06);
+}
+
+body[data-era='light'] .government-card__seat strong {
+  color: var(--text-soft);
+}
+
+body[data-era='light'] .target-option {
+  border-color: var(--panel-border);
+  background: #fffdf8;
+  color: var(--text-soft);
+}
+
+body[data-era='light'] .target-option:hover:not(:disabled) {
+  border-color: rgba(46, 92, 131, 0.4);
+  background: rgba(74, 163, 223, 0.07);
+}
+
+body[data-era='light'] .target-option--selected {
+  border-color: rgba(169, 124, 42, 0.6);
+  background: rgba(201, 162, 75, 0.12);
+  box-shadow: 0 0 0 2px rgba(169, 124, 42, 0.14);
+}
+
+body[data-era='light'] .target-option--danger:hover:not(:disabled) {
+  border-color: rgba(143, 43, 43, 0.45);
+  background: rgba(143, 43, 43, 0.07);
+}
+
+body[data-era='light'] .policy-card {
+  border-color: var(--panel-border);
+  background: #fffdf8;
+  color: var(--text-soft);
+}
+
+body[data-era='light'] .policy-card--demokratik {
+  border-color: rgba(46, 92, 131, 0.26);
+  background:
+    radial-gradient(120px 80px at 0% 0%, rgba(74, 163, 223, 0.16), transparent 70%),
+    #f8fcfd;
+}
+
+body[data-era='light'] .policy-card--otokrat {
+  border-color: rgba(143, 43, 43, 0.26);
+  background:
+    radial-gradient(120px 80px at 0% 0%, rgba(192, 71, 79, 0.14), transparent 70%),
+    #fdf8f6;
+}
+
+body[data-era='light'] .policy-card--selected {
+  border-color: rgba(169, 124, 42, 0.65);
+  box-shadow:
+    0 0 0 2px rgba(169, 124, 42, 0.18),
+    0 10px 24px -18px rgba(91, 65, 25, 0.5);
+}
+
+body[data-era='light'] .notr-choice {
+  border-color: var(--panel-border);
+  background: #fffdf8;
+  color: var(--muted);
+}
+
+body[data-era='light'] .notr-choice--blue:hover:not(:disabled),
+body[data-era='light'] .notr-choice--blue.notr-choice--selected {
+  border-color: rgba(46, 92, 131, 0.5);
+  background: linear-gradient(180deg, #f7fbfd, #e5f1f7);
+  color: var(--blue-bright);
+}
+
+body[data-era='light'] .notr-choice--red:hover:not(:disabled),
+body[data-era='light'] .notr-choice--red.notr-choice--selected {
+  border-color: rgba(143, 43, 43, 0.45);
+  background: linear-gradient(180deg, #fdf7f3, #f2e0d8);
+  color: var(--red);
+}
+
+body[data-era='light'] .notr-choice--selected {
+  box-shadow: 0 0 0 2px rgba(169, 124, 42, 0.22);
+}
+
+body[data-era='light'] .power-block {
+  border-color: rgba(169, 124, 42, 0.16);
+  background: rgba(120, 86, 32, 0.05);
+}
+
+body[data-era='light'] .log-entry {
+  background: rgba(120, 86, 32, 0.05);
+  color: #59422b;
+}
+
+body[data-era='light'] .log-entry__round,
+body[data-era='light'] .log-entry__icon {
+  color: var(--dim);
+}
+
+body[data-era='light'] .log-entry--win {
+  background: rgba(201, 162, 75, 0.1);
+  color: var(--gold-bright);
+}
+
+body[data-era='light'] .log-entry--power .log-entry__icon,
+body[data-era='light'] .log-entry--transition .log-entry__icon {
+  color: var(--violet);
+}
+
+body[data-era='light'] .government-panel__meta {
+  border-top-color: rgba(169, 124, 42, 0.14);
+}
+
+body[data-era='light'] .failed-votes__dot {
+  border-color: rgba(120, 86, 32, 0.28);
+}
+
+body[data-era='light'] .result-badge--accept {
+  border-color: rgba(63, 127, 92, 0.3);
+  background: rgba(63, 127, 92, 0.08);
+  color: #2f6548;
+}
+
+body[data-era='light'] .result-badge--reject {
+  border-color: rgba(143, 43, 43, 0.26);
+  background: rgba(143, 43, 43, 0.07);
+  color: #7d2424;
+}
+
+body[data-era='light'] .role-card {
+  border-color: var(--role-border, rgba(139, 101, 35, 0.26));
+  background:
+    radial-gradient(
+      420px 220px at 100% 0%,
+      var(--role-tint, rgba(148, 163, 184, 0.08)),
+      transparent 65%
+    ),
+    linear-gradient(165deg, #fffdf8 0%, #f5ead6 82%);
+  box-shadow: 0 30px 80px -40px rgba(91, 65, 25, 0.45);
+}
+
+body[data-era='light'] .role-card--blue {
+  --role-accent: #245a80;
+  --role-tint: rgba(74, 163, 223, 0.12);
+  --role-border: rgba(46, 92, 131, 0.32);
+}
+
+body[data-era='light'] .role-card--red {
+  --role-accent: #8b2a2a;
+  --role-tint: rgba(192, 71, 79, 0.12);
+  --role-border: rgba(143, 43, 43, 0.3);
+}
+
+body[data-era='light'] .role-card--gold {
+  --role-accent: #8a5f16;
+  --role-tint: rgba(201, 162, 75, 0.14);
+  --role-border: rgba(139, 101, 35, 0.34);
+}
+
+body[data-era='light'] .role-card--violet {
+  --role-accent: #6c4780;
+  --role-tint: rgba(154, 123, 214, 0.12);
+  --role-border: rgba(108, 71, 128, 0.3);
+}
+
+body[data-era='light'] .role-card__name {
+  color: var(--text);
+}
+
+body[data-era='light'] .role-card__description {
+  color: var(--text-soft);
+}
+
+body[data-era='light'] .role-card__mission {
+  border-color: rgba(139, 101, 35, 0.35);
+  background:
+    linear-gradient(180deg, rgba(255, 248, 232, 0.98), rgba(243, 227, 196, 0.98));
+  color: #2b1e12;
+}
+
+body[data-era='light'] .role-card__mission-label {
+  color: #8a5f16;
+}
+
+body[data-era='light'] .role-card__mission p {
+  color: #2b1e12;
+}
+
+body[data-era='light'] .role-card__section h3 {
+  color: var(--role-accent);
+}
+
+body[data-era='light'] .known-list__item {
+  border-color: rgba(120, 86, 32, 0.14);
+  background: rgba(120, 86, 32, 0.05);
+}
+
+body[data-era='light'] .status-note {
+  background: rgba(120, 86, 32, 0.05);
+}
+
+body[data-era='light'] .role-card__footer {
+  border-top-color: rgba(120, 86, 32, 0.16);
+}
+
+body[data-era='light'] .role-card__privacy {
+  color: var(--dim);
+}
+
+body[data-era='light'] .privacy-gate {
+  background:
+    radial-gradient(700px 420px at 50% 0%, rgba(201, 162, 75, 0.16), transparent 62%),
+    rgba(247, 240, 226, 0.92);
+}
+
+body[data-era='light'] .privacy-gate__locked {
+  border-color: rgba(169, 124, 42, 0.3);
+  background:
+    radial-gradient(500px 240px at 50% 0%, rgba(201, 162, 75, 0.14), transparent 65%),
+    linear-gradient(165deg, #fffdf8, #f3e7d1);
+  box-shadow: 0 30px 80px -40px rgba(91, 65, 25, 0.42);
+}
+
+body[data-era='light'] .privacy-gate__icon {
+  border-color: rgba(169, 124, 42, 0.4);
+  background: rgba(201, 162, 75, 0.1);
+  color: var(--gold-bright);
+}
+
+body[data-era='light'] .modal-overlay {
+  background: rgba(84, 64, 35, 0.42);
+}
+
+body[data-era='light'] .modal {
+  border-color: rgba(169, 124, 42, 0.34);
+  background:
+    radial-gradient(700px 300px at 50% -10%, rgba(201, 162, 75, 0.14), transparent 62%),
+    linear-gradient(165deg, #fffdf8 0%, #f4e8d3 72%);
+  box-shadow:
+    0 30px 80px -40px rgba(91, 65, 25, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body[data-era='light'] .modal::before {
+  border-color: rgba(169, 124, 42, 0.12);
+}
+
+body[data-era='light'] .modal__footer {
+  border-top-color: rgba(120, 86, 32, 0.14);
+}
+
+body[data-era='light'] .btn--outline {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: var(--panel-border-strong);
+  color: var(--text-soft);
+}
+
+body[data-era='light'] .btn--outline:hover:not(:disabled) {
+  border-color: rgba(169, 124, 42, 0.5);
+  background: rgba(201, 162, 75, 0.12);
+  color: var(--text);
+}
+
+body[data-era='light'] .btn--ghost {
+  color: var(--muted);
+}
+
+body[data-era='light'] .btn--ghost:hover:not(:disabled) {
+  background: rgba(120, 86, 32, 0.08);
+  color: var(--text);
+}
+
+body[data-era='light'] .btn--secondary {
+  border-color: rgba(46, 92, 131, 0.28);
+  background: rgba(47, 93, 138, 0.1);
+  color: var(--blue-bright);
+}
+
+body[data-era='light'] .btn--secondary:hover:not(:disabled) {
+  border-color: rgba(46, 92, 131, 0.44);
+  background: rgba(47, 93, 138, 0.16);
+}
+
+body[data-era='light'] .vote-stage-overlay {
+  background: rgba(84, 64, 35, 0.4);
+}
+
+body[data-era='light'] .vote-stage {
+  border-color: rgba(169, 124, 42, 0.4);
+  background:
+    radial-gradient(560px 260px at 50% -30%, rgba(201, 162, 75, 0.18), transparent 66%),
+    linear-gradient(180deg, #fffdf8 0%, #f5e9d3 100%);
+  box-shadow:
+    0 44px 90px -42px rgba(78, 55, 20, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+body[data-era='light'] .vote-stage__title {
+  color: var(--text);
+}
+
+body[data-era='light'] .vote-stage__government {
+  border-color: rgba(169, 124, 42, 0.24);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+body[data-era='light'] .vote-stage__seat strong {
+  color: var(--text);
+}
+
+body[data-era='light'] .vote-stage__seat .vote-stage__avatar {
+  border-color: rgba(169, 124, 42, 0.55);
+  background: rgba(201, 162, 75, 0.12);
+  box-shadow: 0 8px 18px -14px rgba(91, 65, 25, 0.55);
+}
+
+body[data-era='light'] .vote-stage__seat--chancellor .vote-stage__avatar {
+  border-color: rgba(46, 92, 131, 0.45);
+  background: rgba(74, 163, 223, 0.1);
+}
+
+body[data-era='light'] .vote-stage__choice--yes {
+  border-color: rgba(169, 124, 42, 0.5);
+  background:
+    radial-gradient(240px 130px at 50% 0%, rgba(201, 162, 75, 0.22), transparent 70%),
+    linear-gradient(180deg, #fffdf8, #f4e6cc);
+}
+
+body[data-era='light'] .vote-stage__choice--no {
+  border-color: rgba(183, 78, 42, 0.42);
+  background:
+    radial-gradient(240px 130px at 50% 0%, rgba(196, 86, 47, 0.16), transparent 70%),
+    linear-gradient(180deg, #fffdf8, #f8e7dc);
+}
+
+body[data-era='light'] .vote-stage__choice strong {
+  color: var(--text);
+}
+
+body[data-era='light'] .vote-stage__choice small {
+  color: var(--muted);
+}
+
+body[data-era='light'] .vote-stage__note {
+  color: var(--muted);
+}
+
+body[data-era='light'] .vote-stage__done {
+  border-color: rgba(169, 124, 42, 0.32);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+body[data-era='light'] .vote-stage__done p {
+  color: var(--text);
+}
+
+body[data-era='light'] .vote-stage__done-icon {
+  border-color: rgba(169, 124, 42, 0.5);
+  background: rgba(201, 162, 75, 0.14);
+  color: var(--gold-bright);
+}
+
+body[data-era='light'] .vote-stage__done-count {
+  color: var(--muted);
+}
+
+body[data-era='light'] .nominee-card {
+  border-color: var(--panel-border);
+  background: #fffdf8;
+  color: var(--text-soft);
+}
+
+body[data-era='light'] .nominee-card:hover:not(:disabled) {
+  border-color: rgba(46, 92, 131, 0.4);
+  background: rgba(74, 163, 223, 0.07);
+}
+
+body[data-era='light'] .nominee-card--selected {
+  border-color: rgba(169, 124, 42, 0.6);
+  background: rgba(201, 162, 75, 0.12);
+  box-shadow: 0 0 0 2px rgba(169, 124, 42, 0.14);
+}
+
+body[data-era='light'] .nominee-stage__actions {
+  border-top-color: rgba(120, 86, 32, 0.16);
+}
+
+body[data-era='light'] .event-stage {
+  background:
+    radial-gradient(600px 360px at 50% 50%, rgba(201, 162, 75, 0.12), transparent 70%),
+    rgba(247, 240, 226, 0.76);
+}
+
+body[data-era='light'] .event-stage__card {
+  background:
+    radial-gradient(420px 200px at 50% -30%, var(--stage-tint), transparent 65%),
+    linear-gradient(165deg, #fffdf8 0%, #f5e9d3 82%);
+  box-shadow:
+    0 36px 80px -40px rgba(78, 55, 20, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+body[data-era='light'] .event-stage__card--violet {
+  --stage-accent: var(--violet);
+  --stage-border: rgba(108, 71, 128, 0.42);
+  --stage-tint: rgba(154, 123, 214, 0.13);
+}
+
+body[data-era='light'] .event-stage__title {
+  color: var(--text);
+}
+
+body[data-era='light'] .event-stage__text {
+  color: var(--muted);
+}
+
+body[data-era='light'] .event-stage__hint {
+  color: var(--dim);
+}
+
+body[data-era='light'] .event-stage__queue {
+  border-color: rgba(169, 124, 42, 0.32);
+  background: rgba(201, 162, 75, 0.12);
+  color: var(--gold-bright);
+}
+
+body[data-era='light'] .event-stage__skip {
+  border-color: rgba(120, 86, 32, 0.22);
+  background: rgba(120, 86, 32, 0.05);
+  color: var(--text-soft);
+}
+
+body[data-era='light'] .event-stage__skip:hover {
+  border-color: rgba(169, 124, 42, 0.5);
+  color: var(--gold-bright);
+}
+
+body[data-era='light'] .event-stage__card-back {
+  border-color: rgba(139, 101, 35, 0.55);
+  background:
+    linear-gradient(135deg, rgba(201, 162, 75, 0.18), transparent 42%),
+    repeating-linear-gradient(
+      45deg,
+      rgba(139, 101, 35, 0.09) 0 2px,
+      transparent 2px 7px
+    ),
+    linear-gradient(180deg, #fff8e9, #ead8b8);
+  box-shadow:
+    0 12px 24px -14px rgba(78, 55, 20, 0.5),
+    inset 0 0 0 2px rgba(169, 124, 42, 0.08);
+}
+
+body[data-era='light'] .event-stage__seal {
+  box-shadow:
+    0 0 0 6px rgba(169, 124, 42, 0.08),
+    0 14px 30px -18px rgba(78, 55, 20, 0.4);
+}
+
+body[data-era='light'] .event-banner {
+  border-color: rgba(169, 124, 42, 0.4);
+  background: linear-gradient(180deg, rgba(255, 252, 245, 0.98), rgba(248, 239, 222, 0.98));
+  box-shadow:
+    0 24px 54px -24px rgba(78, 55, 20, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body[data-era='light'] .event-banner__body p {
+  color: var(--text);
+}
+
+body[data-era='light'] .event-banner--system,
+body[data-era='light'] .event-banner--bot {
+  --banner-accent: rgba(43, 30, 18, 0.65);
+}
+
+/* ---------- gece dönemi: soğuk taş, kor ve ay ışığı ---------- */
+
+body[data-era='dark'] {
+  background:
+    radial-gradient(1100px 620px at 50% -12%, rgba(74, 104, 140, 0.12), transparent 62%),
+    radial-gradient(900px 580px at 100% 108%, rgba(111, 38, 28, 0.3), transparent 64%),
+    radial-gradient(760px 520px at -8% 82%, rgba(47, 93, 138, 0.08), transparent 62%),
+    #080a10;
+  box-shadow: inset 0 3px 0 rgba(143, 43, 43, 0.95);
+}
+
+body[data-era='dark']::before {
+  opacity: 0.4;
+}
+
+body[data-era='dark'] .game-screen {
+  background:
+    radial-gradient(1100px 600px at 50% -18%, rgba(96, 130, 170, 0.1), transparent 60%),
+    radial-gradient(900px 620px at 100% 100%, rgba(143, 43, 43, 0.18), transparent 62%),
+    radial-gradient(720px 520px at 0% 76%, rgba(47, 93, 138, 0.06), transparent 62%);
+}
+
+body[data-era='dark'] .game-topbar {
+  border-bottom-color: rgba(143, 43, 43, 0.18);
+  background: linear-gradient(180deg, rgba(6, 8, 13, 0.99), rgba(8, 10, 15, 0.9));
+  box-shadow: 0 22px 48px -34px #000;
+}
+
+body[data-era='dark'] .panel {
+  border-color: rgba(201, 162, 75, 0.14);
+  background: linear-gradient(160deg, rgba(18, 22, 31, 0.96), rgba(8, 10, 15, 0.98));
+}
+
+body[data-era='dark'] .table-stage {
+  border-color: rgba(201, 162, 75, 0.2);
+  background:
+    radial-gradient(900px 240px at 50% -40%, rgba(201, 162, 75, 0.09), transparent 70%),
+    linear-gradient(180deg, #121722 0%, #0b0f17 58%, #070a10 100%);
+  box-shadow:
+    0 28px 70px -42px #000,
+    inset 0 1px 0 rgba(246, 236, 217, 0.05);
+}
+
+body[data-era='dark'] .phase-band {
+  border-color: rgba(201, 162, 75, 0.16);
+  background:
+    linear-gradient(90deg, rgba(196, 86, 47, 0.1), transparent 36%),
+    rgba(7, 10, 15, 0.82);
+}
+
+body[data-era='dark'] .policy-board {
+  border-color: rgba(201, 162, 75, 0.2);
+  background:
+    radial-gradient(900px 260px at 50% -30%, rgba(201, 162, 75, 0.08), transparent 66%),
+    linear-gradient(180deg, #11161f 0%, #080b11 100%);
+  box-shadow:
+    0 26px 60px -42px #000,
+    inset 0 1px 0 rgba(246, 236, 217, 0.05);
+}
+
+body[data-era='dark'] .action-panel {
+  border-color: rgba(201, 162, 75, 0.2);
+  background:
+    radial-gradient(700px 300px at 50% -30%, rgba(201, 162, 75, 0.07), transparent 66%),
+    linear-gradient(165deg, rgba(20, 24, 34, 0.97), rgba(8, 10, 15, 0.99));
+}
+
+body[data-era='dark'] .vote-stage {
+  border-color: rgba(201, 162, 75, 0.34);
+  background:
+    radial-gradient(560px 260px at 50% -30%, rgba(201, 162, 75, 0.1), transparent 66%),
+    linear-gradient(180deg, #141924 0%, #070a10 100%);
+}
+
+body[data-era='dark'] .event-stage__card {
+  background:
+    radial-gradient(420px 200px at 50% -30%, var(--stage-tint), transparent 65%),
+    linear-gradient(165deg, #141924 0%, #070a10 82%);
+}
+
+body[data-era='dark'] .modal {
+  background:
+    radial-gradient(700px 300px at 50% -10%, rgba(201, 162, 75, 0.1), transparent 62%),
+    linear-gradient(165deg, #141924 0%, #070a10 72%);
+}
+
+body[data-era='dark'] .privacy-gate__locked {
+  background:
+    radial-gradient(500px 240px at 50% 0%, rgba(201, 162, 75, 0.1), transparent 65%),
+    linear-gradient(165deg, #111a29, #080c13);
+}
+
+body[data-era='dark'] .role-card {
+  background:
+    radial-gradient(
+      420px 220px at 100% 0%,
+      var(--role-tint, rgba(148, 163, 184, 0.08)),
+      transparent 65%
+    ),
+    linear-gradient(165deg, #121b29 0%, #080c13 80%);
+}
+
+/* ---------- dönem rozeti ---------- */
+
+.era-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid rgba(201, 162, 75, 0.26);
+  border-radius: 999px;
+  background: rgba(201, 162, 75, 0.08);
+  color: var(--gold-bright);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.era-chip--light {
+  border-color: rgba(169, 124, 42, 0.32);
+  background: rgba(255, 255, 255, 0.52);
+  color: #8a5f16;
+}
+
+.era-chip--dark {
+  border-color: rgba(143, 43, 43, 0.38);
+  background: rgba(143, 43, 43, 0.14);
+  color: #e6b0a0;
+}
+
+.game-screen--mourning .era-chip--dark {
+  border-color: rgba(196, 86, 47, 0.5);
+  background: rgba(143, 43, 43, 0.2);
+  color: #f0a58a;
+}
+
+/* ---------- atmosfer katmanı ---------- */
+
+.era-ambience {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.era-ambience__glow,
+.era-ambience__motes {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.era-ambience--light .era-ambience__glow {
+  background:
+    linear-gradient(
+      118deg,
+      rgba(255, 248, 220, 0.55) 0%,
+      rgba(255, 246, 214, 0.18) 26%,
+      transparent 52%
+    ),
+    radial-gradient(900px 420px at 50% -8%, rgba(255, 255, 255, 0.55), transparent 70%);
+  mix-blend-mode: screen;
+}
+
+.era-ambience--light .era-ambience__motes {
+  background-image: radial-gradient(circle, rgba(169, 124, 42, 0.24) 0 1px, transparent 1.6px);
+  background-size: 68px 68px;
+  opacity: 0.28;
+  animation: era-motes 34s linear infinite;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 80%);
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 80%);
+}
+
+.era-ambience--dark .era-ambience__glow {
+  background:
+    radial-gradient(900px 460px at 50% -12%, rgba(96, 130, 170, 0.14), transparent 66%),
+    radial-gradient(800px 500px at 82% 110%, rgba(143, 43, 43, 0.2), transparent 62%);
+}
+
+.era-ambience--dark .era-ambience__motes {
+  background-image:
+    radial-gradient(circle, rgba(224, 113, 69, 0.75) 0 1.4px, transparent 2px),
+    radial-gradient(circle, rgba(201, 162, 75, 0.35) 0 1px, transparent 1.6px);
+  background-size: 210px 260px, 140px 190px;
+  background-position: 0 0, 60px 90px;
+  opacity: 0.5;
+  animation: era-embers 26s linear infinite;
+  mask-image: linear-gradient(180deg, transparent 10%, black 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 10%, black 55%, transparent 100%);
+}
+
+.era-ambience--dark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 180px 40px rgba(2, 4, 8, 0.78);
+}
+
+.game-screen--mourning .era-ambience--dark .era-ambience__glow {
+  background:
+    radial-gradient(900px 460px at 50% -12%, rgba(96, 130, 170, 0.08), transparent 66%),
+    radial-gradient(800px 500px at 50% 110%, rgba(143, 43, 43, 0.32), transparent 64%);
+  animation: era-mourning 6s ease-in-out infinite alternate;
+}
+
+@keyframes era-motes {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 68px 340px;
+  }
+}
+
+@keyframes era-embers {
+  from {
+    background-position: 0 0, 60px 90px;
+  }
+  to {
+    background-position: 30px -260px, 90px -100px;
+  }
+}
+
+@keyframes era-mourning {
+  from {
+    opacity: 0.72;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- monarşi geçişi ---------- */
+
+.era-shift {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.era-shift__light,
+.era-shift__dark,
+.era-shift__line {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.era-shift__light {
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(255, 247, 218, 0.98) 0%,
+      rgba(255, 244, 211, 0.7) 24%,
+      rgba(247, 235, 210, 0.25) 48%,
+      transparent 70%
+    );
+  opacity: 0;
+  animation: era-light-out 2.8s ease-out forwards;
+}
+
+.era-shift__dark {
+  background:
+    radial-gradient(
+      circle at 50% 44%,
+      rgba(8, 10, 16, 0.15) 0%,
+      rgba(5, 7, 12, 0.55) 34%,
+      rgba(2, 3, 7, 0.96) 72%,
+      #010205 100%
+    );
+  opacity: 0;
+  animation: era-dark-in 3.1s ease-in forwards;
+}
+
+.era-shift__line {
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(231, 204, 138, 0.9),
+    rgba(196, 86, 47, 0.8),
+    transparent
+  );
+  box-shadow: 0 0 24px rgba(231, 204, 138, 0.8);
+  transform: translate(-50%, -50%);
+  animation: era-line 2.4s ease-out forwards;
+}
+
+.era-shift--idam .era-shift__dark {
+  background:
+    radial-gradient(
+      circle at 50% 44%,
+      rgba(28, 6, 8, 0.2) 0%,
+      rgba(12, 3, 6, 0.6) 34%,
+      rgba(3, 2, 4, 0.97) 72%,
+      #010102 100%
+    );
+}
+
+.era-shift--idam .era-shift__line {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(224, 113, 69, 0.9),
+    rgba(143, 43, 43, 0.85),
+    transparent
+  );
+  box-shadow: 0 0 28px rgba(196, 86, 47, 0.9);
+}
+
+@keyframes era-light-out {
+  0% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  12% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+@keyframes era-dark-in {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.18;
+  }
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes era-line {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  22% {
+    width: 42vw;
+    opacity: 1;
+  }
+  60% {
+    width: 70vw;
+    opacity: 0.8;
+  }
+  100% {
+    width: 100vw;
+    opacity: 0;
+  }
+}
+
+/* ---------- adaylık sahnesi ---------- */
+
+.vote-stage__pending {
+  color: var(--dim);
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.vote-stage__done-icon--counting {
+  animation: none;
+}
+
+.nominee-stage {
+  width: min(620px, 100%);
+}
+
+.nominee-stage__president {
+  margin-top: 14px;
+}
+
+.nominee-stage__empty-avatar {
+  color: var(--gold-bright);
+}
+
+.nominee-stage__hint {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.nominee-stage__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.nominee-card {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  padding: 9px 11px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: rgba(16, 11, 8, 0.42);
+  color: var(--text-soft);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.nominee-card:hover:not(:disabled) {
+  border-color: rgba(201, 162, 75, 0.5);
+  background: rgba(201, 162, 75, 0.08);
+  transform: translateY(-1px);
+}
+
+.nominee-card--selected {
+  border-color: rgba(201, 162, 75, 0.65);
+  background: rgba(201, 162, 75, 0.12);
+  box-shadow: 0 0 0 2px rgba(201, 162, 75, 0.14);
+}
+
+.nominee-card:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.nominee-card__name {
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nominee-card__tag {
+  margin-left: auto;
+  padding: 2px 6px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 999px;
+  color: var(--dim);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.nominee-card__check {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  margin-left: auto;
+  border: 1px solid rgba(201, 162, 75, 0.35);
+  border-radius: 50%;
+  color: var(--gold-bright);
+}
+
+.nominee-stage__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(201, 162, 75, 0.16);
+}
+
+.nominee-stage__selection {
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.nominee-stage__empty {
+  margin-top: 14px;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .nominee-stage__list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .nominee-stage__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .nominee-stage__actions .btn {
+    width: 100%;
+  }
+}
+
+/* ---------- hareket azaltma ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .era-ambience--light .era-ambience__motes,
+  .era-ambience--dark .era-ambience__motes,
+  .game-screen--mourning .era-ambience--dark .era-ambience__glow {
+    animation: none;
+  }
+
+  .era-shift__light,
+  .era-shift__dark,
+  .era-shift__line {
+    animation-duration: 0.01ms;
+  }
+}

@@ -106,6 +106,7 @@ export function ActionPanel({
   onDismissError,
   onOpenRole,
   onOpenVoteStage,
+  onOpenNomineeStage,
 }: {
   game: PublicGameState;
   view: PrivateView;
@@ -115,14 +116,13 @@ export function ActionPanel({
   onDismissError?: () => void;
   onOpenRole: () => void;
   onOpenVoteStage?: () => void;
+  onOpenNomineeStage?: () => void;
 }) {
-  const [selectedNominee, setSelectedNominee] = useState<string | null>(null);
   const [selectedCard, setSelectedCard] = useState<PolicyCardType | null>(null);
   const [selectedSide, setSelectedSide] = useState<NotrSide | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
 
   useEffect(() => {
-    setSelectedNominee(null);
     setSelectedCard(null);
     setSelectedSide(null);
     setSelectedTarget(null);
@@ -134,9 +134,12 @@ export function ActionPanel({
   const byId = new Map(game.players.map((player) => [player.id, player]));
   const presidentName = playerName(game, game.presidentId);
   const chancellorName = playerName(game, game.chancellorId);
-  const eligible = view.eligibleChancellorIds
-    .map((id) => byId.get(id))
-    .filter((player): player is NonNullable<typeof player> => Boolean(player));
+  const votedIds = game.votedPlayerIds ?? [];
+  const pendingVoters = game.players.filter(
+    (player) => player.alive && !votedIds.includes(player.id),
+  );
+  const pendingHumans = pendingVoters.filter((player) => !player.isBot);
+  const onlyBotsPending = pendingVoters.length > 0 && pendingHumans.length === 0;
   const assassinationTargets = view.assassinationTargets
     .map((id) => byId.get(id))
     .filter((player): player is NonNullable<typeof player> => Boolean(player));
@@ -172,7 +175,7 @@ export function ActionPanel({
         </span>
         <div>
           <span className="action-panel__mission-kicker">
-            Görevin · {roleInfo.name}
+            Görevin: {roleInfo.name}
           </span>
           <p>{roleInfo.mission}</p>
         </div>
@@ -231,52 +234,24 @@ export function ActionPanel({
                 : `Başkan ${presidentName} bir Başbakan adayı seçiyor.`}
             </p>
             {view.canNominate ? (
-              eligible.length > 0 ? (
-                <>
-                  <div className="target-list">
-                    {eligible.map((player) => (
-                      <button
-                        key={player.id}
-                        type="button"
-                        className={cn(
-                          'target-option',
-                          selectedNominee === player.id && 'target-option--selected',
-                        )}
-                        onClick={() => setSelectedNominee(player.id)}
-                        aria-pressed={selectedNominee === player.id}
-                        disabled={actionPending}
-                      >
-                        <Avatar avatarId={player.avatarId} size="sm" />
-                        <span>{player.name}</span>
-                        {player.id === game.previousChancellorId ? (
-                          <span className="muted">Önceki PM</span>
-                        ) : null}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="confirm-bar">
-                    <span className="confirm-bar__hint">
-                      {selectedNominee
-                        ? `Aday: ${playerName(game, selectedNominee)}`
-                        : 'Bir aday seç.'}
-                    </span>
-                    <Button
-                      variant="primary"
-                      onClick={() => {
-                        if (!selectedNominee) return;
-                        onAction({ type: 'nominate', targetId: selectedNominee });
-                      }}
-                      disabled={!selectedNominee || actionPending}
-                      loading={actionPending}
-                      icon={<UserPlus size={16} />}
-                    >
-                      Aday Göster
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <p className="muted">Uygun aday bulunamadı.</p>
-              )
+              <>
+                <div className="action-note action-note--nominate">
+                  <UserPlus size={16} />
+                  <p>
+                    Aday seçimi ekranın ortasında açılır. Uygun bir oyuncuyu seçip
+                    onayladığında oylama başlar.
+                  </p>
+                </div>
+                {onOpenNomineeStage ? (
+                  <Button
+                    variant="primary"
+                    onClick={onOpenNomineeStage}
+                    icon={<UserPlus size={16} />}
+                  >
+                    Aday Seçimini Aç
+                  </Button>
+                ) : null}
+              </>
             ) : (
               <div className="waiting-illustration">
                 <Landmark size={30} />
@@ -339,14 +314,22 @@ export function ActionPanel({
                 <Check size={16} />
                 <p>
                   Oyun kaydedildi: <strong>{view.yourVote ? 'Evet' : 'Hayır'}</strong>.{' '}
-                  {game.votesSubmitted}/{game.totalVoters} oy geldi.
+                  {game.votesSubmitted}/{game.totalVoters} oy geldi.{' '}
+                  {pendingHumans.length > 0
+                    ? `${pendingHumans.length} oy bekleniyor.`
+                    : onlyBotsPending
+                      ? 'Botların oyları tamamlanıyor…'
+                      : 'Oylar sayılıyor…'}
                 </p>
               </div>
             ) : view.isAlive ? (
               <div className="waiting-illustration">
                 <Vote size={30} />
                 <span>
-                  {game.votesSubmitted}/{game.totalVoters} oy geldi. Diğer oyuncular bekleniyor…
+                  {game.votesSubmitted}/{game.totalVoters} oy geldi.{' '}
+                  {pendingHumans.length > 0
+                    ? 'Diğer oyuncular bekleniyor…'
+                    : 'Oylar sayılıyor…'}
                 </span>
               </div>
             ) : (

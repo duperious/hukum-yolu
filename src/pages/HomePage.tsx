@@ -1,16 +1,13 @@
 import {
-  ArrowRight,
   BookOpen,
-  Crown,
   Download,
+  Gavel,
   Key,
   Lock,
   LogIn,
   Play,
   Plus,
-  Scale,
   Smartphone,
-  Sparkles,
   Users,
   Wifi,
 } from 'lucide-react';
@@ -129,7 +126,7 @@ export default function HomePage() {
               <span>YOLU</span>
             </h1>
             <p className="home-hero__subtitle">
-              Gizli roller. Karanlık ittifaklar. Tek bir hüküm.
+              Gizli roller, karanlık ittifaklar ve tek bir hüküm.
             </p>
             <p className="home-hero__description">
               5-10 oyuncuyla oynanan, politik gerilimli bir sosyal çıkarım oyunu.
@@ -165,28 +162,56 @@ export default function HomePage() {
             </div>
 
             <p className="home-hero__meta">
-              <Users size={14} /> 5-10 oyuncu
-              <span className="dot" />
-              <Lock size={14} /> Gizli oylar
-              <span className="dot" />
-              <Smartphone size={14} /> Mobil öncelikli
+              <span>
+                <Users size={14} /> 5-10 oyuncu
+              </span>
+              <span>
+                <Lock size={14} /> Gizli oylar
+              </span>
+              <span>
+                <Smartphone size={14} /> Mobil öncelikli
+              </span>
             </p>
           </div>
 
           <div className="home-hero__art" aria-hidden="true">
-            <div className="hero-seal">
-              <span className="hero-seal__ring" />
-              <span className="hero-seal__ring hero-seal__ring--inner" />
-              <span className="hero-seal__icon">
-                <Scale size={72} strokeWidth={1.1} />
-              </span>
-              <span className="hero-seal__crown">
-                <Crown size={22} strokeWidth={1.4} />
-              </span>
-              <span className="hero-seal__label">HÜKÜM</span>
+            <div className="hero-dossier">
+              <span className="hero-dossier__tab">Mazbata</span>
+              <div className="hero-dossier__head">
+                <span>Hüküm Yolu</span>
+                <span>No. 03 / 06</span>
+              </div>
+              <div className="hero-dossier__rule" />
+              <p className="hero-dossier__kicker">Hükümet tevdi belgesi</p>
+              <p className="hero-dossier__title">
+                Masa
+                <br />
+                tutanağı
+              </p>
+              <dl className="hero-dossier__rows">
+                <div>
+                  <dt>Masa</dt>
+                  <dd>5–10 oyuncu</dd>
+                </div>
+                <div>
+                  <dt>Oy</dt>
+                  <dd>Gizli</dd>
+                </div>
+                <div>
+                  <dt>Hüküm</dt>
+                  <dd>Kesin</dd>
+                </div>
+              </dl>
+              <div className="hero-stamp">
+                <span>Hüküm</span>
+                <strong>Yolu</strong>
+                <small>Onaylandı</small>
+              </div>
+              <div className="hero-dossier__foot">
+                <span>Kayıt altına alınmıştır</span>
+                <span>Tur 01</span>
+              </div>
             </div>
-            <div className="hero-orbit hero-orbit--one" />
-            <div className="hero-orbit hero-orbit--two" />
           </div>
         </section>
 
@@ -204,7 +229,6 @@ export default function HomePage() {
           </div>
           <Link to="/setup" className="btn btn--outline btn--sm">
             Nasıl Çalışır?
-            <ArrowRight size={15} />
           </Link>
         </section>
 
@@ -222,7 +246,6 @@ export default function HomePage() {
               <Button
                 variant="primary"
                 onClick={() => navigate(`/room/${session.roomCode}`)}
-                icon={<ArrowRight size={16} />}
               >
                 Odaya Dön
               </Button>
@@ -309,7 +332,7 @@ export default function HomePage() {
 
         <section className="home-cta">
           <span className="home-cta__icon">
-            <Sparkles size={22} />
+            <Gavel size={22} />
           </span>
           <div>
             <h2>Masayı kurmaya hazır mısın?</h2>

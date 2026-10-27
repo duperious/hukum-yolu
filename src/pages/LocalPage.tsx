@@ -115,7 +115,7 @@ export default function LocalPage() {
                   <h3>Bot sayısı</h3>
                 </div>
                 <span className="bot-count__value">
-                  {botCount} bot · {totalPlayers} oyuncu
+                  {botCount} bot, {totalPlayers} oyuncu
                 </span>
               </div>
               <input
@@ -129,8 +129,8 @@ export default function LocalPage() {
                 aria-label="Bot sayısı"
               />
               <div className="bot-count__labels" aria-hidden="true">
-                <span>4 bot · 5 oyuncu</span>
-                <span>9 bot · 10 oyuncu</span>
+                <span>4 bot, 5 oyuncu</span>
+                <span>9 bot, 10 oyuncu</span>
               </div>
             </div>
 
