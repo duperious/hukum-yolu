@@ -1876,171 +1876,315 @@ body[data-era] .deck-art--discard > span {
   background: var(--paper-3);
 }
 
-.policy-track {
-  border: 1px solid var(--line);
+/* Reform tutanağı: dönemden bağımsız kâğıt yüzey, renkli şerit,
+   büyük sayaç ve damgalı adım hücreleri. */
+
+.policy-track,
+body[data-era] .policy-track,
+body[data-era='light'] .policy-track,
+body[data-era='dark'] .policy-track {
+  position: relative;
+  overflow: hidden;
+  padding: 16px 16px 13px;
+  border: 1px solid var(--sheet-line-strong);
   border-radius: 2px;
-  background: transparent;
-  box-shadow: none;
+  background: var(--sheet);
+  box-shadow: 4px 4px 0 rgba(27, 35, 32, 0.16);
+  color: var(--sheet-ink);
 }
 
-.policy-track--demokratik {
-  border-top: 2px solid var(--petrol);
+.policy-track::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 5px;
+  background: var(--sheet-ink);
 }
 
-.policy-track--otokrat {
-  border-top: 2px solid var(--oxblood);
+.policy-track--demokratik::before {
+  background: var(--sheet-petrol);
+}
+
+.policy-track--otokrat::before {
+  background: var(--sheet-oxblood);
 }
 
 .policy-track__watermark {
-  color: var(--text);
-  opacity: 0.06;
+  position: absolute;
+  right: -18px;
+  bottom: -26px;
+  z-index: 0;
+  color: var(--sheet-ink);
+  opacity: 0.045;
+  pointer-events: none;
+}
+
+.policy-track__header {
+  position: relative;
+  z-index: 1;
+  align-items: flex-start;
+}
+
+.policy-track__title {
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.policy-track__title > div {
+  min-width: 0;
 }
 
 .policy-track__icon {
-  border: 1px solid var(--line-strong);
-  border-radius: 2px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--sheet-line-strong);
+  border-radius: 1px;
   background: transparent;
 }
 
-.policy-track--demokratik .policy-track__icon {
-  border-color: color-mix(in srgb, var(--petrol) 40%, transparent);
-  background: transparent;
-  color: var(--petrol);
+body[data-era] .policy-track--demokratik .policy-track__icon {
+  border-color: color-mix(in srgb, var(--sheet-petrol) 60%, transparent);
+  background: color-mix(in srgb, var(--sheet-petrol) 7%, transparent);
+  color: var(--sheet-petrol);
 }
 
-.policy-track--otokrat .policy-track__icon {
-  border-color: color-mix(in srgb, var(--oxblood) 40%, transparent);
-  background: transparent;
-  color: var(--oxblood);
+body[data-era] .policy-track--otokrat .policy-track__icon {
+  border-color: color-mix(in srgb, var(--sheet-oxblood) 60%, transparent);
+  background: color-mix(in srgb, var(--sheet-oxblood) 6%, transparent);
+  color: var(--sheet-oxblood);
 }
 
-.policy-track__title h3 {
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0;
-}
-
-.policy-track__kicker {
-  color: var(--dim);
+body[data-era] .policy-track__kicker {
+  display: block;
+  color: var(--sheet-muted);
   font-family: var(--font-mono);
-  font-size: 8px;
-  font-weight: 400;
-  letter-spacing: 0.08em;
+  font-size: 7px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
   text-transform: uppercase;
 }
 
-.policy-track__count {
-  color: var(--dim);
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  font-weight: 400;
+body[data-era] .policy-track--demokratik .policy-track__kicker {
+  color: var(--sheet-petrol);
 }
 
-.policy-track__count strong {
-  color: var(--text);
+body[data-era] .policy-track--otokrat .policy-track__kicker {
+  color: var(--sheet-oxblood);
+}
+
+body[data-era] .policy-track__title h3 {
+  margin-top: 2px;
+  color: var(--sheet-ink);
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+body[data-era] .policy-track__count {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin-top: 1px;
+  color: var(--sheet-muted);
+  font-family: var(--font-display);
+  font-size: 14px;
   font-weight: 500;
+  line-height: 0.8;
 }
 
-.policy-step {
-  border: 1px solid var(--line);
+body[data-era] .policy-track__count strong {
+  color: var(--sheet-ink);
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 0.75;
+}
+
+body[data-era] .policy-track__count span {
+  margin-left: 0;
+  color: var(--sheet-dim);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.policy-track__bar {
+  position: relative;
+  z-index: 1;
+  height: 4px;
+  margin-top: 13px;
+  overflow: hidden;
+  border: 1px solid var(--sheet-line);
+  background: color-mix(in srgb, var(--sheet-ink) 7%, transparent);
+}
+
+.policy-track__bar span {
+  display: block;
+  height: 100%;
+  transition: width 0.55s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.policy-track--demokratik .policy-track__bar span {
+  background: var(--sheet-petrol);
+}
+
+.policy-track--otokrat .policy-track__bar span {
+  background: var(--sheet-oxblood);
+}
+
+.policy-track__steps {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 4px;
+  margin-top: 12px;
+  padding: 0;
+  overflow: visible;
+}
+
+body[data-era] .policy-step {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-content: start;
+  gap: 3px;
+  min-height: 64px;
+  padding: 7px 5px 6px;
+  border: 1px solid var(--sheet-line);
   border-radius: 1px;
   background: transparent;
-  color: var(--dim);
+  color: var(--sheet-dim);
+  text-align: left;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
-.policy-step__num {
+body[data-era] .policy-step__num {
+  color: var(--sheet-dim);
   font-family: var(--font-mono);
-  font-size: 8.5px;
+  font-size: 7px;
   font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1;
 }
 
-.policy-step__label {
+body[data-era] .policy-step__label {
+  align-self: start;
+  color: var(--sheet-muted);
+  font-family: var(--font-body);
   font-size: 8px;
+  font-weight: 500;
+  line-height: 1.2;
 }
 
-.policy-track--demokratik .policy-step--filled {
-  border-color: var(--petrol);
-  background: var(--petrol);
-  color: #eef2ec;
+.policy-step__mark {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: grid;
+  place-items: center;
+  width: 11px;
+  height: 11px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  color: var(--sheet-dim);
+  font-family: var(--font-mono);
+  font-size: 6.5px;
+  font-weight: 600;
+  line-height: 1;
 }
 
-.policy-track--otokrat .policy-step--filled {
-  border-color: var(--oxblood);
-  background: var(--oxblood);
-  color: #f3eee2;
+body[data-era] .policy-track--demokratik .policy-step--filled {
+  border-color: var(--sheet-petrol);
+  background: color-mix(in srgb, var(--sheet-petrol) 10%, var(--sheet));
+  color: var(--sheet-petrol);
 }
 
-.policy-step--current {
-  border-color: var(--mustard);
-  box-shadow: inset 0 0 0 1px var(--mustard);
-  color: var(--gold-bright);
+body[data-era] .policy-track--otokrat .policy-step--filled {
+  border-color: var(--sheet-oxblood);
+  background: color-mix(in srgb, var(--sheet-oxblood) 8%, var(--sheet));
+  color: var(--sheet-oxblood);
 }
 
-.policy-step--win {
+body[data-era] .policy-step--filled .policy-step__num {
+  color: inherit;
+}
+
+body[data-era] .policy-step--filled .policy-step__label {
+  color: var(--sheet-ink);
+}
+
+body[data-era] .policy-step--filled .policy-step__mark {
+  border-color: currentColor;
+}
+
+body[data-era] .policy-step--current {
+  border-color: var(--sheet-mustard);
   border-style: dashed;
+  background: color-mix(in srgb, var(--sheet-mustard) 6%, transparent);
+  box-shadow: none;
+  color: var(--sheet-mustard);
 }
 
-.policy-track__hint {
-  color: var(--dim);
-  font-size: 8.5px;
+body[data-era] .policy-step--current .policy-step__mark {
+  border-color: currentColor;
 }
 
-/* Aydınlık dönemde eski tema gradyanlarını ve beyaz yuvaları geride bırak;
-   Mazbata kâğıdında çizelgeler yalın kalsın. */
-body[data-era='light'] .policy-track--demokratik,
-body[data-era='light'] .policy-track--otokrat {
-  border-color: var(--line);
-  background: transparent;
+body[data-era] .policy-step--win {
+  border-width: 3px;
+  border-style: double;
+  border-color: var(--sheet-line-strong);
+  background: color-mix(in srgb, var(--sheet-ink) 3%, transparent);
 }
 
-body[data-era='light'] .policy-track__kicker,
-body[data-era='light'] .policy-track__hint {
-  color: var(--dim);
+body[data-era] .policy-track--demokratik .policy-step--win {
+  border-color: color-mix(in srgb, var(--sheet-petrol) 55%, var(--sheet-line-strong));
 }
 
-body[data-era='light'] .policy-track__title h3,
-body[data-era='light'] .policy-track__count {
-  color: var(--text);
+body[data-era] .policy-track--otokrat .policy-step--win {
+  border-color: color-mix(in srgb, var(--sheet-oxblood) 55%, var(--sheet-line-strong));
 }
 
-body[data-era='light'] .policy-track__count span {
-  color: var(--dim);
+.policy-track__footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--sheet-line-strong);
 }
 
-body[data-era='light'] .policy-track__icon {
-  border-color: var(--line-strong);
-  background: transparent;
-  color: var(--text);
+body[data-era] .policy-track__hint {
+  margin: 0;
+  color: var(--sheet-muted);
+  font-family: var(--font-mono);
+  font-size: 7px;
+  line-height: 1.55;
 }
 
-body[data-era='light'] .policy-step {
-  border-color: var(--line);
-  background: transparent;
-  color: var(--dim);
-}
-
-body[data-era='light'] .policy-step--current {
-  border-color: var(--mustard);
-  box-shadow: inset 0 0 0 1px var(--mustard);
-  color: var(--gold-bright);
-}
-
-body[data-era='light'] .policy-track--demokratik .policy-step--filled {
-  border-color: var(--petrol);
-  background: var(--petrol);
-  color: #eef2ec;
-}
-
-body[data-era='light'] .policy-track--otokrat .policy-step--filled {
-  border-color: var(--oxblood);
-  background: var(--oxblood);
-  color: #f3eee2;
-}
-
-body[data-era='light'] .policy-step--win .policy-step__num {
-  color: var(--gold-bright);
+.policy-track__folio {
+  flex: none;
+  color: var(--sheet-dim);
+  font-family: var(--font-mono);
+  font-size: 6.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
 }
 
 /* ---------- eylem paneli ---------- */
@@ -2182,6 +2326,14 @@ body[data-era] .action-note--dead {
 
 body[data-era] .action-note--success {
   border-left-color: var(--green);
+}
+
+body[data-era] .action-note--policy {
+  border-left-color: var(--oxblood);
+}
+
+body[data-era] .action-note--policy svg {
+  color: var(--oxblood);
 }
 
 body[data-era] .government-card {
@@ -3259,6 +3411,136 @@ body[data-era] .nominee-card--selected {
 
 .nominee-stage__empty {
   color: var(--sheet-muted);
+}
+
+/* Kart eleme / reform seçimi */
+
+.policy-stage {
+  width: min(660px, 100%);
+}
+
+.policy-stage::before {
+  background: var(--sheet-oxblood);
+}
+
+.policy-stage--enact::before {
+  background: var(--sheet-petrol);
+}
+
+.policy-stage--enact .vote-stage__kicker {
+  color: var(--sheet-petrol);
+}
+
+.policy-stage__lead {
+  margin-top: 10px;
+  color: var(--sheet-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.policy-stage__meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 16px;
+  border-top: 1px solid var(--sheet-line-strong);
+  border-bottom: 1px solid var(--sheet-line-strong);
+}
+
+.policy-stage__meta > div {
+  min-width: 0;
+  padding: 9px 0;
+}
+
+.policy-stage__meta > div + div {
+  padding-left: 14px;
+  border-left: 1px solid var(--sheet-line);
+}
+
+.policy-stage__meta span {
+  display: block;
+  color: var(--sheet-muted);
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.policy-stage__meta strong {
+  display: block;
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--sheet-ink);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.policy-stage__cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.policy-stage__cards--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 390px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.policy-stage__cards .policy-card {
+  min-width: 0;
+  animation: policy-stage-card-in 0.36s cubic-bezier(0.2, 0.9, 0.3, 1.1)
+    backwards;
+}
+
+.policy-stage__cards .policy-card__text {
+  width: 100%;
+}
+
+.policy-stage__cards .policy-card:nth-child(2) {
+  animation-delay: 55ms;
+}
+
+.policy-stage__cards .policy-card:nth-child(3) {
+  animation-delay: 110ms;
+}
+
+@keyframes policy-stage-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+}
+
+.policy-stage__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--sheet-line-strong);
+}
+
+.policy-stage__selection {
+  color: var(--sheet-muted);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  line-height: 1.45;
+}
+
+.policy-stage__actions .btn {
+  flex: none;
+}
+
+.policy-stage__note {
+  margin-top: 10px;
 }
 
 /* =========================================================
@@ -4566,6 +4848,191 @@ body[data-era] .era-ambience--dark .era-ambience__motes {
   .feature-card,
   .btn,
   body[data-era] .seat-card {
+    transition: none;
+  }
+}
+
+/* Telefonda reform tutanağı yatay hücreler yerine dikey satır listesi olur. */
+
+@media (max-width: 640px) {
+  .policy-track,
+  body[data-era] .policy-track {
+    padding: 15px 13px 12px;
+  }
+
+  body[data-era] .policy-track__title h3 {
+    font-size: 21px;
+  }
+
+  body[data-era] .policy-track__count strong {
+    font-size: 31px;
+  }
+
+  .policy-track__steps {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin-top: 10px;
+    border-top: 1px solid var(--sheet-line);
+    overflow: visible;
+  }
+
+  body[data-era] .policy-step {
+    grid-template-columns: 26px minmax(0, 1fr) 16px;
+    grid-template-rows: auto;
+    align-items: center;
+    align-content: center;
+    gap: 8px;
+    min-height: 0;
+    padding: 8px 2px 8px 8px;
+    border: 0;
+    border-bottom: 1px solid var(--sheet-line);
+    background: transparent;
+    text-align: left;
+  }
+
+  body[data-era] .policy-step:last-child {
+    border-bottom: 0;
+  }
+
+  body[data-era] .policy-step__num {
+    font-size: 9px;
+  }
+
+  body[data-era] .policy-step__label {
+    align-self: center;
+    font-size: 9px;
+    line-height: 1.25;
+  }
+
+  .policy-step__mark {
+    position: static;
+    justify-self: end;
+    width: 14px;
+    height: 14px;
+    font-size: 8px;
+  }
+
+  body[data-era] .policy-step--current {
+    border: 0;
+    border-bottom: 1px solid var(--sheet-mustard);
+    box-shadow: inset 3px 0 0 var(--sheet-mustard);
+  }
+
+  body[data-era] .policy-step--win {
+    border: 0;
+    border-bottom: 1px solid var(--sheet-line-strong);
+    background: transparent;
+  }
+
+  body[data-era] .policy-track--demokratik .policy-step--win {
+    border-bottom-color: color-mix(
+      in srgb,
+      var(--sheet-petrol) 55%,
+      var(--sheet-line-strong)
+    );
+  }
+
+  body[data-era] .policy-track--otokrat .policy-step--win {
+    border-bottom-color: color-mix(
+      in srgb,
+      var(--sheet-oxblood) 55%,
+      var(--sheet-line-strong)
+    );
+  }
+
+  .policy-track__footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .policy-track__folio {
+    align-self: flex-end;
+  }
+
+  .vote-stage.policy-stage,
+  body[data-era] .vote-stage.policy-stage {
+    max-height: calc(100vh - 20px);
+    padding: 20px 14px 16px;
+  }
+
+  .policy-stage__lead {
+    font-size: 11.5px;
+  }
+
+  .policy-stage__meta {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .policy-stage__meta > div + div {
+    padding-left: 0;
+    border-top: 1px solid var(--sheet-line);
+    border-left: 0;
+  }
+
+  .policy-stage__cards {
+    gap: 7px;
+    margin-top: 12px;
+  }
+
+  .policy-stage__cards--two {
+    max-width: none;
+  }
+
+  .policy-stage__cards .policy-card--lg {
+    padding: 30px 5px 14px;
+  }
+
+  .policy-stage__cards .policy-card--lg .policy-card__seal {
+    width: 46px;
+    height: 46px;
+  }
+
+  .policy-stage__cards .policy-card--lg .policy-card__icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .policy-stage__cards .policy-card--lg .policy-card__title {
+    font-size: 12.5px;
+  }
+
+  .policy-stage__cards .policy-card__ribbon {
+    font-size: 6px;
+    letter-spacing: 0.08em;
+  }
+
+  .policy-stage__cards .policy-card__check {
+    font-size: 8px;
+  }
+
+  .policy-stage__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 9px;
+  }
+
+  .policy-stage__actions .btn {
+    width: 100%;
+  }
+
+  .policy-stage__selection {
+    text-align: center;
+  }
+
+  .policy-stage__note {
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .policy-stage__cards .policy-card {
+    animation: none;
+  }
+
+  .policy-track__bar span {
     transition: none;
   }
 }

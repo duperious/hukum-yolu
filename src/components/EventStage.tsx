@@ -108,7 +108,7 @@ function describeEvent(entry: LogEntry): StageInfo {
       }
       if (text.includes('değerlendiriyor')) {
         return {
-          title: 'Şansölye 2 Kartı Değerlendiriyor',
+          title: 'Başbakan 2 Kartı Değerlendiriyor',
           kicker: KICKERS.government,
           tone: 'blue',
           Icon: ScrollText,
@@ -190,7 +190,7 @@ function describeEvent(entry: LogEntry): StageInfo {
           visual: 'icon',
         };
       }
-      if (text.includes('Nötr')) {
+      if (text.includes('Nötr') && text.includes('seçti')) {
         return {
           title: 'Nötr Tarafını Seçti',
           kicker: KICKERS.transition,

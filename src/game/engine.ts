@@ -475,7 +475,6 @@ function resolveFirstThree(state: GameState): void {
 
   if (notr?.alive) {
     state.notrChoicePending = true;
-    addLog(state, 'transition', 'Nötr tarafını seçiyor.');
   } else {
     state.notrChoicePending = false;
     state.notrSide = null;

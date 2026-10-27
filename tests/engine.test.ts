@@ -247,12 +247,21 @@ describe('ilk üç reform geçişi ve Nötr', () => {
     expect(next.democraticPartyPresidentId).toBe('p3');
     expect(next.publiclyRevealedRoles['p3']).toBe('buyuk_vezir');
     expect(next.notrChoicePending).toBe(true);
+    expect(
+      next.log.filter((entry) => entry.text.includes('Nötr tarafını')),
+    ).toHaveLength(0);
 
     const chosen = applyAction(next, 'p4', {
       type: 'choose_notr_side',
       side: 'mavi',
     });
     expect(chosen.notrSide).toBe('mavi');
+    expect(
+      chosen.log.filter((entry) => entry.text.includes('Nötr tarafını seçti')),
+    ).toHaveLength(1);
+    expect(
+      chosen.log.filter((entry) => entry.text.includes('Nötr tarafını seçiyor')),
+    ).toHaveLength(0);
     expect(getPlayer(chosen, 'p4').effectiveTeam).toBe('demokrat');
     expect(chosen.phase).toBe('nomination');
     expect(chosen.round).toBe(2);

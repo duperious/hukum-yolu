@@ -41,7 +41,10 @@ export function PolicyTrack({
       ? DEFAULT_DEMOCRATIC_LABELS.slice(0, length)
       : DEFAULT_FASCIST_LABELS.slice(0, length));
   const title = type === 'demokratik' ? 'Demokratik Reformlar' : 'Otokrat Reformlar';
-  const kicker = type === 'demokratik' ? 'Mavi hat' : 'Kızıl hat';
+  const kicker =
+    type === 'demokratik'
+      ? 'Mavi hat · Reform tutanağı'
+      : 'Kızıl hat · Reform tutanağı';
   const safeEnacted = Math.max(0, Math.min(enacted, length));
 
   return (
@@ -58,11 +61,15 @@ export function PolicyTrack({
             <h3>{title}</h3>
           </div>
         </div>
-        <span className="policy-track__count">
-          <strong key={safeEnacted}>{safeEnacted}</strong>
-          <span>/ {length}</span>
+        <span className="policy-track__count" aria-hidden="true">
+          <strong key={safeEnacted}>{String(safeEnacted).padStart(2, '0')}</strong>
+          <span>/ {String(length).padStart(2, '0')}</span>
         </span>
       </header>
+
+      <div className="policy-track__bar" aria-hidden="true">
+        <span style={{ width: `${(safeEnacted / length) * 100}%` }} />
+      </div>
 
       <div
         className="policy-track__steps"
@@ -87,18 +94,26 @@ export function PolicyTrack({
               )}
               title={resolvedLabels[index]}
             >
-              <span className="policy-step__num">{index + 1}</span>
+              <span className="policy-step__num">{String(index + 1).padStart(2, '0')}</span>
               <span className="policy-step__label">{resolvedLabels[index]}</span>
+              <span className="policy-step__mark" aria-hidden="true">
+                {filled ? '✓' : current ? '•' : ''}
+              </span>
             </div>
           );
         })}
       </div>
 
-      <p className="policy-track__hint">
-        {type === 'demokratik'
-          ? `${length}. reform Demokratik zaferi getirir.`
-          : `${length}. reform Otokrat zaferi getirir. 4. reformdan sonra Lider Başbakan seçilirse Otokratlar kazanır.`}
-      </p>
+      <footer className="policy-track__footer">
+        <p className="policy-track__hint">
+          {type === 'demokratik'
+            ? `${length}. reform Demokratik zaferi getirir.`
+            : `${length}. reform Otokrat zaferi getirir. 4. reformdan sonra Lider Başbakan seçilirse Otokratlar kazanır.`}
+        </p>
+        <span className="policy-track__folio" aria-hidden="true">
+          NO. {String(length).padStart(2, '0')}
+        </span>
+      </footer>
     </section>
   );
 }

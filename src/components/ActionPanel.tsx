@@ -18,13 +18,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { ROLE_INFO } from '../game';
-import type {
-  GameAction,
-  NotrSide,
-  PolicyCard as PolicyCardType,
-  PrivateView,
-  PublicGameState,
-} from '../game';
+import type { GameAction, NotrSide, PrivateView, PublicGameState } from '../game';
 import { cn } from '../lib/cn';
 import { Avatar } from './ui/Avatar';
 import { Button } from './ui/Button';
@@ -107,6 +101,7 @@ export function ActionPanel({
   onOpenRole,
   onOpenVoteStage,
   onOpenNomineeStage,
+  onOpenPolicyStage,
 }: {
   game: PublicGameState;
   view: PrivateView;
@@ -117,13 +112,12 @@ export function ActionPanel({
   onOpenRole: () => void;
   onOpenVoteStage?: () => void;
   onOpenNomineeStage?: () => void;
+  onOpenPolicyStage?: () => void;
 }) {
-  const [selectedCard, setSelectedCard] = useState<PolicyCardType | null>(null);
   const [selectedSide, setSelectedSide] = useState<NotrSide | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
 
   useEffect(() => {
-    setSelectedCard(null);
     setSelectedSide(null);
     setSelectedTarget(null);
   }, [game.phase, game.round, game.chancellorId, game.presidentId]);
@@ -348,36 +342,22 @@ export function ActionPanel({
             </p>
             {view.canDiscard && view.legislativeCards ? (
               <>
-                <div className="policy-choice-grid">
-                  {view.legislativeCards.map((card, index) => (
-                    <PolicyCard
-                      key={`${game.round}-${game.phase}-${card}-${index}`}
-                      type={card}
-                      selected={selectedCard === card}
-                      onClick={() => setSelectedCard(card)}
-                      disabled={actionPending}
-                    />
-                  ))}
+                <div className="action-note action-note--policy">
+                  <ScrollText size={16} />
+                  <p>
+                    Kart seçimi ekranın ortasında açılır. Üç karttan birini
+                    seçtiğinde kalan iki kart Başbakana geçer.
+                  </p>
                 </div>
-                <div className="confirm-bar">
-                  <span className="confirm-bar__hint">
-                    {selectedCard
-                      ? `${selectedCard === 'demokratik' ? 'Demokratik' : 'Otokrat'} kartı elenecek.`
-                      : 'Bir kart seç.'}
-                  </span>
+                {onOpenPolicyStage ? (
                   <Button
-                    variant="secondary"
-                    onClick={() => {
-                      if (!selectedCard) return;
-                      onAction({ type: 'president_discard', card: selectedCard });
-                    }}
-                    disabled={!selectedCard || actionPending}
-                    loading={actionPending}
+                    variant="primary"
+                    onClick={onOpenPolicyStage}
                     icon={<ScrollText size={16} />}
                   >
-                    Kartı Ele
+                    Kart Seçimini Aç
                   </Button>
-                </div>
+                ) : null}
               </>
             ) : (
               <div className="waiting-illustration">
@@ -398,36 +378,22 @@ export function ActionPanel({
             </p>
             {view.canEnact && view.legislativeCards ? (
               <>
-                <div className="policy-choice-grid">
-                  {view.legislativeCards.map((card, index) => (
-                    <PolicyCard
-                      key={`${game.round}-${game.phase}-${card}-${index}`}
-                      type={card}
-                      selected={selectedCard === card}
-                      onClick={() => setSelectedCard(card)}
-                      disabled={actionPending}
-                    />
-                  ))}
+                <div className="action-note action-note--policy">
+                  <Gavel size={16} />
+                  <p>
+                    Reform seçimi ekranın ortasında açılır. Kalan iki karttan
+                    birini yürürlüğe koyduğunda diğer kart desteye gider.
+                  </p>
                 </div>
-                <div className="confirm-bar">
-                  <span className="confirm-bar__hint">
-                    {selectedCard
-                      ? `${selectedCard === 'demokratik' ? 'Demokratik' : 'Otokrat'} reform yürürlüğe girecek.`
-                      : 'Bir kart seç.'}
-                  </span>
+                {onOpenPolicyStage ? (
                   <Button
-                    variant={selectedCard === 'otokrat' ? 'danger' : 'primary'}
-                    onClick={() => {
-                      if (!selectedCard) return;
-                      onAction({ type: 'chancellor_enact', card: selectedCard });
-                    }}
-                    disabled={!selectedCard || actionPending}
-                    loading={actionPending}
+                    variant="primary"
+                    onClick={onOpenPolicyStage}
                     icon={<Gavel size={16} />}
                   >
-                    Reformu Yürürlüğe Koy
+                    Reform Seçimini Aç
                   </Button>
-                </div>
+                ) : null}
               </>
             ) : (
               <div className="waiting-illustration">

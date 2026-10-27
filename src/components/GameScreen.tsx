@@ -22,6 +22,7 @@ import { GameLog } from './GameLog';
 import { GovernmentPanel } from './GovernmentPanel';
 import { NomineeStage } from './NomineeStage';
 import { PlayerCircle } from './PlayerCircle';
+import { PolicyStage } from './PolicyStage';
 import { PolicyTrack } from './PolicyTrack';
 import { PowerPanel } from './PowerPanel';
 import { PrivacyGate } from './PrivacyGate';
@@ -67,6 +68,7 @@ export function GameScreen({
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [voteStageOpen, setVoteStageOpen] = useState(false);
   const [nomineeStageOpen, setNomineeStageOpen] = useState(false);
+  const [policyStageOpen, setPolicyStageOpen] = useState(false);
   const [eraShift, setEraShift] = useState(false);
   const roleAutoOpenRef = useRef<string | null>(null);
   const eraRef = useRef<'light' | 'dark'>(
@@ -86,6 +88,7 @@ export function GameScreen({
 
   const closeVoteStage = useCallback(() => setVoteStageOpen(false), []);
   const closeNomineeStage = useCallback(() => setNomineeStageOpen(false), []);
+  const closePolicyStage = useCallback(() => setPolicyStageOpen(false), []);
 
   // Oylama sırası gelince merkez oylama kartı otomatik açılır; kapatılsa
   // bile yeni oylama turunda yeniden açılır.
@@ -97,6 +100,11 @@ export function GameScreen({
   useEffect(() => {
     setNomineeStageOpen(view.canNominate);
   }, [view.canNominate, game.round]);
+
+  // Kart eleme veya reform seçimi sırası geldiğinde mazbata sahnesi açılır.
+  useEffect(() => {
+    setPolicyStageOpen(view.canDiscard || view.canEnact);
+  }, [view.canDiscard, view.canEnact, game.round, game.phase]);
 
   // Tema portal bileşenlerine de ulaşsın diye body üzerinde tutulur.
   useEffect(() => {
@@ -348,6 +356,11 @@ export function GameScreen({
               onOpenNomineeStage={
                 view.canNominate ? () => setNomineeStageOpen(true) : undefined
               }
+              onOpenPolicyStage={
+                view.canDiscard || view.canEnact
+                  ? () => setPolicyStageOpen(true)
+                  : undefined
+              }
             />
           </div>
 
@@ -374,6 +387,7 @@ export function GameScreen({
           leaveOpen ||
           nomineeStageOpen ||
           voteStageOpen ||
+          policyStageOpen ||
           game.phase === 'gameOver'
         }
       />
@@ -396,6 +410,16 @@ export function GameScreen({
         error={error}
         open={nomineeStageOpen}
         onClose={closeNomineeStage}
+      />
+
+      <PolicyStage
+        game={game}
+        view={view}
+        onAction={onAction}
+        actionPending={actionPending}
+        error={error}
+        open={policyStageOpen}
+        onClose={closePolicyStage}
       />
 
       {eraShift ? (
