@@ -1,6 +1,7 @@
 import {
   Copy,
   Eye,
+  IdCard,
   LogOut,
   Moon,
   ScrollText,
@@ -21,6 +22,7 @@ import { EventStage } from './EventStage';
 import { GameLog } from './GameLog';
 import { GovernmentPanel } from './GovernmentPanel';
 import { NomineeStage } from './NomineeStage';
+import { PlayerCardGallery } from './PlayerCards';
 import { PlayerCircle } from './PlayerCircle';
 import { PolicyStage } from './PolicyStage';
 import { PolicyTrack } from './PolicyTrack';
@@ -69,8 +71,13 @@ export function GameScreen({
   const [voteStageOpen, setVoteStageOpen] = useState(false);
   const [nomineeStageOpen, setNomineeStageOpen] = useState(false);
   const [policyStageOpen, setPolicyStageOpen] = useState(false);
+  const [playerCardsOpen, setPlayerCardsOpen] = useState(false);
+  const [playerCardsClosedFor, setPlayerCardsClosedFor] = useState<string | null>(
+    null,
+  );
   const [eraShift, setEraShift] = useState(false);
   const roleAutoOpenRef = useRef<string | null>(null);
+  const playerCardsAutoOpenRef = useRef<string | null>(null);
   const eraRef = useRef<'light' | 'dark'>(
     game.firstThreeResolved ? 'dark' : 'light',
   );
@@ -89,6 +96,10 @@ export function GameScreen({
   const closeVoteStage = useCallback(() => setVoteStageOpen(false), []);
   const closeNomineeStage = useCallback(() => setNomineeStageOpen(false), []);
   const closePolicyStage = useCallback(() => setPolicyStageOpen(false), []);
+  const closePlayerCards = useCallback(() => {
+    setPlayerCardsOpen(false);
+    setPlayerCardsClosedFor(String(game.createdAt));
+  }, [game.createdAt]);
 
   // Oylama sırası gelince merkez oylama kartı otomatik açılır; kapatılsa
   // bile yeni oylama turunda yeniden açılır.
@@ -124,19 +135,36 @@ export function GameScreen({
     };
   }, [era]);
 
+  // Oyun açılırken oyuncu kartları bir kez gösterilir; kapatılınca rol
+  // kartı açılır. Yeni oyunda (createdAt değişince) yeniden gösterilir.
+  useEffect(() => {
+    const key = String(game.createdAt);
+    if (playerCardsAutoOpenRef.current === key) return;
+    playerCardsAutoOpenRef.current = key;
+    if (game.phase === 'roleReveal') setPlayerCardsOpen(true);
+  }, [game.createdAt, game.phase]);
+
   // Oyuna girildiğinde rol kartı doğrudan ortada açılır; oyuncu kapatırsa
-  // aynı oyun içinde tekrar kendiliğinden açılmaz.
+  // aynı oyun içinde tekrar kendiliğinden açılmaz. Oyuncu kartları
+  // kapatılmadan rol kartı açılmaz.
   useEffect(() => {
     const key = `${game.createdAt}-${game.round}`;
     if (
       game.phase === 'roleReveal' &&
       !view.roleRevealAcknowledged &&
+      playerCardsClosedFor === String(game.createdAt) &&
       roleAutoOpenRef.current !== key
     ) {
       roleAutoOpenRef.current = key;
       setRoleGate('reveal');
     }
-  }, [game.phase, game.createdAt, game.round, view.roleRevealAcknowledged]);
+  }, [
+    game.phase,
+    game.createdAt,
+    game.round,
+    view.roleRevealAcknowledged,
+    playerCardsClosedFor,
+  ]);
 
   const playerName = (id: string | null | undefined) =>
     game.players.find((player) => player.id === id)?.name ?? '—';
@@ -232,8 +260,20 @@ export function GameScreen({
           <Button
             variant="outline"
             size="sm"
+            onClick={() => setPlayerCardsOpen(true)}
+            icon={<IdCard size={15} />}
+            className="game-topbar__cards"
+            aria-label="Oyuncu kartlarını gör"
+          >
+            Kartlar
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => openRole()}
             icon={<Eye size={15} />}
+            className="game-topbar__role"
+            aria-label="Rol kartını gör"
           >
             Rolüm
           </Button>
@@ -382,9 +422,11 @@ export function GameScreen({
       <EventStage
         entries={game.log}
         gameKey={String(game.createdAt)}
+        round={game.round}
         paused={
           roleGate !== null ||
           leaveOpen ||
+          playerCardsOpen ||
           nomineeStageOpen ||
           voteStageOpen ||
           policyStageOpen ||
@@ -434,6 +476,11 @@ export function GameScreen({
           <span className="era-shift__line" />
         </div>
       ) : null}
+
+      <PlayerCardGallery
+        open={playerCardsOpen}
+        onClose={closePlayerCards}
+      />
 
       <PrivacyGate
         open={roleGate !== null}

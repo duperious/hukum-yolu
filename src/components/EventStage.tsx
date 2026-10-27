@@ -318,13 +318,17 @@ function EventVisual({ info }: { info: StageInfo }) {
  * olarak gösterir. Botlar hamlelerini tek seferde bitirse bile kayıtlar
  * kuyruğa alınır; oyuncu olayları tek tek takip edebilir.
  */
+const EVENT_FRESH_MS = 15_000;
+
 export function EventStage({
   entries,
   gameKey,
+  round,
   paused = false,
 }: {
   entries: LogEntry[];
   gameKey: string;
+  round: number;
   paused?: boolean;
 }) {
   const [current, setCurrent] = useState<LogEntry | null>(null);
@@ -335,6 +339,11 @@ export function EventStage({
   const queueRef = useRef<LogEntry[]>([]);
   const skipAllRef = useRef(false);
   const skipUntilRef = useRef(0);
+  const pausedRef = useRef(paused);
+  const roundRef = useRef(round);
+  // Modal açıkken biriken olayların yalnızca en yenisi, kapatınca ve hâlâ
+  // güncelse gösterilir. Böylece eski tur bildirimleri sonradan ekrana düşmez.
+  const pendingRef = useRef<LogEntry | null>(null);
 
   useEffect(() => {
     if (gameKeyRef.current === gameKey) return;
@@ -342,10 +351,40 @@ export function EventStage({
     seenRef.current = null;
     skipAllRef.current = false;
     skipUntilRef.current = 0;
+    pendingRef.current = null;
     setCurrent(null);
     setQueue([]);
     setLeaving(false);
   }, [gameKey]);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+    if (paused) {
+      pendingRef.current = null;
+      setCurrent(null);
+      setQueue([]);
+      setLeaving(false);
+      return;
+    }
+    const pending = pendingRef.current;
+    pendingRef.current = null;
+    if (
+      pending &&
+      pending.round >= roundRef.current &&
+      Date.now() - pending.at < EVENT_FRESH_MS
+    ) {
+      setLeaving(false);
+      setCurrent(pending);
+    }
+  }, [paused]);
+
+  useEffect(() => {
+    if (roundRef.current === round) return;
+    roundRef.current = round;
+    pendingRef.current = null;
+    setCurrent((previous) => (previous && previous.round < round ? null : previous));
+    setQueue((previous) => previous.filter((entry) => entry.round >= round));
+  }, [round]);
 
   useEffect(() => {
     const last = entries[entries.length - 1];
@@ -361,9 +400,14 @@ export function EventStage({
     const fresh = entries
       .slice(seenIndex + 1)
       .filter(isCenterEvent)
+      .filter((entry) => entry.round >= roundRef.current)
       .filter((entry) => entry.at > skipUntilRef.current);
     if (fresh.length === 0) return;
     skipAllRef.current = false;
+    if (pausedRef.current) {
+      pendingRef.current = fresh[fresh.length - 1];
+      return;
+    }
     setQueue((previous) => [...previous, ...fresh].slice(-20));
   }, [entries]);
 
@@ -400,6 +444,7 @@ export function EventStage({
     event.stopPropagation();
     skipAllRef.current = true;
     skipUntilRef.current = Date.now() + 50;
+    pendingRef.current = null;
     const last = entries[entries.length - 1];
     if (last) seenRef.current = last.id;
     setCurrent(null);
