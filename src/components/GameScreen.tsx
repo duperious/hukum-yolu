@@ -22,6 +22,7 @@ import { EventStage } from './EventStage';
 import { GameLog } from './GameLog';
 import { GovernmentPanel } from './GovernmentPanel';
 import { NomineeStage } from './NomineeStage';
+import { NotrStage } from './NotrStage';
 import { PlayerCardGallery } from './PlayerCards';
 import { PlayerCircle } from './PlayerCircle';
 import { PolicyStage } from './PolicyStage';
@@ -75,6 +76,7 @@ export function GameScreen({
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [voteStageOpen, setVoteStageOpen] = useState(false);
   const [nomineeStageOpen, setNomineeStageOpen] = useState(false);
+  const [notrStageOpen, setNotrStageOpen] = useState(false);
   const [policyStageOpen, setPolicyStageOpen] = useState(false);
   const [playerCardsOpen, setPlayerCardsOpen] = useState(false);
   const [playerCardsClosedFor, setPlayerCardsClosedFor] = useState<string | null>(
@@ -102,6 +104,7 @@ export function GameScreen({
 
   const closeVoteStage = useCallback(() => setVoteStageOpen(false), []);
   const closeNomineeStage = useCallback(() => setNomineeStageOpen(false), []);
+  const closeNotrStage = useCallback(() => setNotrStageOpen(false), []);
   const closePolicyStage = useCallback(() => setPolicyStageOpen(false), []);
   const closePlayerCards = useCallback(() => {
     setPlayerCardsOpen(false);
@@ -157,6 +160,7 @@ export function GameScreen({
     setVoteStageOpen(false);
     setNomineeStageOpen(false);
     setPolicyStageOpen(false);
+    setNotrStageOpen(false);
   }, [gatePhase]);
 
   // Oylama sırası gelince merkez oylama kartı otomatik açılır; kapatılsa
@@ -174,6 +178,11 @@ export function GameScreen({
   useEffect(() => {
     setPolicyStageOpen(view.canDiscard || view.canEnact);
   }, [view.canDiscard, view.canEnact, game.round, game.phase]);
+
+  // Nötr'ün taraf seçimi sırası geldiğinde yol kartları ortada açılır.
+  useEffect(() => {
+    setNotrStageOpen(view.canChooseNotrSide);
+  }, [view.canChooseNotrSide, game.round]);
 
   // Tema portal bileşenlerine de ulaşsın diye body üzerinde tutulur.
   useEffect(() => {
@@ -477,6 +486,11 @@ export function GameScreen({
                   ? () => setPolicyStageOpen(true)
                   : undefined
               }
+              onOpenNotrStage={
+                view.canChooseNotrSide
+                  ? () => setNotrStageOpen(true)
+                  : undefined
+              }
             />
           </div>
 
@@ -506,6 +520,7 @@ export function GameScreen({
           nomineeStageOpen ||
           voteStageOpen ||
           policyStageOpen ||
+          notrStageOpen ||
           gateOpen ||
           game.phase === 'gameOver'
         }
@@ -562,6 +577,16 @@ export function GameScreen({
         error={error}
         open={nomineeStageOpen}
         onClose={closeNomineeStage}
+      />
+
+      <NotrStage
+        game={game}
+        view={view}
+        onAction={onAction}
+        actionPending={actionPending}
+        error={error}
+        open={notrStageOpen}
+        onClose={closeNotrStage}
       />
 
       <PolicyStage

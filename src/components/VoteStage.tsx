@@ -1,5 +1,7 @@
 import { AlertTriangle, Check, Loader2, Vote, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import evetCard from '../assets/vote/evet.jpg';
+import hayirCard from '../assets/vote/hayir.jpg';
 import type { GameAction, PrivateView, PublicGameState } from '../game';
 import { cn } from '../lib/cn';
 import { Avatar } from './ui/Avatar';
@@ -196,12 +198,14 @@ export function VoteStage({
                 onClick={() => setSelected(true)}
                 disabled={actionPending || sending}
                 aria-pressed={selected === true}
+                aria-label="Evet — Hükümet kurulsun"
               >
-                <span className="vote-stage__choice-icon" aria-hidden="true">
-                  <Check size={30} />
-                </span>
-                <strong>Evet</strong>
-                <small>Hükümet kurulsun</small>
+                <img
+                  className="vote-stage__choice-art"
+                  src={evetCard}
+                  alt=""
+                  draggable={false}
+                />
                 {selected === true ? (
                   <span className="vote-stage__choice-picked">Seçildi</span>
                 ) : null}
@@ -215,12 +219,14 @@ export function VoteStage({
                 onClick={() => setSelected(false)}
                 disabled={actionPending || sending}
                 aria-pressed={selected === false}
+                aria-label="Hayır — Hükümet kurulmasın"
               >
-                <span className="vote-stage__choice-icon" aria-hidden="true">
-                  <X size={30} />
-                </span>
-                <strong>Hayır</strong>
-                <small>Hükümet kurulmasın</small>
+                <img
+                  className="vote-stage__choice-art"
+                  src={hayirCard}
+                  alt=""
+                  draggable={false}
+                />
                 {selected === false ? (
                   <span className="vote-stage__choice-picked">Seçildi</span>
                 ) : null}

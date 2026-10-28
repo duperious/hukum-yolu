@@ -9,7 +9,6 @@ import {
   Landmark,
   Scale,
   ScrollText,
-  ShieldCheck,
   Skull,
   Sparkles,
   UserPlus,
@@ -19,7 +18,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { ROLE_INFO } from '../game';
-import type { GameAction, NotrSide, PrivateView, PublicGameState } from '../game';
+import type { GameAction, PrivateView, PublicGameState } from '../game';
 import { cn } from '../lib/cn';
 import { Avatar } from './ui/Avatar';
 import { Button } from './ui/Button';
@@ -118,6 +117,7 @@ export function ActionPanel({
   onOpenVoteStage,
   onOpenNomineeStage,
   onOpenPolicyStage,
+  onOpenNotrStage,
 }: {
   game: PublicGameState;
   view: PrivateView;
@@ -129,12 +129,11 @@ export function ActionPanel({
   onOpenVoteStage?: () => void;
   onOpenNomineeStage?: () => void;
   onOpenPolicyStage?: () => void;
+  onOpenNotrStage?: () => void;
 }) {
-  const [selectedSide, setSelectedSide] = useState<NotrSide | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
 
   useEffect(() => {
-    setSelectedSide(null);
     setSelectedTarget(null);
   }, [game.phase, game.round, game.chancellorId, game.presidentId]);
 
@@ -525,61 +524,19 @@ export function ActionPanel({
             <h3>{view.canChooseNotrSide ? 'Tarafını seç' : 'Nötr tarafını seçiyor'}</h3>
             <p>
               {view.canChooseNotrSide
-                ? 'Bu seçim gizlidir. Mavi Demokratlarla, kırmızı Otokratların yanında oynarsın. Kırmızıda normal Otokrat zaferi otomatik kazanmaz.'
+                ? 'Cumhuriyet Yolu Demokratlarla, İmparatorluk Yolu Otokratlarla oynatır. Seçim ekranın ortasındaki yol kartlarıyla yapılır ve gizli kalır.'
                 : 'Nötr, ilk üç reformun ardından tarafını gizlice seçiyor.'}
             </p>
             {view.canChooseNotrSide ? (
-              <>
-                <div className="notr-choices">
-                  <button
-                    type="button"
-                    className={cn(
-                      'notr-choice notr-choice--blue',
-                      selectedSide === 'mavi' && 'notr-choice--selected',
-                    )}
-                    onClick={() => setSelectedSide('mavi')}
-                    disabled={actionPending}
-                    aria-pressed={selectedSide === 'mavi'}
-                  >
-                    <Scale size={24} />
-                    <strong>Mavi</strong>
-                    <span>Demokratlarla kazan</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={cn(
-                      'notr-choice notr-choice--red',
-                      selectedSide === 'kirmizi' && 'notr-choice--selected',
-                    )}
-                    onClick={() => setSelectedSide('kirmizi')}
-                    disabled={actionPending}
-                    aria-pressed={selectedSide === 'kirmizi'}
-                  >
-                    <ShieldCheck size={24} />
-                    <strong>Kırmızı</strong>
-                    <span>Otokratları destekle, kişisel zafer peşinde koş</span>
-                  </button>
-                </div>
-                <div className="confirm-bar">
-                  <span className="confirm-bar__hint">
-                    {selectedSide
-                      ? `Taraf: ${selectedSide === 'mavi' ? 'Mavi' : 'Kırmızı'}`
-                      : 'Bir taraf seç.'}
-                  </span>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      if (!selectedSide) return;
-                      onAction({ type: 'choose_notr_side', side: selectedSide });
-                    }}
-                    disabled={!selectedSide || actionPending}
-                    loading={actionPending}
-                    icon={<Scale size={16} />}
-                  >
-                    Tarafımı Seç
-                  </Button>
-                </div>
-              </>
+              onOpenNotrStage ? (
+                <Button
+                  variant="primary"
+                  onClick={onOpenNotrStage}
+                  icon={<Scale size={16} />}
+                >
+                  Yol Seçimini Aç
+                </Button>
+              ) : null
             ) : (
               <div className="waiting-illustration">
                 <Scale size={30} />
