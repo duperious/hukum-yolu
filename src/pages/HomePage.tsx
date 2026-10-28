@@ -209,7 +209,7 @@ export default function HomePage() {
               </div>
               <div className="hero-dossier__foot">
                 <span>Kayıt altına alınmıştır</span>
-                <span>Tur 01</span>
+                <span>Dönem 01</span>
               </div>
             </div>
           </div>

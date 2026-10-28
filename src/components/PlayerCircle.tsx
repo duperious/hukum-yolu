@@ -1,4 +1,4 @@
-import { Bot, Crown, Gavel, ShieldCheck, Skull } from 'lucide-react';
+import { Bot, Check, Crown, Gavel, ShieldCheck, Skull, X } from 'lucide-react';
 import { ROLE_INFO } from '../game';
 import type { PublicGameState } from '../game';
 import { cn } from '../lib/cn';
@@ -29,6 +29,14 @@ export function PlayerCircle({
             : player.isChancellor
               ? 'chancellor'
               : null;
+          const voted =
+            player.alive &&
+            (game.votedPlayerIds ?? []).includes(player.id) &&
+            ['voting', 'voteResult', 'presidentDiscard', 'chancellorEnact', 'policyReveal', 'termEnd'].includes(
+              game.phase,
+            );
+          const revealedChoice = game.revealedVotes[player.id];
+          const hasRevealedChoice = voted && typeof revealedChoice === 'boolean';
 
           return (
             <article
@@ -64,6 +72,23 @@ export function PlayerCircle({
                 ) : null}
                 {isWinner ? (
                   <Crown className="seat-card__crown" size={13} aria-label="Kazandı" />
+                ) : null}
+                {hasRevealedChoice ? (
+                  <span
+                    className={cn(
+                      'seat-card__stamp seat-card__stamp--vote',
+                      revealedChoice
+                        ? 'seat-card__stamp--yes'
+                        : 'seat-card__stamp--no',
+                    )}
+                  >
+                    {revealedChoice ? <Check size={10} /> : <X size={10} />}
+                    {revealedChoice ? 'Evet' : 'Hayır'}
+                  </span>
+                ) : voted ? (
+                  <span className="seat-card__stamp seat-card__stamp--voted">
+                    <Check size={10} /> Oy verdi
+                  </span>
                 ) : null}
               </span>
 

@@ -183,3 +183,25 @@ export function getPlayer(state: GameState, id: string) {
   if (!player) throw new Error(`Oyuncu yok: ${id}`);
   return player;
 }
+
+/** Açık geçiş kapısını tek adımda kapatır. Testlerde varsayılan aktör host olan p1'dir. */
+export function closeGate(state: GameState, actorId = 'p1'): GameState {
+  return applyAction(
+    state,
+    actorId,
+    state.phase === 'termEnd' ? { type: 'end_term' } : { type: 'continue' },
+  );
+}
+
+/** Oy sonucu, reform açılışı ve dönem özeti kapılarını sırayla kapatır. */
+export function passGates(state: GameState, actorId = 'p1'): GameState {
+  let current = state;
+  while (
+    current.phase === 'voteResult' ||
+    current.phase === 'policyReveal' ||
+    current.phase === 'termEnd'
+  ) {
+    current = closeGate(current, actorId);
+  }
+  return current;
+}

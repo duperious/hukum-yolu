@@ -50,7 +50,7 @@ export function EventBanner({ entries }: { entries: LogEntry[] }) {
             <Icon size={17} />
           </span>
           <div className="event-banner__body">
-            <span className="event-banner__round">Tur {event.round}</span>
+            <span className="event-banner__round">Dönem {event.round}</span>
             <p>{event.text}</p>
           </div>
         </div>

@@ -1,4 +1,6 @@
 import {
+  canAdvanceGate,
+  canEndTermNow,
   canInvestigateNow,
   canUseBlockNow,
   getAssassinationTargets,
@@ -11,6 +13,7 @@ import {
   getEligibleChancellorIds,
   getPlayer,
   getVotePower,
+  isOpenVoting,
 } from './helpers';
 import type {
   GameState,
@@ -19,7 +22,18 @@ import type {
   PrivateView,
   RedactedGameState,
   Role,
+  VoteTally,
 } from './types';
+
+function publicTally(tally: VoteTally | null, open: boolean): VoteTally | null {
+  if (!tally) return null;
+  return {
+    yes: tally.yes,
+    no: tally.no,
+    blockedPlayerId: tally.blockedPlayerId,
+    entries: open ? tally.entries.map((entry) => ({ ...entry })) : [],
+  };
+}
 
 /**
  * Herkese gönderilebilecek oyun durumu. Desteyi, oyları, rolleri,
@@ -65,7 +79,32 @@ export function getPublicGameState(state: GameState): PublicGameState {
     governmentHistory: state.governmentHistory.map((g) => ({ ...g })),
     log: state.log.map((l) => ({ ...l })),
     lastVoteResult: state.lastVoteResult,
+    lastVoteTally: publicTally(state.lastVoteTally, state.lastVoteOpen),
+    lastVoteOpen: state.lastVoteOpen,
+    revealedVotes:
+      state.lastVoteOpen && state.lastVoteTally
+        ? Object.fromEntries(
+            state.lastVoteTally.entries.map((entry) => [
+              entry.playerId,
+              entry.choice,
+            ]),
+          )
+        : {},
+    openVoting: isOpenVoting(state),
     lastGovernment: state.lastGovernment ? { ...state.lastGovernment } : null,
+    lastEnactedPolicy: state.lastEnactedPolicy,
+    lastPolicyAuto: state.lastPolicyAuto,
+    termSummary: state.termSummary
+      ? {
+          ...state.termSummary,
+          tally: publicTally(
+            state.termSummary.tally,
+            state.termSummary.openVoting,
+          ),
+          notes: [...state.termSummary.notes],
+        }
+      : null,
+    gateEndAt: state.gateEndAt,
     votesSubmitted,
     votedPlayerIds,
     totalVoters: living.length,
@@ -122,6 +161,8 @@ export function getPrivateView(
     state.phase === 'voting' &&
     player.alive &&
     state.votes[player.id] === undefined;
+  const canContinue = canAdvanceGate(state, player.id);
+  const canEndTerm = canEndTermNow(state, player.id);
   const canDiscard =
     state.phase === 'presidentDiscard' &&
     state.legislative?.presidentId === player.id;
@@ -197,6 +238,8 @@ export function getPrivateView(
       ? getEligibleChancellorIds(state)
       : [],
     canVote,
+    canContinue,
+    canEndTerm,
     canDiscard: Boolean(canDiscard),
     canEnact: Boolean(canEnact),
     canAssassinate: Boolean(canAssassinate),

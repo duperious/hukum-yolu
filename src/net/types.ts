@@ -102,6 +102,8 @@ export const GAME_ACTION_TYPES = new Set<string>([
   'ack_role',
   'nominate',
   'vote',
+  'continue',
+  'end_term',
   'president_discard',
   'chancellor_enact',
   'investigate',

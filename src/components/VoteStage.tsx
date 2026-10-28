@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { GameAction, PrivateView, PublicGameState } from '../game';
 import { cn } from '../lib/cn';
 import { Avatar } from './ui/Avatar';
+import { Button } from './ui/Button';
 
 /**
  * Hükümet oylamasını ekranın ortasında animasyonlu bir kart olarak sunar.
@@ -28,13 +29,15 @@ export function VoteStage({
   onClose: () => void;
 }) {
   const [sending, setSending] = useState(false);
+  const [selected, setSelected] = useState<boolean | null>(null);
   const voteKey = `${game.round}:${game.presidentId}:${game.chancellorId}`;
 
-  // Aynı tur içinde yeni bir hükümet oylaması açılırsa gönderim kilidini
+  // Aynı dönem içinde yeni bir hükümet oylaması açılırsa gönderim kilidini
   // sıfırla; aksi halde önceki oyunun "gönderiliyor" durumu yeni oylamayı
   // kilitli bırakır.
   useEffect(() => {
     setSending(false);
+    setSelected(null);
   }, [open, voteKey]);
 
   // Oy gönderilemezse kartı yanlışlıkla "kaydedildi" durumunda bırakma.
@@ -82,10 +85,10 @@ export function VoteStage({
   const president = game.players.find((player) => player.id === game.presidentId);
   const chancellor = game.players.find((player) => player.id === game.chancellorId);
 
-  const submit = (choice: boolean) => {
-    if (done || actionPending || sending) return;
+  const submit = () => {
+    if (selected === null || done || actionPending || sending) return;
     setSending(true);
-    onAction({ type: 'vote', choice });
+    onAction({ type: 'vote', choice: selected });
   };
 
   return (
@@ -107,7 +110,9 @@ export function VoteStage({
         >
           <X size={18} />
         </button>
-        <span className="vote-stage__kicker">Tur {game.round}, hükümet oylaması</span>
+        <span className="vote-stage__kicker">
+          Dönem {game.round}, hükümet oylaması
+        </span>
         <h2 className="vote-stage__title">Hükümet kurulmalı mı?</h2>
 
         <div className="vote-stage__government">
@@ -184,40 +189,76 @@ export function VoteStage({
             <div className="vote-stage__choices">
               <button
                 type="button"
-                className="vote-stage__choice vote-stage__choice--yes"
-                onClick={() => submit(true)}
+                className={cn(
+                  'vote-stage__choice vote-stage__choice--yes',
+                  selected === true && 'vote-stage__choice--selected',
+                )}
+                onClick={() => setSelected(true)}
                 disabled={actionPending || sending}
+                aria-pressed={selected === true}
               >
                 <span className="vote-stage__choice-icon" aria-hidden="true">
                   <Check size={30} />
                 </span>
                 <strong>Evet</strong>
                 <small>Hükümet kurulsun</small>
+                {selected === true ? (
+                  <span className="vote-stage__choice-picked">Seçildi</span>
+                ) : null}
               </button>
               <button
                 type="button"
-                className="vote-stage__choice vote-stage__choice--no"
-                onClick={() => submit(false)}
+                className={cn(
+                  'vote-stage__choice vote-stage__choice--no',
+                  selected === false && 'vote-stage__choice--selected',
+                )}
+                onClick={() => setSelected(false)}
                 disabled={actionPending || sending}
+                aria-pressed={selected === false}
               >
                 <span className="vote-stage__choice-icon" aria-hidden="true">
                   <X size={30} />
                 </span>
                 <strong>Hayır</strong>
                 <small>Hükümet kurulmasın</small>
+                {selected === false ? (
+                  <span className="vote-stage__choice-picked">Seçildi</span>
+                ) : null}
               </button>
             </div>
+
+            <div className="vote-stage__confirm">
+              <span className="vote-stage__confirm-hint">
+                {selected === null
+                  ? 'Önce Evet veya Hayır seç.'
+                  : selected
+                    ? 'Oyun: Evet · Hükümet kurulsun'
+                    : 'Oyun: Hayır · Hükümet kurulmasın'}
+              </span>
+              <Button
+                variant={selected === false ? 'danger' : 'gold'}
+                size="lg"
+                onClick={submit}
+                disabled={selected === null || actionPending || sending}
+                loading={sending}
+                icon={<Vote size={17} />}
+              >
+                Oyu Onayla ve Gönder
+              </Button>
+            </div>
+
             <p className="vote-stage__note">
-              {sending ? (
+              {game.openVoting ? (
                 <>
-                  <Loader2 className="spin" size={12} aria-hidden="true" />
-                  Oyun gönderiliyor…
+                  <Vote size={12} aria-hidden="true" />
+                  Açık oylama: Büyük Vezir tek oya düştü. Bireysel oylar sonuçla
+                  birlikte açıklanır. {game.votesSubmitted}/{game.totalVoters} oy geldi.
                 </>
               ) : (
                 <>
                   <Vote size={12} aria-hidden="true" />
-                  Kart seçtiğin an oyun gönderilir. Oylar gizlidir; yalnızca toplam
-                  sonuç açıklanır. {game.votesSubmitted}/{game.totalVoters} oy geldi.
+                  Oyun gizlidir; yalnızca ağırlıklı toplam açıklanır.{' '}
+                  {game.votesSubmitted}/{game.totalVoters} oy geldi.
                 </>
               )}
             </p>

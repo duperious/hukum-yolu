@@ -33,12 +33,51 @@ export type Phase =
   | 'roleReveal'
   | 'nomination'
   | 'voting'
+  | 'voteResult'
   | 'presidentDiscard'
   | 'chancellorEnact'
+  | 'policyReveal'
   | 'notrChoice'
   | 'peek'
   | 'assassination'
+  | 'termEnd'
   | 'gameOver';
+
+export interface VoteEntry {
+  playerId: string;
+  choice: boolean;
+  weight: number;
+}
+
+export interface VoteTally {
+  yes: number;
+  no: number;
+  blockedPlayerId: string | null;
+  entries: VoteEntry[];
+}
+
+export interface PendingPolicy {
+  card: PolicyCard;
+  presidentId: string;
+  chancellorId: string;
+  auto: boolean;
+}
+
+export interface TermSummary {
+  round: number;
+  presidentId: string;
+  chancellorId: string | null;
+  voteResult: VoteResult | null;
+  tally: VoteTally | null;
+  openVoting: boolean;
+  policy: PolicyCard | null;
+  policyAuto: boolean;
+  failedVotes: number;
+  outcome: 'legislative' | 'rejected' | 'autoPolicy';
+  nextPresidentId: string | null;
+  notes: string[];
+  endedAt: number;
+}
 
 export type LogKind =
   | 'system'
@@ -162,7 +201,15 @@ export interface GameState {
   // Meta
   startPresidentId: string;
   lastVoteResult: VoteResult | null;
+  lastVoteTally: VoteTally | null;
+  lastVoteOpen: boolean;
   lastGovernment: { presidentId: string; chancellorId: string } | null;
+  pendingPolicy: PendingPolicy | null;
+  lastEnactedPolicy: PolicyCard | null;
+  lastPolicyAuto: boolean;
+  termSummary: TermSummary | null;
+  /** Geçiş kapısının otomatik kapanacağı zaman (host saati). */
+  gateEndAt: number | null;
   createdAt: number;
   updatedAt: number;
   version: number;
@@ -191,6 +238,8 @@ export type GameAction =
   | { type: 'ack_role' }
   | { type: 'nominate'; targetId: string }
   | { type: 'vote'; choice: boolean }
+  | { type: 'continue' }
+  | { type: 'end_term' }
   | { type: 'president_discard'; card: PolicyCard }
   | { type: 'chancellor_enact'; card: PolicyCard }
   | { type: 'investigate'; targetId: string }
@@ -232,7 +281,17 @@ export interface PublicGameState {
   governmentHistory: GovernmentRecord[];
   log: LogEntry[];
   lastVoteResult: VoteResult | null;
+  lastVoteTally: VoteTally | null;
+  lastVoteOpen: boolean;
+  /** Açık oylamada bireysel tercihler; gizli oylamada boş nesne. */
+  revealedVotes: Record<string, boolean>;
+  openVoting: boolean;
   lastGovernment: { presidentId: string; chancellorId: string } | null;
+  lastEnactedPolicy: PolicyCard | null;
+  lastPolicyAuto: boolean;
+  termSummary: TermSummary | null;
+  /** Geçiş kapısının otomatik kapanacağı zaman (host saati). */
+  gateEndAt: number | null;
   votesSubmitted: number;
   /** Oyunu oylayan oyuncular. Oy tercihleri asla bu listeden çıkarılamaz. */
   votedPlayerIds: string[];
@@ -291,6 +350,8 @@ export interface PrivateView {
   canNominate: boolean;
   eligibleChancellorIds: string[];
   canVote: boolean;
+  canContinue: boolean;
+  canEndTerm: boolean;
   canDiscard: boolean;
   canEnact: boolean;
   canAssassinate: boolean;

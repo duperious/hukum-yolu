@@ -28,6 +28,11 @@ import { PolicyStage } from './PolicyStage';
 import { PolicyTrack } from './PolicyTrack';
 import { PowerPanel } from './PowerPanel';
 import { PrivacyGate } from './PrivacyGate';
+import {
+  PolicyRevealStage,
+  TermSummaryStage,
+  VoteResultStage,
+} from './TransitionStages';
 import { VoteStage } from './VoteStage';
 import { Avatar } from './ui/Avatar';
 import { Button } from './ui/Button';
@@ -76,8 +81,10 @@ export function GameScreen({
     null,
   );
   const [eraShift, setEraShift] = useState(false);
+  const [gateSecondsLeft, setGateSecondsLeft] = useState<number | null>(null);
   const roleAutoOpenRef = useRef<string | null>(null);
   const playerCardsAutoOpenRef = useRef<string | null>(null);
+  const gateSentRef = useRef<string | null>(null);
   const eraRef = useRef<'light' | 'dark'>(
     game.firstThreeResolved ? 'dark' : 'light',
   );
@@ -100,6 +107,57 @@ export function GameScreen({
     setPlayerCardsOpen(false);
     setPlayerCardsClosedFor(String(game.createdAt));
   }, [game.createdAt]);
+
+  const viewerIsHost = isHost ?? view.isHost;
+  const gatePhase =
+    game.phase === 'voteResult' ||
+    game.phase === 'policyReveal' ||
+    game.phase === 'termEnd';
+  const gateOpen = gatePhase && game.gateEndAt !== null;
+
+  // Geçiş ekranlarındaki geri sayım. Kapı kapanana kadar her yarım saniyede
+  // güncellenir; süre bitince host otomatik olarak devam eylemini gönderir.
+  useEffect(() => {
+    if (!gateOpen || !game.gateEndAt) {
+      setGateSecondsLeft(null);
+      return;
+    }
+    const tick = () => {
+      setGateSecondsLeft(
+        Math.max(0, Math.ceil((game.gateEndAt! - Date.now()) / 1000)),
+      );
+    };
+    tick();
+    const timer = window.setInterval(tick, 500);
+    return () => window.clearInterval(timer);
+  }, [gateOpen, game.gateEndAt]);
+
+  useEffect(() => {
+    if (!viewerIsHost || !gateOpen || !game.gateEndAt) {
+      gateSentRef.current = null;
+      return;
+    }
+    const key = `${game.phase}:${game.gateEndAt}`;
+    const delay = Math.max(0, game.gateEndAt - Date.now()) + 200;
+    const timer = window.setTimeout(() => {
+      if (gateSentRef.current === key) return;
+      gateSentRef.current = key;
+      onAction(
+        game.phase === 'termEnd'
+          ? { type: 'end_term' }
+          : { type: 'continue' },
+      );
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [viewerIsHost, gateOpen, game.gateEndAt, game.phase, onAction]);
+
+  // Geçiş kapısı açıkken karar sahnelerinin üstte kalmasını engelle.
+  useEffect(() => {
+    if (!gatePhase) return;
+    setVoteStageOpen(false);
+    setNomineeStageOpen(false);
+    setPolicyStageOpen(false);
+  }, [gatePhase]);
 
   // Oylama sırası gelince merkez oylama kartı otomatik açılır; kapatılsa
   // bile yeni oylama turunda yeniden açılır.
@@ -172,11 +230,14 @@ export function GameScreen({
   const phaseNarrative: Partial<Record<string, string>> = {
     nomination: `${playerName(game.presidentId)} bir Başbakan adayı gösteriyor.`,
     voting: `${playerName(game.presidentId)} başkanlığında ${playerName(game.chancellorId)} hükümeti oylanıyor.`,
+    voteResult: `${playerName(game.presidentId)} başkanlığında ${playerName(game.chancellorId)} hükümetinin oy sonucu açıklandı.`,
     presidentDiscard: `${playerName(game.presidentId)} üç reform kartından birini eliyor.`,
     chancellorEnact: `${playerName(game.chancellorId)} reformu yürürlüğe koyuyor.`,
+    policyReveal: `${game.lastEnactedPolicy === 'otokrat' ? 'Otokrat' : 'Demokratik'} reform yürürlüğe girdi.`,
     peek: `${playerName(game.presidentId)} destenin üstündeki üç kartı inceliyor.`,
     assassination: `${playerName(game.presidentId)} bir suikast hedefi seçiyor.`,
     notrChoice: 'Nötr gizlice tarafını seçiyor.',
+    termEnd: `Dönem ${game.round} tamamlandı; kapanış tutanağı bekleniyor.`,
     roleReveal: 'Roller dağıtıldı. Herkes rolünü görüyor.',
   };
   const phaseText = phaseNarrative[game.phase] ?? phaseMeta.description;
@@ -292,7 +353,7 @@ export function GameScreen({
         <section className="table-stage">
           <div className="table-stage__head">
             <div className="table-stage__brand">
-              <span className="table-stage__kicker">Tur {game.round} tutanağı</span>
+              <span className="table-stage__kicker">Dönem {game.round} tutanağı</span>
               <h1 className="table-stage__title">Masa</h1>
             </div>
             <div className="table-stage__meta">
@@ -310,14 +371,20 @@ export function GameScreen({
                   <strong>{game.votesSubmitted}</strong> / {game.totalVoters} oy
                 </span>
               ) : null}
+              {game.openVoting ? (
+                <span className="table-stat table-stat--open">
+                  <Eye size={13} />
+                  Açık oylama
+                </span>
+              ) : null}
             </div>
           </div>
 
           <PlayerCircle game={game} viewerId={viewerId} />
         </section>
 
-        <section className="phase-band" aria-label={phaseMeta.title}>
-          <span className="phase-band__round">Tur {game.round}</span>
+        <section className="phase-band" aria-label={phaseMeta.title} aria-live="polite">
+          <span className="phase-band__round">Dönem {game.round}</span>
           <div className="phase-band__main">
             <h2>{phaseMeta.title}</h2>
             <p>{phaseText}</p>
@@ -331,6 +398,15 @@ export function GameScreen({
             </span>
             <span>
               <strong>{game.discardCount}</strong> atık
+            </span>
+            <span
+              className={
+                game.openVoting
+                  ? 'phase-band__vote-mode phase-band__vote-mode--open'
+                  : 'phase-band__vote-mode'
+              }
+            >
+              {game.openVoting ? 'Açık oylama' : 'Gizli oylama'}
             </span>
           </div>
         </section>
@@ -430,9 +506,43 @@ export function GameScreen({
           nomineeStageOpen ||
           voteStageOpen ||
           policyStageOpen ||
+          gateOpen ||
           game.phase === 'gameOver'
         }
       />
+
+      {game.phase === 'voteResult' ? (
+        <VoteResultStage
+          game={game}
+          onAction={onAction}
+          actionPending={actionPending}
+          error={error}
+          canContinue={view.canContinue}
+          secondsLeft={gateSecondsLeft}
+        />
+      ) : null}
+
+      {game.phase === 'policyReveal' ? (
+        <PolicyRevealStage
+          game={game}
+          onAction={onAction}
+          actionPending={actionPending}
+          error={error}
+          canContinue={view.canContinue}
+          secondsLeft={gateSecondsLeft}
+        />
+      ) : null}
+
+      {game.phase === 'termEnd' ? (
+        <TermSummaryStage
+          game={game}
+          onAction={onAction}
+          actionPending={actionPending}
+          error={error}
+          canEndTerm={view.canEndTerm}
+          secondsLeft={gateSecondsLeft}
+        />
+      ) : null}
 
       <VoteStage
         game={game}

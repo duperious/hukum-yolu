@@ -79,7 +79,7 @@ export function NomineeStage({
         </button>
 
         <span className="vote-stage__kicker">
-          Tur {game.round}, başbakan adaylığı
+          Dönem {game.round}, başbakan adaylığı
         </span>
         <h2 className="vote-stage__title">Başbakanı sen seçiyorsun</h2>
 

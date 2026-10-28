@@ -1,5 +1,6 @@
 import {
   AlertTriangle,
+  ArrowRight,
   Check,
   Crosshair,
   Eye,
@@ -43,6 +44,11 @@ export const PHASE_META: Record<
     description: 'Hükümete güveniyor musun? Oylar gizlidir.',
     icon: Vote,
   },
+  voteResult: {
+    title: 'Oylama Sonucu',
+    description: 'Hükümetin kaderi açıklandı; sonuç tutanağı bekleniyor.',
+    icon: Check,
+  },
   presidentDiscard: {
     title: 'Kart Eleme',
     description: 'Başkan üç karttan birini eliyor.',
@@ -52,6 +58,11 @@ export const PHASE_META: Record<
     title: 'Reform Seçimi',
     description: 'Başbakan kalan iki karttan birini yürürlüğe koyuyor.',
     icon: Gavel,
+  },
+  policyReveal: {
+    title: 'Reform Yürürlükte',
+    description: 'Yürürlüğe giren reform ve sonuçları açıklanıyor.',
+    icon: ScrollText,
   },
   notrChoice: {
     title: 'Nötr’ün Seçimi',
@@ -67,6 +78,11 @@ export const PHASE_META: Record<
     title: 'Suikast',
     description: 'Başkan bir suikast hedefi seçiyor.',
     icon: Crosshair,
+  },
+  termEnd: {
+    title: 'Dönem Kapanışı',
+    description: 'Dönem tutanağı ve sıradaki Başkan açıklanıyor.',
+    icon: Flag,
   },
   gameOver: {
     title: 'Oyun Bitti',
@@ -141,6 +157,8 @@ export function ActionPanel({
   const canAct =
     view.canNominate ||
     view.canVote ||
+    view.canContinue ||
+    view.canEndTerm ||
     view.canDiscard ||
     view.canEnact ||
     view.canChooseNotrSide ||
@@ -154,7 +172,7 @@ export function ActionPanel({
         <div>
           <div className="action-panel__phase-row">
             <PhaseBadge phase={game.phase} />
-            <span className="action-panel__round">Tur {game.round}</span>
+            <span className="action-panel__round">Dönem {game.round}</span>
           </div>
         </div>
         <button type="button" className="role-peek-btn" onClick={onOpenRole}>
@@ -205,7 +223,7 @@ export function ActionPanel({
             <h3>{view.roleRevealAcknowledged ? 'Rolünü onayladın' : 'Rolünü gör ve onayla'}</h3>
             <p>
               {view.roleRevealAcknowledged
-                ? 'Diğer oyuncuların rol onayı bekleniyor. Herkes hazır olduğunda ilk tur başlayacak.'
+                ? 'Diğer oyuncuların rol onayı bekleniyor. Herkes hazır olduğunda ilk dönem başlayacak.'
                 : 'Rol kartın gizli. Yalnızca sen göreceksin. Rolünü öğrendikten sonra onayla.'}
             </p>
             <Button
@@ -289,8 +307,12 @@ export function ActionPanel({
                 <div className="action-note action-note--vote">
                   <Vote size={16} />
                   <p>
-                    Oylama kartı ekranın ortasında açılır. Evet veya Hayır seçerek
-                    oyunu gönder. Oyun gizli tutulur; yalnızca toplam sonuç açıklanır.
+                    Oylama kartı ekranın ortasında açılır. Evet veya Hayır seçip
+                    onayladığında oyun gönderilir. Oyun gizli tutulur; yalnızca toplam
+                    sonuç açıklanır.
+                    {game.openVoting
+                      ? ' Büyük Vezir tek oya düştüğü için bu oylama açıktır; bireysel oylar sonuçla birlikte görünür.'
+                      : ''}
                   </p>
                 </div>
                 {onOpenVoteStage ? (
@@ -328,6 +350,101 @@ export function ActionPanel({
               </div>
             ) : (
               <p className="muted">Ölü oyuncular oy kullanamaz.</p>
+            )}
+          </div>
+        ) : null}
+
+        {game.phase === 'voteResult' ? (
+          <div className="action-block">
+            <h3>
+              {game.lastVoteResult === 'kabul'
+                ? 'Hükümet kabul edildi'
+                : 'Hükümet reddedildi'}
+            </h3>
+            <p>
+              {game.lastVoteTally
+                ? `Ağırlıklı sonuç — Evet: ${game.lastVoteTally.yes}, Hayır: ${game.lastVoteTally.no}.`
+                : 'Oylar sayıldı.'}{' '}
+              {game.lastVoteOpen
+                ? 'Açık oylama: bireysel tercihler sonuç ekranında görünüyor.'
+                : 'Bireysel oylar gizli kaldı.'}
+            </p>
+            {view.canContinue ? (
+              <Button
+                variant="primary"
+                onClick={() => onAction({ type: 'continue' })}
+                loading={actionPending}
+                icon={<ArrowRight size={16} />}
+              >
+                {game.lastVoteResult === 'kabul'
+                  ? 'Yasamayı Aç'
+                  : game.failedVotes + 1 >= 3
+                    ? 'Otomatik Reformu Aç'
+                    : 'Yeni Döneme Geç'}
+              </Button>
+            ) : (
+              <div className="waiting-illustration">
+                <Vote size={30} />
+                <span>Başkan veya host sonucu kapatacak…</span>
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        {game.phase === 'policyReveal' ? (
+          <div className="action-block">
+            <h3>
+              {game.lastEnactedPolicy === 'otokrat'
+                ? 'Otokrat Reform yürürlükte'
+                : 'Demokratik Reform yürürlükte'}
+            </h3>
+            <p>
+              Demokratik: {game.enacted.democratic}/{game.democraticWinThreshold} ·
+              Otokrat: {game.enacted.fascist}/{game.fascistTrackLength}.
+              {game.lastPolicyAuto ? ' Reform otomatik yürürlüğe girdi.' : ''}
+            </p>
+            {view.canContinue ? (
+              <Button
+                variant="primary"
+                onClick={() => onAction({ type: 'continue' })}
+                loading={actionPending}
+                icon={<ArrowRight size={16} />}
+              >
+                Devam Et
+              </Button>
+            ) : (
+              <div className="waiting-illustration">
+                <ScrollText size={30} />
+                <span>Reform sonucu açıklanıyor…</span>
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        {game.phase === 'termEnd' ? (
+          <div className="action-block">
+            <h3>Dönem {game.termSummary?.round ?? game.round} kapandı</h3>
+            <p>
+              {game.termSummary?.policy
+                ? `${game.termSummary.policy === 'otokrat' ? 'Otokrat' : 'Demokratik'} reform yürürlüğe girdi. `
+                : 'Hükümet kurulamadı. '}
+              Sıradaki Başkan:{' '}
+              <strong>{playerName(game, game.termSummary?.nextPresidentId ?? null)}</strong>.
+            </p>
+            {view.canEndTerm ? (
+              <Button
+                variant="gold"
+                onClick={() => onAction({ type: 'end_term' })}
+                loading={actionPending}
+                icon={<ArrowRight size={16} />}
+              >
+                Dönemi Kapat
+              </Button>
+            ) : (
+              <div className="waiting-illustration">
+                <Flag size={30} />
+                <span>Başkan dönemi kapatacak…</span>
+              </div>
             )}
           </div>
         ) : null}

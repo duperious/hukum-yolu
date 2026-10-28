@@ -93,7 +93,7 @@ export const ROLE_ORDER: Role[] = [
 
 export const RULE_ASSUMPTIONS: string[] = [
   'Başkan kendisini Başbakan adayı gösteremez. Başka uygun aday kalmadığında bu kısıt gevşetilir.',
-  'Önceki turun Başbakanı bir sonraki turda aday gösterilemez. Başka uygun aday kalmadığında bu kısıt gevşetilir.',
+  'Önceki dönemin Başbakanı bir sonraki dönemde aday gösterilemez. Başka uygun aday kalmadığında bu kısıt gevşetilir.',
   'Soruşturma sonucu yalnızca sıradan Otokrat için "Kötü"; diğer tüm roller için "İyi" kabul edilir. Büyük Vezir ve İstihbarat Başkanı da "İyi" döner.',
   'Tasfiye hedefleri tablodaki rol kartlarına göre çözülür. Tablo ile "Demokrat Parti Başkanı ve halefi" açıklaması arasındaki fark README\'de belirtilmiştir.',
   'Tasfiye zaferi yalnızca kırmızı Nötr liderliği devraldıktan sonra geçerli kişisel zaferdir.',
@@ -102,6 +102,7 @@ export const RULE_ASSUMPTIONS: string[] = [
   'Demokrat Parti Başkanı ölürse halef sırası: hayattaki Nötr → İstihbarat Başkanı rolü sahibi → boş.',
   'Üçüncü Otokrat Reform\'un kart inceleme/oy engelleme yetkisi yalnızca hükümet eliyle yürürlüğe girerse kazanılır; üç ret sonrası otomatik yürürlüğe giren kart özel yetki kazandırmaz.',
   'Oy engelleme yetkisi sonraki hükümet oylamasında, sonuç açıklanmadan önce kullanılabilir; hedef kendisi olamaz. Kullanılmazsa sonuçla birlikte sona erer.',
+  'Büyük Vezir ilk üç reformdan sonra Demokratik tarafa geçip oy gücü 2’den 1’e düşerse oylama açık yapılır; bireysel oylar sonuçla birlikte açıklanır. Oy gücü 0’a düşerse oylama gizli kalır.',
   'Nötr, üçüncü reform tamamlandığında (otomatik yürürlüğe girse bile) tarafını seçer. Seçim yalnızca Nötr ve oyun motoru tarafından bilinir.',
   'Büyük Vezir\'in kimliği ilk üç reform geçişinde (demokratik tarafa geçiş veya idam) açıklanır. Önceden ölmüşse açıklanmaz.',
   'Demokrat Parti Başkanı makamı herkese açıktır. Bu makam Nötr\'e geçerse Nötr\'ün rolü duyulur; seçtiği taraf duyurulmaz.',

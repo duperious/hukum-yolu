@@ -812,3 +812,135 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/* =========================================================
+   Geçiş sahneleri — mobilde tam ekran karar yüzeyi
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .vote-stage-overlay,
+  .gate-overlay {
+    place-items: stretch;
+    padding: 0;
+  }
+
+  .vote-stage,
+  .gate-stage {
+    width: 100%;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    border-right: 0;
+    border-left: 0;
+    border-radius: 0;
+    padding:
+      calc(20px + env(safe-area-inset-top))
+      16px
+      calc(18px + env(safe-area-inset-bottom));
+  }
+
+  .vote-stage__close {
+    top: calc(10px + env(safe-area-inset-top));
+    right: 12px;
+  }
+
+  .vote-stage__confirm {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 9px;
+  }
+
+  .vote-stage__confirm-hint {
+    text-align: center;
+  }
+
+  .vote-stage__confirm .btn {
+    width: 100%;
+  }
+
+  .vote-stage__note {
+    align-items: flex-start;
+  }
+
+  .gate-stage__title {
+    font-size: clamp(26px, 8vw, 34px);
+  }
+
+  .gate-reveal {
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .gate-reveal__seal {
+    width: 56px;
+    height: 56px;
+  }
+
+  .gate-tally {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 9px 11px;
+  }
+
+  .gate-tally__side strong {
+    font-size: 28px;
+  }
+
+  .gate-tally__mode {
+    margin-left: 0;
+  }
+
+  .gate-stage__footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .gate-stage__timer {
+    justify-content: center;
+  }
+
+  .gate-stage__footer .btn {
+    width: 100%;
+  }
+
+  .gate-stage__wait {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .gate-policy {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .gate-policy .policy-card {
+    width: min(200px, 100%);
+    margin: 0 auto;
+  }
+
+  .gate-policy__counts {
+    width: 100%;
+  }
+
+  .gate-summary__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gate-vote-list {
+    max-height: 34vh;
+  }
+}
+
+@media (max-width: 400px) {
+  .gate-stage__title {
+    font-size: 26px;
+  }
+
+  .gate-tally__side strong {
+    font-size: 24px;
+  }
+
+  .gate-summary__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

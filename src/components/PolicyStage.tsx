@@ -83,7 +83,7 @@ export function PolicyStage({
         </button>
 
         <span className="vote-stage__kicker">
-          Tur {game.round}, {isDiscard ? 'kart eleme' : 'reform seçimi'}
+          Dönem {game.round}, {isDiscard ? 'kart eleme' : 'reform seçimi'}
         </span>
         <h2 className="vote-stage__title">
           {isDiscard ? 'Bir kartı ele' : 'Bir reformu yürürlüğe koy'}

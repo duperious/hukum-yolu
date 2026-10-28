@@ -36,7 +36,7 @@ interface StageInfo {
 }
 
 const KICKERS: Record<LogKind, string> = {
-  system: 'Tur',
+  system: 'Dönem',
   government: 'Hükümet',
   vote: 'Oylama',
   policy: 'Reform',
@@ -227,7 +227,7 @@ function describeEvent(entry: LogEntry): StageInfo {
 
     case 'system':
       return {
-        title: text.includes('başladı') ? `Tur ${entry.round} Başladı` : 'Oyun Notu',
+        title: text.includes('başladı') ? `Dönem ${entry.round} Başladı` : 'Oyun Notu',
         kicker: KICKERS.system,
         tone: 'gold',
         Icon: Info,
@@ -342,7 +342,7 @@ export function EventStage({
   const pausedRef = useRef(paused);
   const roundRef = useRef(round);
   // Modal açıkken biriken olayların yalnızca en yenisi, kapatınca ve hâlâ
-  // güncelse gösterilir. Böylece eski tur bildirimleri sonradan ekrana düşmez.
+  // güncelse gösterilir. Böylece eski dönem bildirimleri sonradan ekrana düşmez.
   const pendingRef = useRef<LogEntry | null>(null);
 
   useEffect(() => {
@@ -480,7 +480,7 @@ export function EventStage({
         </div>
         <div className="event-stage__body">
           <span className="event-stage__kicker">
-            Tur {current.round || 1}, {info.kicker}
+            Dönem {current.round || 1}, {info.kicker}
           </span>
           <h2 className="event-stage__title">{info.title}</h2>
           <p className="event-stage__text">{current.text}</p>

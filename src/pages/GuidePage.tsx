@@ -52,11 +52,19 @@ const PHASES: Array<{ title: string; text: string }> = [
   },
   {
     title: 'Gizli oylama',
-    text: 'Yaşayan tüm oyuncular kabul veya ret oyu verir. Oylar gizlidir; yalnızca toplam sonuç açıklanır. Büyük Vezir’in oyu iki sayılır.',
+    text: 'Yaşayan tüm oyuncular kabul veya ret oyu verir. Oylar gizlidir; yalnızca toplam sonuç açıklanır. Büyük Vezir’in oyu iki sayılır. Büyük Vezir ilk üç reformdan sonra Demokratik tarafa geçip oy gücü 2’den 1’e düşerse oylama açık yapılır ve bireysel oylar sonuçla birlikte açıklanır.',
+  },
+  {
+    title: 'Oylama sonucu',
+    text: 'Ağırlıklı Evet ve Hayır toplamı açıklanır. Hükümet kabul edilirse yasama başlar; reddedilirse ret sayacı artar ve yeni döneme geçilir.',
   },
   {
     title: 'Reform seçimi',
-    text: 'Hükümet kurulursa Başkan 3 karttan 1’ini eler, Başbakan kalan 2 karttan 1’ini yürürlüğe koyar. Deste azalınca yeniden karıştırılır.',
+    text: 'Hükümet kurulursa Başkan 3 karttan 1’ini eler, Başbakan kalan 2 karttan 1’ini yürürlüğe koyar. Reform önce duyurulur, ardından özel yetkiler çözülür. Deste azalınca yeniden karıştırılır.',
+  },
+  {
+    title: 'Dönem kapanışı',
+    text: 'Reform ve özel yetkiler çözüldükten sonra dönem tutanağı açılır. Dönemi Başkan kapatır; kapatmazsa host 45 saniye sonra ilerletir.',
   },
   {
     title: 'Özel yetkiler',
@@ -64,7 +72,7 @@ const PHASES: Array<{ title: string; text: string }> = [
   },
   {
     title: 'Oyun sonu',
-    text: 'Bir taraf kazanana kadar turlar sürer. Oyun bitince tüm roller, desteler ve oylar açıklanır.',
+    text: 'Bir taraf kazanana kadar dönemler sürer. Oyun bitince tüm roller, desteler ve oylar açıklanır.',
   },
 ];
 
@@ -251,8 +259,8 @@ export default function GuidePage() {
 
         <section className="guide-section" id="akis">
           <SectionHeading
-            eyebrow="Tur akışı"
-            title="Bir tur nasıl geçer?"
+            eyebrow="Dönem akışı"
+            title="Bir dönem nasıl geçer?"
             description="Oyun, rollerin onaylanmasıyla başlar ve bir taraf kazanana kadar aynı döngüyü izler."
           />
           <ol className="phase-list">

@@ -11,6 +11,7 @@ import { mulberry32 } from '../src/game/rng';
 import type { GameState, PolicyCard } from '../src/game/types';
 import {
   ackAll,
+  closeGate,
   forceAssassination,
   forceBlock,
   forceLegislative,
@@ -19,6 +20,7 @@ import {
   forceVote,
   getPlayer,
   makeControlledGame,
+  passGates,
   ROLES_5,
   ROLES_6,
   ROLES_7,
@@ -116,8 +118,11 @@ describe('oylama ve Büyük Vezir ağırlığı', () => {
       current = applyAction(current, id, { type: 'vote', choice });
     }
     expect(current.lastVoteResult).toBe('kabul');
-    expect(current.phase).toBe('presidentDiscard');
+    expect(current.phase).toBe('voteResult');
     expect(current.failedVotes).toBe(0);
+
+    const afterGate = closeGate(current);
+    expect(afterGate.phase).toBe('presidentDiscard');
   });
 
   it('eşitlikte ret kabul edilir ve ret sayacı artar', () => {
@@ -135,8 +140,12 @@ describe('oylama ve Büyük Vezir ağırlığı', () => {
       current = applyAction(current, id, { type: 'vote', choice });
     }
     expect(current.lastVoteResult).toBe('ret');
-    expect(current.failedVotes).toBe(1);
-    expect(current.phase).toBe('nomination');
+    expect(current.phase).toBe('voteResult');
+    expect(current.failedVotes).toBe(0);
+
+    const afterGate = closeGate(current);
+    expect(afterGate.failedVotes).toBe(1);
+    expect(afterGate.phase).toBe('nomination');
   });
 
   it('engellenen Büyük Vezir oyu sayılmaz ve oy gücü kalıcı 0 olur', () => {
@@ -158,7 +167,11 @@ describe('oylama ve Büyük Vezir ağırlığı', () => {
       current = applyAction(current, id, { type: 'vote', choice });
     }
     expect(current.lastVoteResult).toBe('ret');
-    expect(current.failedVotes).toBe(1);
+    expect(current.phase).toBe('voteResult');
+    expect(current.failedVotes).toBe(0);
+
+    const afterGate = closeGate(current);
+    expect(afterGate.failedVotes).toBe(1);
   });
 
   it('üç ret sonrası destenin üst kartı otomatik yürürlüğe girer', () => {
@@ -168,12 +181,18 @@ describe('oylama ve Büyük Vezir ağırlığı', () => {
       failedVotes: 2,
       deck: ['demokratik' as PolicyCard, ...base.deck.slice(1)],
     };
-    const next = voteAll(state, false);
+    const voteGate = voteAll(state, false);
+    expect(voteGate.phase).toBe('voteResult');
+
+    const next = closeGate(voteGate);
     expect(next.failedVotes).toBe(0);
     expect(next.enacted.democratic).toBe(1);
     expect(next.policyHistory).toEqual(['demokratik']);
     expect(next.governmentHistory[0]?.auto).toBe(true);
-    expect(next.phase).toBe('nomination');
+    expect(next.phase).toBe('policyReveal');
+
+    const nextRound = passGates(next);
+    expect(nextRound.phase).toBe('nomination');
   });
 });
 
@@ -195,7 +214,9 @@ describe('yasama ve reform etkileri', () => {
       policy: 'demokratik',
       auto: false,
     });
-    expect(next.phase).toBe('nomination');
+    expect(next.phase).toBe('policyReveal');
+    expect(next.lastEnactedPolicy).toBe('demokratik');
+    expect(passGates(next).phase).toBe('nomination');
   });
 
   it('Başkan kart elerken yalnızca kendi elindeki kartı seçebilir', () => {
@@ -236,10 +257,14 @@ describe('ilk üç reform geçişi ve Nötr', () => {
       enacted: { democratic: 1, fascist: 1 },
       policyHistory: ['demokratik', 'otokrat'],
     };
-    const next = applyAction(prepared, 'p2', {
+    const revealed = applyAction(prepared, 'p2', {
       type: 'chancellor_enact',
       card: 'demokratik',
     });
+    expect(revealed.phase).toBe('policyReveal');
+    expect(revealed.firstThreeResolved).toBe(false);
+
+    const next = closeGate(revealed);
     expect(next.phase).toBe('notrChoice');
     expect(next.bigVezirOutcome).toBe('demokrat');
     expect(getPlayer(next, 'p3').effectiveTeam).toBe('demokrat');
@@ -263,8 +288,11 @@ describe('ilk üç reform geçişi ve Nötr', () => {
       chosen.log.filter((entry) => entry.text.includes('Nötr tarafını seçiyor')),
     ).toHaveLength(0);
     expect(getPlayer(chosen, 'p4').effectiveTeam).toBe('demokrat');
-    expect(chosen.phase).toBe('nomination');
-    expect(chosen.round).toBe(2);
+    expect(chosen.phase).toBe('termEnd');
+
+    const afterTerm = closeGate(chosen);
+    expect(afterTerm.phase).toBe('nomination');
+    expect(afterTerm.round).toBe(2);
   });
 
   it('Otokratlar öndeyse Büyük Vezir idam edilir ve kimliği açıklanır', () => {
@@ -275,10 +303,13 @@ describe('ilk üç reform geçişi ve Nötr', () => {
       enacted: { democratic: 1, fascist: 1 },
       policyHistory: ['demokratik', 'otokrat'],
     };
-    const next = applyAction(prepared, 'p2', {
+    const revealed = applyAction(prepared, 'p2', {
       type: 'chancellor_enact',
       card: 'otokrat',
     });
+    expect(revealed.phase).toBe('policyReveal');
+
+    const next = closeGate(revealed);
     expect(next.phase).toBe('notrChoice');
     expect(next.bigVezirOutcome).toBe('idam');
     expect(getPlayer(next, 'p3').alive).toBe(false);
@@ -294,10 +325,11 @@ describe('ilk üç reform geçişi ve Nötr', () => {
       enacted: { democratic: 1, fascist: 1 },
       policyHistory: ['demokratik', 'otokrat'],
     };
-    const afterTransition = applyAction(prepared, 'p2', {
+    const afterPolicy = applyAction(prepared, 'p2', {
       type: 'chancellor_enact',
       card: 'otokrat',
     });
+    const afterTransition = closeGate(afterPolicy);
     const chosen = applyAction(afterTransition, 'p4', {
       type: 'choose_notr_side',
       side: 'kirmizi',
@@ -316,26 +348,27 @@ describe('üçüncü Otokrat Reform yetkileri', () => {
       ...state,
       enacted: { democratic: 0, fascist: 2 },
       policyHistory: ['otokrat', 'otokrat'],
+      firstThreeResolved: true,
     };
     const afterPolicy = applyAction(prepared, 'p2', {
       type: 'chancellor_enact',
       card: 'otokrat',
     });
-    expect(afterPolicy.phase).toBe('notrChoice');
-    expect(afterPolicy.pendingPeek?.cards).toHaveLength(3);
+    expect(afterPolicy.phase).toBe('policyReveal');
+    expect(afterPolicy.pendingPeek).toBeNull();
 
-    const afterChoice = applyAction(afterPolicy, 'p4', {
-      type: 'choose_notr_side',
-      side: 'mavi',
-    });
-    expect(afterChoice.phase).toBe('peek');
-    const deckBefore = afterChoice.deck.length;
-    const peekCards = [...(afterChoice.pendingPeek?.cards ?? [])];
-    const afterPeek = applyAction(afterChoice, 'p1', { type: 'ack_peek' });
+    const afterReveal = closeGate(afterPolicy);
+    expect(afterReveal.phase).toBe('peek');
+    expect(afterReveal.pendingPeek?.cards).toHaveLength(3);
+
+    const deckBefore = afterReveal.deck.length;
+    const peekCards = [...(afterReveal.pendingPeek?.cards ?? [])];
+    const afterPeek = applyAction(afterReveal, 'p1', { type: 'ack_peek' });
     expect(afterPeek.pendingPeek).toBeNull();
     expect(afterPeek.deck.length).toBe(deckBefore + 3);
     expect(afterPeek.deck.slice(0, 3)).toEqual(peekCards);
-    expect(afterPeek.phase).toBe('nomination');
+    expect(afterPeek.phase).toBe('termEnd');
+    expect(closeGate(afterPeek).phase).toBe('nomination');
   });
 
   it('7 oyunculu oyunda oy engelleme yetkisi verir ve sonraki turda kullanılabilir', () => {
@@ -347,19 +380,21 @@ describe('üçüncü Otokrat Reform yetkileri', () => {
       ...state,
       enacted: { democratic: 0, fascist: 2 },
       policyHistory: ['otokrat', 'otokrat'],
+      firstThreeResolved: true,
     };
     const afterPolicy = applyAction(prepared, 'p2', {
       type: 'chancellor_enact',
       card: 'otokrat',
     });
-    expect(afterPolicy.phase).toBe('notrChoice');
-    expect(afterPolicy.pendingBlock?.playerId).toBe('p1');
-    expect(afterPolicy.pendingBlock?.usableRound).toBe(2);
+    expect(afterPolicy.phase).toBe('policyReveal');
+    expect(afterPolicy.pendingBlock).toBeNull();
 
-    const afterChoice = applyAction(afterPolicy, 'p5', {
-      type: 'choose_notr_side',
-      side: 'mavi',
-    });
+    const afterReveal = closeGate(afterPolicy);
+    expect(afterReveal.phase).toBe('termEnd');
+    expect(afterReveal.pendingBlock?.playerId).toBe('p1');
+    expect(afterReveal.pendingBlock?.usableRound).toBe(2);
+
+    const afterChoice = closeGate(afterReveal);
     expect(afterChoice.phase).toBe('nomination');
     expect(afterChoice.round).toBe(2);
     expect(afterChoice.pendingBlock?.playerId).toBe('p1');
@@ -397,18 +432,22 @@ describe('suikast, liderlik devri ve zaferler', () => {
       type: 'chancellor_enact',
       card: 'otokrat',
     });
-    expect(afterPolicy.phase).toBe('assassination');
-    expect(afterPolicy.pendingAssassination?.presidentId).toBe('p2');
+    expect(afterPolicy.phase).toBe('policyReveal');
 
-    const afterKill = applyAction(afterPolicy, 'p2', {
+    const afterReveal = closeGate(afterPolicy);
+    expect(afterReveal.phase).toBe('assassination');
+    expect(afterReveal.pendingAssassination?.presidentId).toBe('p2');
+
+    const afterKill = applyAction(afterReveal, 'p2', {
       type: 'assassinate',
       targetId: 'p1',
     });
     expect(getPlayer(afterKill, 'p1').alive).toBe(false);
     expect(afterKill.leaderId).toBe('p4');
     expect(afterKill.leadershipTransferred).toBe(true);
-    expect(afterKill.phase).toBe('nomination');
+    expect(afterKill.phase).toBe('termEnd');
     expect(afterKill.winner).toBeNull();
+    expect(closeGate(afterKill).phase).toBe('nomination');
   });
 
   it('kırmızı Nötr liderken 7. Otokrat Reform kişisel zafer getirir', () => {
@@ -427,10 +466,14 @@ describe('suikast, liderlik devri ve zaferler', () => {
         p.id === 'p4' ? { ...p, effectiveTeam: 'otokrat' as const } : p,
       ),
     };
-    const next = applyAction(prepared, 'p5', {
+    const revealed = applyAction(prepared, 'p5', {
       type: 'chancellor_enact',
       card: 'otokrat',
     });
+    expect(revealed.phase).toBe('policyReveal');
+    expect(revealed.winner).toBeNull();
+
+    const next = closeGate(revealed);
     expect(next.phase).toBe('gameOver');
     expect(next.winner).toBe('notr');
     expect(next.winnerIds).toEqual(['p4']);
@@ -451,7 +494,10 @@ describe('suikast, liderlik devri ve zaferler', () => {
         p.id === 'p4' ? { ...p, effectiveTeam: 'otokrat' as const } : p,
       ),
     };
-    const next = voteAll(prepared, true);
+    const voteGate = voteAll(prepared, true);
+    expect(voteGate.phase).toBe('voteResult');
+
+    const next = closeGate(voteGate);
     expect(next.phase).toBe('gameOver');
     expect(next.winner).toBe('otokrat');
     expect(next.winnerIds).toContain('p1');
@@ -476,10 +522,14 @@ describe('suikast, liderlik devri ve zaferler', () => {
         return p;
       }),
     };
-    const next = applyAction(prepared, 'p2', {
+    const revealed = applyAction(prepared, 'p2', {
       type: 'chancellor_enact',
       card: 'demokratik',
     });
+    expect(revealed.phase).toBe('policyReveal');
+    expect(revealed.winner).toBeNull();
+
+    const next = closeGate(revealed);
     expect(next.phase).toBe('gameOver');
     expect(next.winner).toBe('demokrat');
     expect(next.winnerIds).toEqual(expect.arrayContaining(['p3', 'p4', 'p5']));
@@ -502,10 +552,15 @@ describe('suikast, liderlik devri ve zaferler', () => {
         return p;
       }),
     };
-    const next = applyAction(prepared, 'p2', {
+    const revealed = applyAction(prepared, 'p2', {
       type: 'chancellor_enact',
       card: 'otokrat',
     });
+    expect(revealed.phase).toBe('policyReveal');
+    expect(revealed.winner).toBeNull();
+
+    const next = closeGate(revealed);
+    expect(next.phase).toBe('gameOver');
     expect(next.winner).toBe('otokrat');
     expect(next.winnerIds).toEqual(expect.arrayContaining(['p1', 'p2']));
     expect(next.winnerIds).not.toContain('p4');
@@ -679,13 +734,132 @@ describe('gizlilik ve redaksiyon', () => {
       notrSide: 'mavi',
       notrChoicePending: false,
     };
-    const next = applyAction(prepared, 'p2', {
+    const revealed = applyAction(prepared, 'p2', {
       type: 'chancellor_enact',
       card: 'demokratik',
     });
+    const next = closeGate(revealed);
     const redacted = redactGameState(next, 'p1');
     expect(redacted.public.revealedRoles).not.toBeNull();
     expect(Object.keys(redacted.public.revealedRoles ?? {})).toHaveLength(5);
+  });
+});
+
+describe('geçiş kapıları, açık oylama ve dönem özeti', () => {
+  it('Büyük Vezir Demokratik tarafa geçip tek oya düşünce oylama açık yapılır', () => {
+    const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
+    const openState: GameState = {
+      ...forceVote(base, 'p1', 'p2'),
+      firstThreeResolved: true,
+      bigVezirOutcome: 'demokrat',
+      notrChoicePending: false,
+      notrSide: 'mavi',
+      players: base.players.map((player) =>
+        player.id === 'p3'
+          ? { ...player, effectiveTeam: 'demokrat' as const, votePower: 1 }
+          : player,
+      ),
+    };
+    expect(redactGameState(openState, 'p1').public.openVoting).toBe(true);
+
+    const votes: Record<string, boolean> = {
+      p1: true,
+      p2: true,
+      p3: true,
+      p4: false,
+      p5: false,
+    };
+    let result = openState;
+    for (const [id, choice] of Object.entries(votes)) {
+      result = applyAction(result, id, { type: 'vote', choice });
+    }
+
+    expect(result.phase).toBe('voteResult');
+    expect(result.lastVoteOpen).toBe(true);
+    expect(result.lastVoteTally).toMatchObject({ yes: 3, no: 2 });
+    const redacted = redactGameState(result, 'p1');
+    expect(redacted.public.revealedVotes).toMatchObject({
+      p1: true,
+      p3: true,
+      p4: false,
+    });
+    expect(redacted.public.lastVoteTally?.entries).toHaveLength(5);
+  });
+
+  it('gizli oylamada bireysel tercihler redaksiyonda saklanır', () => {
+    const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
+    const state = forceVote(base, 'p1', 'p2');
+    expect(redactGameState(state, 'p1').public.openVoting).toBe(false);
+
+    const votes: Record<string, boolean> = {
+      p1: true,
+      p2: true,
+      p3: true,
+      p4: false,
+      p5: false,
+    };
+    let result = state;
+    for (const [id, choice] of Object.entries(votes)) {
+      result = applyAction(result, id, { type: 'vote', choice });
+    }
+
+    const redacted = redactGameState(result, 'p1');
+    expect(redacted.public.lastVoteOpen).toBe(false);
+    expect(redacted.public.revealedVotes).toEqual({});
+    expect(redacted.public.lastVoteTally?.entries).toEqual([]);
+    expect(redacted.public.lastVoteTally).toMatchObject({ yes: 4, no: 2 });
+  });
+
+  it('oy sonucu ve dönem özeti yalnızca yetkili oyuncu ya da host tarafından kapatılır', () => {
+    const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
+    const result = voteAll(forceVote(base, 'p1', 'p2'), true);
+    expect(result.phase).toBe('voteResult');
+    expect(result.gateEndAt).not.toBeNull();
+    expect(() =>
+      applyAction(result, 'p3', { type: 'continue' }),
+    ).toThrow(GameError);
+    expect(redactGameState(result, 'p1').private.canContinue).toBe(true);
+    expect(redactGameState(result, 'p3').private.canContinue).toBe(false);
+
+    const legislative = closeGate(result, 'p1');
+    expect(legislative.phase).toBe('presidentDiscard');
+    expect(legislative.gateEndAt).toBeNull();
+
+    const presidentCards = legislative.legislative?.presidentCards ?? [];
+    const discarded = applyAction(legislative, 'p1', {
+      type: 'president_discard',
+      card: presidentCards[0],
+    });
+    const chancellorCards = discarded.legislative?.chancellorCards ?? [];
+    const revealed = applyAction(discarded, 'p2', {
+      type: 'chancellor_enact',
+      card: chancellorCards[0],
+    });
+    expect(revealed.phase).toBe('policyReveal');
+
+    const termEnd = closeGate(revealed, 'p1');
+    expect(termEnd.phase).toBe('termEnd');
+    expect(termEnd.termSummary).toMatchObject({
+      round: 1,
+      presidentId: 'p1',
+      chancellorId: 'p2',
+      voteResult: 'kabul',
+      policy: chancellorCards[0],
+      outcome: 'legislative',
+      nextPresidentId: 'p2',
+    });
+    expect(termEnd.gateEndAt).not.toBeNull();
+    expect(() =>
+      applyAction(termEnd, 'p3', { type: 'end_term' }),
+    ).toThrow(GameError);
+    expect(redactGameState(termEnd, 'p1').private.canEndTerm).toBe(true);
+    expect(redactGameState(termEnd, 'p3').private.canEndTerm).toBe(false);
+
+    const nextRound = closeGate(termEnd, 'p1');
+    expect(nextRound.phase).toBe('nomination');
+    expect(nextRound.round).toBe(2);
+    expect(nextRound.termSummary).toBeNull();
+    expect(nextRound.gateEndAt).toBeNull();
   });
 });
 

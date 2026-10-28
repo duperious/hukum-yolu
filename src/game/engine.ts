@@ -20,6 +20,7 @@ import {
   getTotalReforms,
   getVotePower,
   isAlive,
+  isOpenVoting,
   isTermLimitRelaxed,
   nextLivingAfter,
   policyLabel,
@@ -41,6 +42,7 @@ import type {
   Role,
   StartGameInput,
   Winner,
+  VoteTally,
 } from './types';
 
 export class GameError extends Error {
@@ -57,6 +59,13 @@ interface PolicyMeta {
   presidentId: string;
   chancellorId: string;
   auto: boolean;
+}
+
+/** Sonuç, reform ve dönem kapanışı ekranlarının otomatik ilerleme süresi. */
+export const GATE_AUTO_MS = 45_000;
+
+function gateDeadline(now = Date.now()): number {
+  return now + GATE_AUTO_MS;
 }
 
 function makeId(prefix: string): string {
@@ -207,7 +216,14 @@ export function startGame(input: StartGameInput): GameState {
     revealedRoles: null,
     startPresidentId: startPresident.id,
     lastVoteResult: null,
+    lastVoteTally: null,
+    lastVoteOpen: false,
     lastGovernment: null,
+    pendingPolicy: null,
+    lastEnactedPolicy: null,
+    lastPolicyAuto: false,
+    termSummary: null,
+    gateEndAt: null,
     createdAt: now,
     updatedAt: now,
     version: 1,
@@ -251,6 +267,13 @@ function startRound(state: GameState): void {
   state.legislative = null;
   state.investigatedThisRound = {};
   state.phase = 'nomination';
+  state.lastVoteTally = null;
+  state.lastVoteOpen = false;
+  state.pendingPolicy = null;
+  state.lastEnactedPolicy = null;
+  state.lastPolicyAuto = false;
+  state.termSummary = null;
+  state.gateEndAt = null;
 
   if (state.pendingBlock) {
     const holder = getPlayer(state, state.pendingBlock.playerId);
@@ -264,7 +287,7 @@ function startRound(state: GameState): void {
   }
 
   const president = getPlayer(state, nextPresident);
-  addLog(state, 'system', `Tur ${state.round} başladı. Başkan: ${president?.name ?? '—'}.`);
+  addLog(state, 'system', `Dönem ${state.round} başladı. Başkan: ${president?.name ?? '—'}.`);
 }
 
 export function getInvestigateTargets(state: GameState, actorId: string): string[] {
@@ -301,6 +324,37 @@ export function canUseBlockNow(state: GameState, playerId: string): boolean {
   return true;
 }
 
+function allPlayersAreBots(state: GameState): boolean {
+  return state.players.every((player) => player.isBot);
+}
+
+/**
+ * Sonuç ve reform kapılarını kimse kapatmazsa host 45 saniye sonra ilerletir.
+ * Bu yüzden kapıyı önce Başkan (reformda Başbakan da), yoksa host kapatabilir.
+ */
+export function canAdvanceGate(state: GameState, playerId: string): boolean {
+  const player = getPlayer(state, playerId);
+  if (!player) return false;
+  if (player.isHost) return true;
+  if (allPlayersAreBots(state)) return true;
+  if (state.phase === 'voteResult') return state.presidentId === playerId;
+  if (state.phase === 'policyReveal') {
+    return (
+      state.presidentId === playerId ||
+      state.pendingPolicy?.chancellorId === playerId
+    );
+  }
+  return false;
+}
+
+/** Dönem özetini önce Başkan kapatır; Başkan kapatmazsa host devreye girer. */
+export function canEndTermNow(state: GameState, playerId: string): boolean {
+  const player = getPlayer(state, playerId);
+  if (!player) return false;
+  if (state.phase !== 'termEnd') return false;
+  return player.isHost || state.presidentId === playerId || allPlayersAreBots(state);
+}
+
 function computeWinnerIds(state: GameState, winner: Winner): string[] {
   if (winner === 'demokrat') {
     return state.players.filter((p) => p.effectiveTeam === 'demokrat').map((p) => p.id);
@@ -324,6 +378,9 @@ function endGame(
   state.winner = winner;
   state.winReason = reason;
   state.winnerIds = winnerIds;
+  state.termSummary = null;
+  state.pendingPolicy = null;
+  state.gateEndAt = null;
   state.revealedRoles = Object.fromEntries(state.players.map((p) => [p.id, p.role]));
   const label =
     winner === 'demokrat' ? 'Demokratlar' : winner === 'otokrat' ? 'Otokratlar' : 'Nötr (kişisel zafer)';
@@ -505,6 +562,54 @@ function applyNotrChoiceMut(state: GameState, side: NotrSide, rng: () => number)
   advanceAfterEffects(state, rng);
 }
 
+function openTermEnd(state: GameState): void {
+  if (state.phase === 'gameOver') return;
+  const nextPresidentId = nextLivingAfter(state, state.presidentId);
+  const notes = state.log
+    .filter(
+      (entry) =>
+        entry.round === state.round &&
+        (entry.kind === 'transition' ||
+          entry.kind === 'power' ||
+          entry.kind === 'death'),
+    )
+    .map((entry) => entry.text)
+    .slice(-4);
+
+  state.phase = 'termEnd';
+  state.pendingPolicy = null;
+  state.termSummary = {
+    round: state.round,
+    presidentId: state.lastGovernment?.presidentId ?? state.presidentId ?? '',
+    chancellorId:
+      state.lastGovernment?.chancellorId ?? state.chancellorId ?? null,
+    voteResult: state.lastVoteResult,
+    tally: state.lastVoteTally ? { ...state.lastVoteTally } : null,
+    openVoting: state.lastVoteOpen,
+    policy: state.lastEnactedPolicy,
+    policyAuto: state.lastPolicyAuto,
+    failedVotes: state.failedVotes,
+    outcome: state.lastPolicyAuto
+      ? 'autoPolicy'
+      : state.lastEnactedPolicy
+        ? 'legislative'
+        : 'rejected',
+    nextPresidentId,
+    notes,
+    endedAt: Date.now(),
+  };
+  state.gateEndAt = gateDeadline();
+  addLog(
+    state,
+    'system',
+    `Dönem ${state.round} kapandı. ${
+      state.lastEnactedPolicy
+        ? `${policyLabel(state.lastEnactedPolicy)} yürürlüğe girdi. `
+        : ''
+    }Sıradaki Başkan: ${getPlayer(state, nextPresidentId)?.name ?? '—'}.`,
+  );
+}
+
 function advanceAfterEffects(state: GameState, rng: () => number): void {
   if (state.phase === 'gameOver') return;
 
@@ -555,7 +660,7 @@ function advanceAfterEffects(state: GameState, rng: () => number): void {
     state.pendingBlock = null;
   }
 
-  startRound(state);
+  openTermEnd(state);
 }
 
 function ackRoleMut(state: GameState, actorId: string): void {
@@ -613,6 +718,7 @@ function nominateMut(state: GameState, actorId: string, targetId: string): void 
 function resolveVote(state: GameState, rng: () => number): void {
   const living = alivePlayers(state);
   const blockedId = state.blockedVotePlayerId;
+  const entries: VoteTally['entries'] = [];
   let yes = 0;
   let no = 0;
   for (const player of living) {
@@ -622,10 +728,19 @@ function resolveVote(state: GameState, rng: () => number): void {
     if (player.id === blockedId) weight = 0;
     if (choice) yes += weight;
     else no += weight;
+    entries.push({ playerId: player.id, choice, weight });
   }
 
   const accepted = yes > no;
+  const open = isOpenVoting(state);
   state.lastVoteResult = accepted ? 'kabul' : 'ret';
+  state.lastVoteTally = {
+    yes,
+    no,
+    blockedPlayerId: blockedId,
+    entries,
+  };
+  state.lastVoteOpen = open;
   state.lastGovernment = {
     presidentId: state.presidentId ?? '',
     chancellorId: state.chancellorId ?? '',
@@ -641,37 +756,45 @@ function resolveVote(state: GameState, rng: () => number): void {
   if (state.pendingBlock) state.pendingBlock = null;
   maybeBotSpeakAfterEvent(state, rng);
 
-  if (accepted) {
-    const presidentId = state.presidentId;
-    const chancellorId = state.chancellorId;
-    if (!presidentId || !chancellorId) {
-      throw new GameError('STATE', 'Hükümet bilgisi eksik.');
-    }
-    state.previousChancellorId = chancellorId;
+  state.phase = 'voteResult';
+  state.gateEndAt = gateDeadline();
+}
 
-    if (
-      state.enacted.fascist >= GAME_CONFIG.powers.leaderChancellorAtFascist &&
-      chancellorId === state.leaderId
-    ) {
-      const notrId = roleHolderId(state, 'notr');
-      if (state.leaderId === notrId) {
-        endGame(
-          state,
-          'notr',
-          'Kırmızı Nötr, liderliği devraldıktan sonra Başbakan seçildi ve kişisel zaferini kazandı.',
-          [state.leaderId],
-        );
-      } else {
-        endGame(
-          state,
-          'otokrat',
-          'Otokrat Lider, 4. Otokrat Reform’dan sonra Başbakan seçildi. Otokratlar kazandı.',
-          computeWinnerIds(state, 'otokrat'),
-        );
-      }
-      return;
-    }
+function checkLeaderChancellorWin(state: GameState): boolean {
+  const presidentId = state.presidentId;
+  const chancellorId = state.chancellorId;
+  if (!presidentId || !chancellorId) return false;
+  if (state.enacted.fascist < GAME_CONFIG.powers.leaderChancellorAtFascist) {
+    return false;
+  }
+  if (chancellorId !== state.leaderId) return false;
+  state.previousChancellorId = chancellorId;
 
+  const notrId = roleHolderId(state, 'notr');
+  if (state.leaderId === notrId) {
+    endGame(
+      state,
+      'notr',
+      'Kırmızı Nötr, liderliği devraldıktan sonra Başbakan seçildi ve kişisel zaferini kazandı.',
+      [state.leaderId],
+    );
+  } else {
+    endGame(
+      state,
+      'otokrat',
+      'Otokrat Lider, 4. Otokrat Reform’dan sonra Başbakan seçildi. Otokratlar kazandı.',
+      computeWinnerIds(state, 'otokrat'),
+    );
+  }
+  return true;
+}
+
+/** Sonuç kapısını kapatır ve bir sonraki aşamaya geçer. */
+function advanceVoteResultMut(state: GameState, rng: () => number): void {
+  state.gateEndAt = null;
+  if (state.lastVoteResult === 'kabul') {
+    state.failedVotes = 0;
+    if (checkLeaderChancellorWin(state)) return;
     startLegislative(state, rng);
     return;
   }
@@ -704,6 +827,29 @@ function resolveVote(state: GameState, rng: () => number): void {
     return;
   }
 
+  startRound(state);
+}
+
+function advanceGateMut(state: GameState, rng: () => number): void {
+  if (state.phase === 'voteResult') {
+    advanceVoteResultMut(state, rng);
+    return;
+  }
+  if (state.phase === 'policyReveal') {
+    const pending = state.pendingPolicy;
+    if (!pending) {
+      throw new GameError('STATE', 'Yürürlüğe giren reform bilgisi bulunamadı.');
+    }
+    resolvePolicyEffects(state, pending.card, pending, rng);
+    return;
+  }
+  throw new GameError('WRONG_PHASE', 'Şu anda kapatılacak bir geçiş kapısı yok.');
+}
+
+function endTermMut(state: GameState): void {
+  if (state.phase !== 'termEnd') {
+    throw new GameError('WRONG_PHASE', 'Dönem kapanış aşaması değil.');
+  }
   startRound(state);
 }
 
@@ -813,6 +959,14 @@ function enactPolicy(
     policy: card,
     auto: meta.auto,
   });
+  state.lastEnactedPolicy = card;
+  state.lastPolicyAuto = meta.auto;
+  state.pendingPolicy = {
+    card,
+    presidentId: meta.presidentId,
+    chancellorId: meta.chancellorId,
+    auto: meta.auto,
+  };
   const chancellorName = getPlayer(state, meta.chancellorId)?.name ?? 'Başbakan';
   addLog(
     state,
@@ -822,15 +976,22 @@ function enactPolicy(
       : `Başbakan ${chancellorName}, ${policyLabel(card)} reformunu yürürlüğe koydu. Demokratik: ${state.enacted.democratic}/${GAME_CONFIG.democraticWinThreshold}, Otokrat: ${state.enacted.fascist}/${GAME_CONFIG.fascistTrackLength}.`,
   );
   maybeBotSpeakAfterEvent(state, rng);
-  applyPolicyEffects(state, card, meta, rng);
+
+  // Reform önce ekranda açıklanır. Zafer, geçiş ve özel yetkiler kapı
+  // kapandıktan sonra sırayla çözülür; böylece reform duyurusu kaybolmaz.
+  state.phase = 'policyReveal';
+  state.gateEndAt = gateDeadline();
 }
 
-function applyPolicyEffects(
+function resolvePolicyEffects(
   state: GameState,
   card: PolicyCard,
   meta: PolicyMeta,
   rng: () => number,
 ): void {
+  state.pendingPolicy = null;
+  state.gateEndAt = null;
+
   if (state.enacted.fascist >= GAME_CONFIG.fascistTrackLength) {
     if (state.leaderId === roleHolderId(state, 'notr')) {
       endGame(
@@ -883,7 +1044,6 @@ function applyPolicyEffects(
         presidentId,
         reformNumber: state.enacted.fascist,
       };
-      state.phase = 'assassination';
       addLog(
         state,
         'power',
@@ -1062,12 +1222,30 @@ function applyActionMut(
         throw new GameError('DEAD', 'Ölü oyuncular oy kullanamaz.');
       }
       if (state.votes[actor.id] !== undefined) {
-        throw new GameError('ALREADY_VOTED', 'Bu turda zaten oy kullandınız.');
+        throw new GameError('ALREADY_VOTED', 'Bu dönemde zaten oy kullandınız.');
       }
       state.votes[actor.id] = action.choice;
       if (alivePlayers(state).every((p) => state.votes[p.id] !== undefined)) {
         resolveVote(state, rng);
       }
+      return;
+    case 'continue':
+      if (state.phase !== 'voteResult' && state.phase !== 'policyReveal') {
+        throw new GameError('WRONG_PHASE', 'Şu anda kapatılacak bir geçiş ekranı yok.');
+      }
+      if (!canAdvanceGate(state, actor.id)) {
+        throw new GameError('NOT_ALLOWED', 'Bu geçişi yalnızca yetkili oyuncu veya host kapatabilir.');
+      }
+      advanceGateMut(state, rng);
+      return;
+    case 'end_term':
+      if (state.phase !== 'termEnd') {
+        throw new GameError('WRONG_PHASE', 'Dönem kapanış aşaması değil.');
+      }
+      if (!canEndTermNow(state, actor.id)) {
+        throw new GameError('NOT_ALLOWED', 'Dönemi yalnızca Başkan veya host kapatabilir.');
+      }
+      endTermMut(state);
       return;
     case 'president_discard':
       presidentDiscardMut(state, actor.id, action.card);
@@ -1119,6 +1297,20 @@ function autoResolveBotsMut(state: GameState, rng: () => number): void {
         continue;
       }
       return;
+    }
+
+    // Geçiş kapıları yalnızca tamamen botlardan oluşan oyunlarda otomatik
+    // kapanır. İnsanlı oyunlarda sonuç ekranı beklenir; host 45 sn sonra ilerletir.
+    if (state.phase === 'voteResult' || state.phase === 'policyReveal') {
+      if (!allPlayersAreBots(state)) return;
+      advanceGateMut(state, rng);
+      continue;
+    }
+
+    if (state.phase === 'termEnd') {
+      if (!allPlayersAreBots(state)) return;
+      endTermMut(state);
+      continue;
     }
 
     if (state.phase === 'notrChoice') {

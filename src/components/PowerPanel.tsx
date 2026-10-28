@@ -82,7 +82,7 @@ export function PowerPanel({
             </span>
             <div>
               <h4>Soruşturma</h4>
-              <p>Sonuç yalnızca sana gösterilir. Her tur bir kez kullanılabilir.</p>
+              <p>Sonuç yalnızca sana gösterilir. Her dönem bir kez kullanılabilir.</p>
             </div>
           </div>
           {view.canInvestigate ? (
@@ -101,7 +101,7 @@ export function PowerPanel({
           ) : (
             <p className="muted">
               {view.investigationUsedThisRound
-                ? 'Bu tur soruştırma hakkını kullandın.'
+                ? 'Bu dönem soruşturma hakkını kullandın.'
                 : 'Soruşturma yetkisi şu anda kullanılamıyor.'}
             </p>
           )}
@@ -157,7 +157,7 @@ export function PowerPanel({
                 onClick={() => onAction({ type: 'skip_block' })}
                 disabled={disabled}
               >
-                Bu tur kullanma
+                Bu dönem kullanma
               </button>
             </div>
           ) : view.blockTargetId ? (
@@ -165,7 +165,7 @@ export function PowerPanel({
               Engellediğin oyuncu: <strong>{byId.get(view.blockTargetId)?.name}</strong>
             </p>
           ) : (
-            <p className="muted">Oy engelleme yetkisi bu tur için kullanılamıyor.</p>
+            <p className="muted">Oy engelleme yetkisi bu dönem için kullanılamıyor.</p>
           )}
         </div>
       ) : null}

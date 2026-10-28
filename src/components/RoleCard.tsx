@@ -92,7 +92,7 @@ function statusNotes(
     notes.push({
       tone: 'blue',
       title: 'Soruşturma yetkin aktif',
-      text: 'Bu tur bir oyuncuyu soruşturabilirsin. Sonuç yalnızca sana gösterilir.',
+      text: 'Bu dönem bir oyuncuyu soruşturabilirsin. Sonuç yalnızca sana gösterilir.',
     });
   }
   if (!view.isAlive) {

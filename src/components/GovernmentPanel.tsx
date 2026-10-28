@@ -20,7 +20,7 @@ export function GovernmentPanel({ game }: { game: PublicGameState }) {
     <section className="government-panel panel">
       <header className="panel__header">
         <div>
-          <p className="eyebrow">Tur {game.round}</p>
+          <p className="eyebrow">Dönem {game.round}</p>
           <h3 className="panel__title">Hükümet</h3>
         </div>
         {showVotes ? (
@@ -107,7 +107,7 @@ export function GovernmentPanel({ game }: { game: PublicGameState }) {
 
       {previous && previous.id !== game.chancellorId ? (
         <p className="government-panel__note">
-          Önceki Başbakan: <strong>{previous.name}</strong> — bu tur aday gösterilemez.
+          Önceki Başbakan: <strong>{previous.name}</strong> — bu dönem aday gösterilemez.
         </p>
       ) : null}
 
