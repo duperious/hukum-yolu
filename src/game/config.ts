@@ -23,7 +23,7 @@ export const GAME_CONFIG: GameConfig = {
   passCount: 2,
   failedGovernmentLimit: 3,
   powers: {
-    investigationAtFascist: 2,
+    investigationStartRound: 2,
     thirdReformAtFascist: 3,
     thirdReformPeekMaxPlayers: 6,
     assassinationAtFascist: [5, 6],
@@ -69,7 +69,7 @@ export const DEMOCRATIC_WIN_THRESHOLD = GAME_CONFIG.democraticWinThreshold;
 /** Otokrat reform çizelgesindeki özel yetkilerin kısa adları. */
 export const FASCIST_TRACK_LABELS: string[] = [
   'Özel yetki yok',
-  'Soruşturma',
+  'Özel yetki yok',
   'Oyuncu sayısına göre yetki',
   'Lider Başbakan olursa zafer',
   'Suikast',
@@ -94,6 +94,7 @@ export const ROLE_ORDER: Role[] = [
 export const RULE_ASSUMPTIONS: string[] = [
   'Başkan kendisini Başbakan adayı gösteremez. Başka uygun aday kalmadığında bu kısıt gevşetilir.',
   'Önceki dönemin Başbakanı bir sonraki dönemde aday gösterilemez. Başka uygun aday kalmadığında bu kısıt gevşetilir.',
+  'Soruşturma yetkisi 2. dönemde açılır ve her dönem bir kez yenilenir; 2. Otokrat Reform’a bağlı değildir.',
   'Soruşturma sonucu yalnızca sıradan Otokrat için "Kötü"; diğer tüm roller için "İyi" kabul edilir. Büyük Vezir ve İstihbarat Başkanı da "İyi" döner.',
   'Tasfiye hedefleri tablodaki rol kartlarına göre çözülür. Tablo ile "Demokrat Parti Başkanı ve halefi" açıklaması arasındaki fark README\'de belirtilmiştir.',
   'Tasfiye zaferi yalnızca kırmızı Nötr liderliği devraldıktan sonra geçerli kişisel zaferdir.',

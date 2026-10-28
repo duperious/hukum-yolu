@@ -68,7 +68,7 @@ const PHASES: Array<{ title: string; text: string }> = [
   },
   {
     title: 'Özel yetkiler',
-    text: 'Reform çizelgesindeki eşikler soruşturma, üçüncü reform yetkisi, suikast ve liderlik kontrolü gibi güçleri açar.',
+    text: 'Reform çizelgesindeki eşikler üçüncü reform yetkisi, suikast ve liderlik kontrolü gibi güçleri açar. Soruşturma ise İstihbarat Başkanı’nda 2. dönemden itibaren her dönem yenilenir.',
   },
   {
     title: 'Oyun sonu',
@@ -319,9 +319,9 @@ export default function GuidePage() {
               </span>
               <h3>Soruşturma</h3>
               <p>
-                {GAME_CONFIG.powers.investigationAtFascist}. Otokrat Reform’dan sonra
-                Başkan bir oyuncunun rolünü soruşturur. Sonuç yalnızca Başkan’a
-                gösterilir. Sıradan Otokrat “Kötü”, diğerleri “İyi” döner.
+                İstihbarat Başkanı, {GAME_CONFIG.powers.investigationStartRound}. dönemden
+                itibaren her dönem bir oyuncunun rolünü soruşturur. Sonuç yalnızca
+                ona gösterilir. Sıradan Otokrat “Kötü”, diğerleri “İyi” döner.
               </p>
             </article>
             <article className="power-guide-card">

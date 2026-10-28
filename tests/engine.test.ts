@@ -683,7 +683,7 @@ describe('gizlilik ve redaksiyon', () => {
     const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
     const state: GameState = {
       ...base,
-      enacted: { democratic: 0, fascist: 2 },
+      round: 2,
       intelligenceOfficeHolderId: 'p5',
     };
     const next = applyAction(state, 'p5', {
@@ -742,6 +742,48 @@ describe('gizlilik ve redaksiyon', () => {
     const redacted = redactGameState(next, 'p1');
     expect(redacted.public.revealedRoles).not.toBeNull();
     expect(Object.keys(redacted.public.revealedRoles ?? {})).toHaveLength(5);
+  });
+});
+
+describe('soruşturma takvimi', () => {
+  it('soruşturma hakkı 2. dönemde açılır, 2. Otokrat Reform’a bağlı değildir', () => {
+    const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
+    const firstRound: GameState = {
+      ...base,
+      round: 1,
+      enacted: { democratic: 0, fascist: 3 },
+      intelligenceOfficeHolderId: 'p5',
+    };
+    expect(() =>
+      applyAction(firstRound, 'p5', { type: 'investigate', targetId: 'p2' }),
+    ).toThrow(GameError);
+
+    const secondRound: GameState = {
+      ...base,
+      round: 2,
+      enacted: { democratic: 0, fascist: 0 },
+      intelligenceOfficeHolderId: 'p5',
+    };
+    const next = applyAction(secondRound, 'p5', {
+      type: 'investigate',
+      targetId: 'p2',
+    });
+    expect(next.investigations['p5']?.['p2']).toBe('kotu');
+    expect(() =>
+      applyAction(next, 'p5', { type: 'investigate', targetId: 'p3' }),
+    ).toThrow(GameError);
+
+    // Yeni dönemde soruşturma hakkı yeniden açılır.
+    const failedVote = voteAll(forceVote(next, 'p1', 'p2'), false);
+    expect(failedVote.phase).toBe('voteResult');
+    const nextRound = closeGate(failedVote);
+    expect(nextRound.round).toBe(3);
+    expect(nextRound.investigatedThisRound['p5']).toBeUndefined();
+    const again = applyAction(nextRound, 'p5', {
+      type: 'investigate',
+      targetId: 'p3',
+    });
+    expect(again.investigations['p5']?.['p3']).toBe('iyi');
   });
 });
 

@@ -306,7 +306,7 @@ export function canInvestigateNow(state: GameState, playerId: string): boolean {
   const player = getPlayer(state, playerId);
   if (!player?.alive) return false;
   if (state.intelligenceOfficeHolderId !== playerId) return false;
-  if (state.enacted.fascist < GAME_CONFIG.powers.investigationAtFascist) return false;
+  if (state.round < GAME_CONFIG.powers.investigationStartRound) return false;
   if (!['nomination', 'voting', 'presidentDiscard', 'chancellorEnact'].includes(state.phase)) {
     return false;
   }
@@ -1074,7 +1074,7 @@ function investigateMut(state: GameState, actorId: string, targetId: string): vo
   addLog(
     state,
     'power',
-    `Başkan ${getPlayer(state, actorId)?.name ?? '—'}, ${target.name}’i sorguya çekti.`,
+    `İstihbarat Başkanı ${getPlayer(state, actorId)?.name ?? '—'}, ${target.name}’i sorguya çekti.`,
   );
 }
 

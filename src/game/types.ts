@@ -406,7 +406,7 @@ export interface GameConfig {
   passCount: number;
   failedGovernmentLimit: number;
   powers: {
-    investigationAtFascist: number;
+    investigationStartRound: number;
     thirdReformAtFascist: number;
     thirdReformPeekMaxPlayers: number;
     assassinationAtFascist: readonly number[];

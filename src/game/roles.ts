@@ -90,9 +90,9 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     mission:
       'Soruşturma yetkini kullanarak Otokratları bul. Demokratik Reformları 6\'ya ulaştır.',
     description:
-      'Demokrat takımındasın. 2. Otokrat Reform’dan sonra her dönem bir oyuncuyu soruşturabilirsin. Sonuç yalnızca sana gösterilir. Ölürsen soruşturma yetkisi Demokrat Parti Başkanı’na geçer. Demokratik Reformlar 6’ya ulaşırsa veya Otokrat Lider öldürülürse kazanırsın.',
+      'Demokrat takımındasın. 2. dönemden itibaren her dönem bir oyuncuyu soruşturabilirsin. Sonuç yalnızca sana gösterilir. Ölürsen soruşturma yetkisi Demokrat Parti Başkanı’na geçer. Demokratik Reformlar 6’ya ulaşırsa veya Otokrat Lider öldürülürse kazanırsın.',
     abilities: [
-      '2. Otokrat Reform’dan sonra her dönem bir oyuncuyu soruşturabilirsin.',
+      '2. dönemden itibaren her dönem bir oyuncuyu soruşturabilirsin.',
       'Soruşturma sonucunu yalnızca sen görürsün.',
       'Ölürsen yetkin Demokrat Parti Başkanı’na geçer.',
       'Demokratik zaferde kazanırsın.',

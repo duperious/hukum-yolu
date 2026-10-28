@@ -4,7 +4,7 @@ import { cn } from '../lib/cn';
 
 const DEFAULT_FASCIST_LABELS = [
   'Özel yetki yok',
-  'Soruşturma',
+  'Özel yetki yok',
   '3. reform yetkisi',
   'Lider PM ise zafer',
   'Suikast',
