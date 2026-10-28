@@ -1,6 +1,7 @@
 import { Crown, Landmark, Scale, Swords } from 'lucide-react';
 import type { PolicyCard as PolicyCardType } from '../game';
 import { cn } from '../lib/cn';
+import { PolicyCard } from './PolicyCard';
 
 const DEFAULT_FASCIST_LABELS = [
   'Özel yetki yok',
@@ -146,6 +147,36 @@ export function PolicyTrack({
             );
           })}
         </div>
+
+        {safeEnacted > 0 ? (
+          <div
+            className={cn(
+              'policy-track__placed',
+              safeEnacted > 1 && 'policy-track__placed--stacked',
+            )}
+            aria-hidden="true"
+          >
+            <span className="policy-track__placed-caption">
+              <span>Masaya konan reform</span>
+              <strong>
+                {type === 'demokratik' ? 'Demokratik Reform' : 'Otokrat Reform'}
+              </strong>
+            </span>
+            <div className="policy-track__placed-stack">
+              <PolicyCard
+                type={type}
+                size="sm"
+                showSubtitle={false}
+                className="policy-track__placed-card"
+              />
+            </div>
+            {safeEnacted > 1 ? (
+              <span className="policy-track__placed-count">
+                {safeEnacted} kart
+              </span>
+            ) : null}
+          </div>
+        ) : null}
 
         <footer className="policy-track__footer">
           <LaurelBranch />

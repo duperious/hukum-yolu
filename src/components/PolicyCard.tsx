@@ -1,20 +1,21 @@
-import { Scale, Swords } from 'lucide-react';
+import demokratReformArt from '../assets/policies/demokrat-reform.jpg';
+import otokratReformArt from '../assets/policies/otokrat-reform.jpg';
 import type { PolicyCard as PolicyCardType } from '../game';
 import { cn } from '../lib/cn';
 
 const LABELS: Record<
   PolicyCardType,
-  { title: string; subtitle: string; ribbon: string }
+  { title: string; subtitle: string; art: string }
 > = {
   demokratik: {
     title: 'Demokratik Reform',
     subtitle: 'Demokratik çizelgeyi ilerletir.',
-    ribbon: 'Mavi Hat',
+    art: demokratReformArt,
   },
   otokrat: {
     title: 'Otokrat Reform',
     subtitle: 'Otokrat çizelgeyi ilerletir.',
-    ribbon: 'Kızıl Hat',
+    art: otokratReformArt,
   },
 };
 
@@ -36,24 +37,16 @@ export function PolicyCard({
   showSubtitle?: boolean;
 }) {
   const info = LABELS[type];
-  const Icon = type === 'demokratik' ? Scale : Swords;
   const interactive = Boolean(onClick);
+  const label = showSubtitle ? `${info.title}. ${info.subtitle}` : info.title;
   const content = (
     <>
-      <span className="policy-card__ribbon" aria-hidden="true">
-        {info.ribbon}
-      </span>
-      <span className="policy-card__seal" aria-hidden="true">
-        <span className="policy-card__icon">
-          <Icon size={size === 'lg' ? 30 : size === 'md' ? 24 : 18} strokeWidth={1.8} />
-        </span>
-      </span>
-      <span className="policy-card__text">
-        <span className="policy-card__title">{info.title}</span>
-        {showSubtitle ? (
-          <span className="policy-card__subtitle">{info.subtitle}</span>
-        ) : null}
-      </span>
+      <img
+        className="policy-card__art"
+        src={info.art}
+        alt=""
+        draggable={false}
+      />
       {selected ? <span className="policy-card__check">Seçili</span> : null}
     </>
   );
@@ -73,6 +66,7 @@ export function PolicyCard({
         onClick={onClick}
         disabled={disabled}
         aria-pressed={selected}
+        aria-label={label}
       >
         {content}
       </button>
@@ -89,6 +83,8 @@ export function PolicyCard({
         disabled && 'policy-card--disabled',
         className,
       )}
+      role="img"
+      aria-label={label}
     >
       {content}
     </div>

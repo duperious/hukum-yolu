@@ -347,7 +347,8 @@ export function PolicyRevealStage({
       ) : null}
 
       <p className="gate-stage__note">
-        Reform açıklandı. Özel yetkiler ve dönem kapanışı sırada.
+        Reform açıklandı ve ilerleme kâğıdına kondu. Özel yetkiler ve dönem
+        kapanışı sırada.
       </p>
     </GateShell>
   );

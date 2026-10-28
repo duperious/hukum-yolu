@@ -91,7 +91,7 @@ export function PolicyStage({
         <p className="policy-stage__lead">
           {isDiscard
             ? `Başkan ${president?.name ?? '—'}, üç karttan birini desteye gönderecek. Kalan iki kart Başbakana geçer.`
-            : `Başbakan ${chancellor?.name ?? '—'}, kalan iki karttan birini yürürlüğe koyacak. Diğer kart desteye gidecek.`}
+            : `Başbakan ${chancellor?.name ?? '—'}, kalan iki karttan birini seçip reform ilerleme kâğıdının üzerine koyacak. Diğer kart desteye gidecek.`}
         </p>
 
         <div className="policy-stage__meta">
@@ -160,7 +160,7 @@ export function PolicyStage({
         <p className="vote-stage__note policy-stage__note">
           {isDiscard
             ? 'Seçilen kart desteye gider; kalan iki kart Başbakana geçer.'
-            : 'Seçilen reform yürürlüğe girer; diğer kart desteye gider. Karar geri alınamaz.'}
+            : 'Seçilen kart reform ilerleme kâğıdının üzerine konur; diğer kart desteye gider. Karar geri alınamaz.'}
         </p>
       </div>
     </div>

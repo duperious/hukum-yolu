@@ -60,7 +60,7 @@ const PHASES: Array<{ title: string; text: string }> = [
   },
   {
     title: 'Reform seçimi',
-    text: 'Hükümet kurulursa Başkan 3 karttan 1’ini eler, Başbakan kalan 2 karttan 1’ini yürürlüğe koyar. Reform önce duyurulur, ardından özel yetkiler çözülür. Deste azalınca yeniden karıştırılır.',
+    text: 'Hükümet kurulursa Başkan 3 karttan 1’ini eler, Başbakan kalan 2 karttan 1’ini seçip ilerleme kâğıdının üzerine koyar. Reform önce duyurulur, ardından özel yetkiler çözülür. Deste azalınca yeniden karıştırılır.',
   },
   {
     title: 'Dönem kapanışı',
