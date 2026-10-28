@@ -10,6 +10,7 @@ import {
 import { ROLE_INFO, ROLE_NAMES } from '../game';
 import type { PrivateView, PublicPlayer, Role, Team } from '../game';
 import { cn } from '../lib/cn';
+import { INVESTIGATION_CARD } from './investigationMeta';
 import { playerCardForRole } from './PlayerCards';
 import { Avatar } from './ui/Avatar';
 import { Button } from './ui/Button';
@@ -92,13 +93,13 @@ function statusNotes(
     notes.push({
       tone: 'blue',
       title: 'Soruşturma yetkin aktif',
-      text: 'Bu dönem bir oyuncuyu soruşturabilirsin. Sonuç yalnızca sana gösterilir.',
+      text: 'Bu dönem bir oyuncuyu soruşturman gerekiyor. Soruşturma ekranı otomatik açılır; sonuç yalnızca sana gösterilir.',
     });
   }
   if (!view.isAlive) {
     notes.push({
       tone: 'red',
-      title: 'Öldün',
+      title: 'Oyun dışı kaldın',
       text: 'Oyunu izlemeye devam ediyorsun. Oy kullanamaz, aday olamaz ve eylem yapamazsın; takımın kazanırsa sen de kazanırsın.',
     });
   }
@@ -172,7 +173,7 @@ export function RoleCard({
             </span>
             <span className="chip">
               Soruşturma:{' '}
-              <strong>{info.investigation === 'kotu' ? 'Kötü' : 'İyi'}</strong>
+              <strong>{INVESTIGATION_CARD[info.investigation].label}</strong>
             </span>
           </div>
         </div>
@@ -219,7 +220,7 @@ export function RoleCard({
                     <strong>{known.name}</strong>
                     <span>{ROLE_NAMES[known.role]}</span>
                   </div>
-                  {!player?.alive ? <span className="known-list__dead">Ölü</span> : null}
+                  {!player?.alive ? <span className="known-list__dead">Oyun dışı</span> : null}
                 </li>
               );
             })}
@@ -238,10 +239,22 @@ export function RoleCard({
           <ul className="investigation-list">
             {investigationEntries.map(([playerId, result]) => {
               const player = playerById.get(playerId);
+              const meta = INVESTIGATION_CARD[result];
               return (
                 <li key={playerId} className={`investigation-list__item investigation-list__item--${result}`}>
-                  <span>{player?.name ?? 'Bilinmeyen oyuncu'}</span>
-                  <strong>{result === 'kotu' ? 'Kötü' : 'İyi'}</strong>
+                  <span className="investigation-list__who">
+                    <img
+                      className="investigation-list__thumb"
+                      src={meta.image}
+                      alt=""
+                      width={720}
+                      height={958}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span>{player?.name ?? 'Bilinmeyen oyuncu'}</span>
+                  </span>
+                  <strong>{meta.label}</strong>
                 </li>
               );
             })}

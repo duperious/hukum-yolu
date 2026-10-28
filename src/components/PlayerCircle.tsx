@@ -1,4 +1,4 @@
-import { Bot, Check, Crown, Gavel, ShieldCheck, Skull, X } from 'lucide-react';
+import { Bot, Check, Crown, Gavel, ShieldCheck, UserX, X } from 'lucide-react';
 import { ROLE_INFO } from '../game';
 import type { PublicGameState } from '../game';
 import { cn } from '../lib/cn';
@@ -67,7 +67,7 @@ export function PlayerCircle({
                 />
                 {!player.alive ? (
                   <span className="seat-card__stamp seat-card__stamp--dead">
-                    <Skull size={10} /> Ölü
+                    <UserX size={10} /> Oyun dışı
                   </span>
                 ) : null}
                 {isWinner ? (

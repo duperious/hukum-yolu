@@ -25,13 +25,27 @@ import type {
   VoteTally,
 } from './types';
 
-function publicTally(tally: VoteTally | null, open: boolean): VoteTally | null {
+function publicTally(
+  tally: VoteTally | null,
+  open: boolean,
+  revealed: Record<string, Role>,
+): VoteTally | null {
   if (!tally) return null;
   return {
     yes: tally.yes,
     no: tally.no,
     blockedPlayerId: tally.blockedPlayerId,
-    entries: open ? tally.entries.map((entry) => ({ ...entry })) : [],
+    entries: open
+      ? tally.entries.map((entry) => ({
+          ...entry,
+          // Gizli Büyük Vezir'in 2 oylu ağırlığı istemciye sızmasın.
+          // Engellenen oy (0) ve rolü açıklanmış vezir olduğu gibi kalır.
+          weight:
+            entry.weight > 1 && revealed[entry.playerId] !== 'buyuk_vezir'
+              ? 1
+              : entry.weight,
+        }))
+      : [],
   };
 }
 
@@ -89,7 +103,7 @@ export function getPublicGameState(state: GameState): PublicGameState {
     governmentHistory: state.governmentHistory.map((g) => ({ ...g })),
     log: state.log.map((l) => ({ ...l, text: publicLogText(l.text) })),
     lastVoteResult: state.lastVoteResult,
-    lastVoteTally: publicTally(state.lastVoteTally, state.lastVoteOpen),
+    lastVoteTally: publicTally(state.lastVoteTally, state.lastVoteOpen, revealed),
     lastVoteOpen: state.lastVoteOpen,
     revealedVotes:
       state.lastVoteOpen && state.lastVoteTally
@@ -110,6 +124,7 @@ export function getPublicGameState(state: GameState): PublicGameState {
           tally: publicTally(
             state.termSummary.tally,
             state.termSummary.openVoting,
+            revealed,
           ),
           notes: state.termSummary.notes.map(publicLogText),
         }

@@ -6,11 +6,11 @@ import {
   Gavel,
   Info,
   Layers,
+  LockKeyhole,
   RefreshCw,
   Scale,
   ScrollText,
   ShieldCheck,
-  Skull,
   Trash2,
   UserPlus,
   XCircle,
@@ -41,7 +41,7 @@ const KICKERS: Record<LogKind, string> = {
   vote: 'Oylama',
   policy: 'Reform',
   power: 'Özel Yetki',
-  death: 'Suikast',
+  death: 'Tutuklama',
   transition: 'Dönüm',
   bot: 'Bot',
   win: 'Sonuç',
@@ -136,12 +136,12 @@ function describeEvent(entry: LogEntry): StageInfo {
     }
 
     case 'power':
-      if (text.includes('Suikast') || text.includes('suikast')) {
+      if (text.includes('Tutuklama') || text.includes('tutuklama')) {
         return {
-          title: 'Suikast',
+          title: 'Tutuklama',
           kicker: KICKERS.power,
           tone: 'red',
-          Icon: Skull,
+          Icon: LockKeyhole,
           visual: 'icon',
         };
       }
@@ -212,10 +212,10 @@ function describeEvent(entry: LogEntry): StageInfo {
 
     case 'death':
       return {
-        title: 'Suikast Sonucu',
+        title: 'Tutuklama Kararı',
         kicker: KICKERS.death,
         tone: 'red',
-        Icon: Skull,
+        Icon: LockKeyhole,
         visual: 'icon',
       };
 

@@ -10,12 +10,12 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     mission:
       'Otokrat Reformları 7\'ye ulaştır. 4. Otokrat Reform\'dan sonra Başbakan seçilirsen de kazanırsın.',
     description:
-      'Otokrat takımının gizli liderisin. Takım arkadaşlarını tanırsın. 7 Otokrat Reform yürürlüğe girerse veya 4. Otokrat Reform’dan sonra Başbakan seçilirsen Otokratlar kazanır. Suikastla öldürülürsen ve kırmızı Nötr liderliği devralmazsa Demokratlar kazanır.',
+      'Otokrat takımının gizli liderisin. Takım arkadaşlarını tanırsın. 7 Otokrat Reform yürürlüğe girerse veya 4. Otokrat Reform’dan sonra Başbakan seçilirsen Otokratlar kazanır. Tutuklanırsan ve kırmızı Nötr liderliği devralmazsa Demokratlar kazanır.',
     abilities: [
       'Tüm Otokratları tanırsın.',
       '4. Otokrat Reform’dan sonra Başbakan seçilirsen Otokratlar kazanır.',
       '7. Otokrat Reform Otokrat zaferini getirir.',
-      'Öldürülürsen kimliğin oyun bitene kadar açıklanmaz.',
+      'Tutuklanırsan kimliğin oyun bitene kadar açıklanmaz.',
     ],
     investigation: 'iyi',
     accent: 'red',
@@ -34,7 +34,7 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     abilities: [
       '5-6 oyunculu oyunlarda Lider’i tanırsın.',
       '7-10 oyunculu oyunlarda yalnızca diğer Otokratları tanırsın.',
-      'Soruşturmada “Kötü” sonucu verirsin.',
+      'Soruşturmada “Otokrat” kartı verirsin.',
       '7 Otokrat Reform veya Lider’in zaferiyle kazanırsın.',
     ],
     investigation: 'kotu',
@@ -70,7 +70,7 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     mission:
       'İlk üç reformdan sonra gizlice mavi veya kırmızı tarafı seç ve seçtiğin tarafın zaferini sağla.',
     description:
-      'İlk üç reform sonunda gizlice mavi veya kırmızı tarafı seçersin. Mavi seçersen Demokratlarla kazanırsın. Kırmızı seçersen Otokratları desteklersin; ancak normal Otokrat zaferinde otomatik kazanmazsın. Otokrat Lider ölürse ve kırmızı tarafı seçtiysen liderliği gizlice devralabilirsin. Liderliği devralırsan kişisel zafer koşulların devreye girer.',
+      'İlk üç reform sonunda gizlice mavi veya kırmızı tarafı seçersin. Mavi seçersen Demokratlarla kazanırsın. Kırmızı seçersen Otokratları desteklersin; ancak normal Otokrat zaferinde otomatik kazanmazsın. Otokrat Lider tutuklanırsa ve kırmızı tarafı seçtiysen liderliği gizlice devralabilirsin. Liderliği devralırsan kişisel zafer koşulların devreye girer.',
     abilities: [
       'İlk üç reform sonunda gizlice taraf seçersin.',
       'Mavi taraf: Demokratlarla kazanırsın.',
@@ -90,11 +90,11 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     mission:
       'Soruşturma yetkini kullanarak Otokratları bul. Demokratik Reformları 6\'ya ulaştır.',
     description:
-      'Demokrat takımındasın. 2. dönemden itibaren her dönem bir oyuncuyu soruşturabilirsin. Sonuç yalnızca sana gösterilir. Ölürsen soruşturma yetkisi Demokrat Parti Başkanı’na geçer. Demokratik Reformlar 6’ya ulaşırsa veya Otokrat Lider öldürülürse kazanırsın.',
+      'Demokrat takımındasın. 2. dönemden itibaren her dönem bir oyuncuyu soruşturmak zorundasın. Sonuç yalnızca sana gösterilir. Tutuklanırsan soruşturma yetkisi Demokrat Parti Başkanı’na geçer. Demokratik Reformlar 6’ya ulaşırsa veya Otokrat Lider tutuklanırsa kazanırsın.',
     abilities: [
-      '2. dönemden itibaren her dönem bir oyuncuyu soruşturabilirsin.',
-      'Soruşturma sonucunu yalnızca sen görürsün.',
-      'Ölürsen yetkin Demokrat Parti Başkanı’na geçer.',
+      '2. dönemden itibaren her dönem bir oyuncuyu soruşturmak zorundasın.',
+      'Soruşturma sonucu Demokrat veya Otokrat kartıyla yalnızca sana gösterilir.',
+      'Tutuklanırsan yetkin Demokrat Parti Başkanı’na geçer.',
       'Demokratik zaferde kazanırsın.',
     ],
     investigation: 'iyi',
@@ -108,12 +108,12 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     teamLabel: 'Demokrat Takımı',
     shortDescription: 'Demokratik cephenin sıradan üyesi.',
     mission:
-      'Demokratik Reformları 6\'ya ulaştır veya Otokrat Lider\'i idam ettir.',
+      'Demokratik Reformları 6\'ya ulaştır veya Otokrat Lider\'i tutuklat.',
     description:
-      'Demokrat takımındasın. Özel bir gizli bilgin yoktur; oylar, hükümetler ve reformlar üzerinden çıkarım yaparsın. Demokratik Reformlar 6’ya ulaşırsa veya Otokrat Lider öldürülürse kazanırsın.',
+      'Demokrat takımındasın. Özel bir gizli bilgin yoktur; oylar, hükümetler ve reformlar üzerinden çıkarım yaparsın. Demokratik Reformlar 6’ya ulaşırsa veya Otokrat Lider tutuklanırsa kazanırsın.',
     abilities: [
       'Demokratik Reformları 6’ya ulaştır.',
-      'Otokrat Lider’in öldürülmesini sağla.',
+      'Otokrat Lider’in tutuklanmasını sağla.',
       'Gizli rol bilgin yoktur; sosyal çıkarım yaparsın.',
       'Demokratik zaferde kazanırsın.',
     ],

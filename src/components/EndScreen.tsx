@@ -90,7 +90,7 @@ export function EndScreen({
                   <li key={player.id}>
                     <Avatar avatarId={player.avatarId} size="sm" ring="gold" />
                     <span>{player.name}</span>
-                    {!player.alive ? <small>ölü</small> : null}
+                    {!player.alive ? <small>oyun dışı</small> : null}
                   </li>
                 ))}
               </ul>

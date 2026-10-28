@@ -2,11 +2,12 @@ import { Ban, Eye, ShieldAlert, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import type { GameAction, PrivateView, PublicGameState } from '../game';
 import { cn } from '../lib/cn';
+import { INVESTIGATION_CARD } from './investigationMeta';
 import { Avatar } from './ui/Avatar';
 import { Button } from './ui/Button';
 import { Modal } from './ui/Modal';
 
-type PickerMode = 'investigate' | 'block' | null;
+type PickerMode = 'block' | null;
 
 export function PowerPanel({
   view,
@@ -29,9 +30,6 @@ export function PowerPanel({
   const blockTargets = game.players.filter(
     (player) => player.alive && player.id !== view.playerId,
   );
-  const investigationTargets = view.investigateTargets
-    .map((id) => byId.get(id))
-    .filter((player): player is NonNullable<typeof player> => Boolean(player));
 
   const showInvestigation =
     view.canInvestigate ||
@@ -48,12 +46,8 @@ export function PowerPanel({
   };
 
   const confirmPicker = () => {
-    if (!picker || !selectedId) return;
-    if (picker === 'investigate') {
-      onAction({ type: 'investigate', targetId: selectedId });
-    } else {
-      onAction({ type: 'use_block', targetId: selectedId });
-    }
+    if (picker !== 'block' || !selectedId) return;
+    onAction({ type: 'use_block', targetId: selectedId });
     closePicker();
   };
 
@@ -82,41 +76,49 @@ export function PowerPanel({
             </span>
             <div>
               <h4>Soruşturma</h4>
-              <p>Sonuç yalnızca sana gösterilir. Her dönem bir kez kullanılabilir.</p>
+              <p>
+                Her dönem zorunludur. Sonuç yalnızca sana gösterilir ve
+                Demokrat/Otokrat kartıyla açıklanır.
+              </p>
             </div>
           </div>
           {view.canInvestigate ? (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setPicker('investigate');
-                setSelectedId(null);
-              }}
-              disabled={disabled}
-              icon={<Eye size={15} />}
-            >
-              Bir oyuncuyu soruştur
-            </Button>
+            <p className="power-note">
+              Soruşturma ekranı açık. Bu dönem bir hedef seçmen gerekiyor.
+            </p>
           ) : (
             <p className="muted">
               {view.investigationUsedThisRound
-                ? 'Bu dönem soruşturma hakkını kullandın.'
+                ? 'Bu dönem soruşturmanı tamamladın.'
                 : 'Soruşturma yetkisi şu anda kullanılamıyor.'}
             </p>
           )}
 
           {investigationEntries.length > 0 ? (
             <ul className="investigation-list investigation-list--compact">
-              {investigationEntries.map(([playerId, result]) => (
-                <li
-                  key={playerId}
-                  className={`investigation-list__item investigation-list__item--${result}`}
-                >
-                  <span>{byId.get(playerId)?.name ?? 'Bilinmeyen oyuncu'}</span>
-                  <strong>{result === 'kotu' ? 'Kötü' : 'İyi'}</strong>
-                </li>
-              ))}
+              {investigationEntries.map(([playerId, result]) => {
+                const meta = INVESTIGATION_CARD[result];
+                return (
+                  <li
+                    key={playerId}
+                    className={`investigation-list__item investigation-list__item--${result}`}
+                  >
+                    <span className="investigation-list__who">
+                      <img
+                        className="investigation-list__thumb"
+                        src={meta.image}
+                        alt=""
+                        width={720}
+                        height={958}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <span>{byId.get(playerId)?.name ?? 'Bilinmeyen oyuncu'}</span>
+                    </span>
+                    <strong>{meta.label}</strong>
+                  </li>
+                );
+              })}
             </ul>
           ) : null}
         </div>
@@ -173,17 +175,9 @@ export function PowerPanel({
       <Modal
         open={picker !== null}
         onClose={closePicker}
-        title={
-          picker === 'investigate'
-            ? 'Kimi soruşturacaksın?'
-            : 'Kimin oyununu engelleyeceksin?'
-        }
-        eyebrow={picker === 'investigate' ? 'Soruşturma' : 'Oy engelleme'}
-        subtitle={
-          picker === 'investigate'
-            ? 'Sonuç yalnızca sana gösterilir. Seçim geri alınamaz.'
-            : 'Hedefin oyu bu oylamada sayılmaz. Seçim geri alınamaz.'
-        }
+        title="Kimin oyununu engelleyeceksin?"
+        eyebrow="Oy engelleme"
+        subtitle="Hedefin oyu bu oylamada sayılmaz. Seçim geri alınamaz."
         size="sm"
         footer={
           <div className="modal-actions">
@@ -191,37 +185,34 @@ export function PowerPanel({
               Vazgeç
             </Button>
             <Button
-              variant={picker === 'investigate' ? 'secondary' : 'danger'}
+              variant="danger"
               onClick={confirmPicker}
               disabled={!selectedId}
             >
-              {picker === 'investigate' ? 'Soruştur' : 'Engelle'}
+              Engelle
             </Button>
           </div>
         }
       >
         <div className="target-list">
-          {(picker === 'investigate' ? investigationTargets : blockTargets).map(
-            (player) => (
-              <button
-                key={player.id}
-                type="button"
-                className={cn(
-                  'target-option',
-                  selectedId === player.id && 'target-option--selected',
-                )}
-                onClick={() => setSelectedId(player.id)}
-                aria-pressed={selectedId === player.id}
-              >
-                <Avatar avatarId={player.avatarId} size="sm" />
-                <span>{player.name}</span>
-                {!player.alive ? <span className="muted">Ölü</span> : null}
-              </button>
-            ),
-          )}
+          {blockTargets.map((player) => (
+            <button
+              key={player.id}
+              type="button"
+              className={cn(
+                'target-option',
+                selectedId === player.id && 'target-option--selected',
+              )}
+              onClick={() => setSelectedId(player.id)}
+              aria-pressed={selectedId === player.id}
+            >
+              <Avatar avatarId={player.avatarId} size="sm" />
+              <span>{player.name}</span>
+              {!player.alive ? <span className="muted">Oyun dışı</span> : null}
+            </button>
+          ))}
         </div>
-        {(picker === 'investigate' ? investigationTargets : blockTargets).length ===
-        0 ? (
+        {blockTargets.length === 0 ? (
           <p className="muted">Uygun hedef yok.</p>
         ) : null}
       </Modal>

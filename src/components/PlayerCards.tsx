@@ -28,7 +28,7 @@ export const PLAYER_CARDS = [
     name: 'İstihbarat Başkanı',
     team: 'demokrat',
     teamLabel: 'Demokrat',
-    note: 'Gizli soruşturma yetkisi',
+    note: 'Her dönem zorunlu soruşturma yetkisi',
     image: istihbaratArt,
   },
   {

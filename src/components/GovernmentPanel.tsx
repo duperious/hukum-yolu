@@ -41,7 +41,7 @@ export function GovernmentPanel({ game }: { game: PublicGameState }) {
               <Avatar avatarId={president.avatarId} size="md" ring="gold" />
               <div>
                 <strong>{president.name}</strong>
-                <span>{president.alive ? 'Görevde' : 'Ölü'}</span>
+                <span>{president.alive ? 'Görevde' : 'Oyun dışı'}</span>
               </div>
             </div>
           ) : (
@@ -65,7 +65,7 @@ export function GovernmentPanel({ game }: { game: PublicGameState }) {
               />
               <div>
                 <strong>{chancellor.name}</strong>
-                <span>{chancellor.alive ? 'Aday' : 'Ölü'}</span>
+                <span>{chancellor.alive ? 'Aday' : 'Oyun dışı'}</span>
               </div>
             </div>
           ) : (
@@ -114,7 +114,7 @@ export function GovernmentPanel({ game }: { game: PublicGameState }) {
       {dpp ? (
         <p className="government-panel__note">
           Demokrat Parti Başkanı: <strong>{dpp.name}</strong>
-          {!dpp.alive ? ' (ölü)' : ''}
+          {!dpp.alive ? ' (oyun dışı)' : ''}
         </p>
       ) : null}
     </section>

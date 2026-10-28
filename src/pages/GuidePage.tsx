@@ -2,9 +2,9 @@ import {
   ArrowLeft,
   BookOpen,
   Crown,
-  Crosshair,
   Eye,
   Landmark,
+  LockKeyhole,
   Scale,
   ShieldAlert,
   Skull,
@@ -17,6 +17,7 @@ import {
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { PolicyTrack } from '../components/PolicyTrack';
+import { INVESTIGATION_CARD } from '../components/investigationMeta';
 import { RoleComposition } from '../components/RoleComposition';
 import { SectionHeading } from '../components/ui/SectionHeading';
 import { Logo } from '../components/ui/Logo';
@@ -51,7 +52,7 @@ const PHASES: Array<{ title: string; text: string }> = [
   },
   {
     title: 'Gizli oylama',
-    text: 'Yaşayan tüm oyuncular kabul veya ret oyu verir. Oylar normalde gizlidir; yalnızca toplam sonuç açıklanır. Büyük Vezir’in oyu iki sayılır. İlk üç dönem tamamlandıktan sonra, yani 4. dönemden itibaren tüm oylamalar açık yapılır. Büyük Vezir ilk üç reformdan sonra Demokratik tarafa geçip oy gücü 2’den 1’e düşerse de oylama açık yapılır ve bireysel oylar sonuçla birlikte açıklanır.',
+    text: 'Oyunda olan tüm oyuncular kabul veya ret oyu verir. Oylar normalde gizlidir; yalnızca toplam sonuç açıklanır. Büyük Vezir’in oyu ilk üç reform tamamlanana kadar iki sayılır. İlk üç dönem tamamlandıktan sonra, yani 4. dönemden itibaren tüm oylamalar açık yapılır. Açık oylamada bir oyuncunun oy ağırlığı, rolü açıklanmadıkça gösterilmez. Büyük Vezir ilk üç reformdan sonra Demokratik tarafa geçip oy gücü 2’den 1’e düşerse de oylama açık yapılır ve bireysel oylar sonuçla birlikte açıklanır.',
   },
   {
     title: 'Oylama sonucu',
@@ -67,7 +68,7 @@ const PHASES: Array<{ title: string; text: string }> = [
   },
   {
     title: 'Özel yetkiler',
-    text: 'Reform çizelgesindeki eşikler üçüncü reform yetkisi, suikast ve liderlik kontrolü gibi güçleri açar. Soruşturma ise İstihbarat Başkanı’nda 2. dönemden itibaren her dönem yenilenir.',
+    text: 'Reform çizelgesindeki eşikler üçüncü reform yetkisi, tutuklama ve liderlik kontrolü gibi güçleri açar. Soruşturma ise İstihbarat Başkanı’nda 2. dönemden itibaren her dönem yenilenir ve zorunludur.',
   },
   {
     title: 'Oyun sonu',
@@ -92,8 +93,8 @@ const WIN_CONDITIONS: Array<{ title: string; text: string; tone: string }> = [
     tone: 'red',
   },
   {
-    title: 'Suikast',
-    text: 'Otokrat Lider suikastla öldürülür ve kırmızı Nötr liderliği devralmazsa Demokratlar kazanır.',
+    title: 'Tutuklama',
+    text: 'Otokrat Lider tutuklanır ve kırmızı Nötr liderliği devralmazsa Demokratlar kazanır.',
     tone: 'gold',
   },
   {
@@ -189,7 +190,7 @@ export default function GuidePage() {
                   </div>
                   <footer className="role-guide-card__meta">
                     <span className={`badge badge--${info.investigation === 'kotu' ? 'red' : 'blue'}`}>
-                      Soruşturma: {info.investigation === 'kotu' ? 'Kötü' : 'İyi'}
+                      Soruşturma: {INVESTIGATION_CARD[info.investigation].label}
                     </span>
                   </footer>
                 </article>
@@ -309,8 +310,11 @@ export default function GuidePage() {
               <h3>Soruşturma</h3>
               <p>
                 İstihbarat Başkanı, {GAME_CONFIG.powers.investigationStartRound}. dönemden
-                itibaren her dönem bir oyuncunun rolünü soruşturur. Sonuç yalnızca
-                ona gösterilir. Sıradan Otokrat “Kötü”, diğerleri “İyi” döner.
+                itibaren her dönem bir oyuncunun kartını soruşturmak zorundadır.
+                Soruşturma tamamlanmadan oy, adaylık veya reform adımına geçilemez.
+                Sonuç yalnızca ona gösterilir. Sıradan Otokrat “Otokrat”, diğer
+                roller “Demokrat” kartı verir; Otokrat Lider ve Nötr de Demokrat
+                görünür.
               </p>
             </article>
             <article className="power-guide-card">
@@ -336,13 +340,13 @@ export default function GuidePage() {
             </article>
             <article className="power-guide-card">
               <span className="power-guide-card__icon">
-                <Crosshair size={20} />
+                <LockKeyhole size={20} />
               </span>
-              <h3>Suikast</h3>
+              <h3>Tutuklama</h3>
               <p>
                 {GAME_CONFIG.powers.assassinationAtFascist.join(' ve ')}. Otokrat
-                Reform’lardan sonra Başkan bir oyuncuyu hedef alır. Otokrat Lider
-                ölürse Demokratlar kazanır.
+                Reform’lardan sonra Başkan bir oyuncuyu tutuklatır. Otokrat Lider
+                tutuklanırsa Demokratlar kazanır.
               </p>
             </article>
             <article className="power-guide-card">
@@ -373,7 +377,7 @@ export default function GuidePage() {
           <SectionHeading
             eyebrow="Kazanma"
             title="Oyun nasıl biter?"
-            description="Oyun; reform çizelgesi, suikast, liderlik kontrolü veya tasfiye ile sonuçlanabilir. Ölen oyuncular da takımlarıyla kazanabilir."
+            description="Oyun; reform çizelgesi, tutuklama, liderlik kontrolü veya tasfiye ile sonuçlanabilir. Oyun dışı kalan oyuncular da takımlarıyla kazanabilir."
           />
           <div className="win-grid">
             {WIN_CONDITIONS.map((condition) => (

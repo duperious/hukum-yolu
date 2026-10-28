@@ -407,8 +407,8 @@ describe('üçüncü Otokrat Reform yetkileri', () => {
   });
 });
 
-describe('suikast, liderlik devri ve zaferler', () => {
-  it('5. Otokrat Reform sonrası suikast yapılır; lider ölürse kırmızı Nötr liderliği devralır', () => {
+describe('tutuklama, liderlik devri ve zaferler', () => {
+  it('5. Otokrat Reform sonrası tutuklama yapılır; lider tutuklanırsa kırmızı Nötr liderliği devralır', () => {
     const base = ackAll(makeControlledGame({ startPresidentIndex: 1 }));
     const state = forceLegislative(base, 'p2', 'p5', ['otokrat', 'demokratik']);
     const prepared: GameState = {
@@ -566,7 +566,7 @@ describe('suikast, liderlik devri ve zaferler', () => {
     expect(next.winnerIds).not.toContain('p4');
   });
 
-  it('Lider suikaste kurban giderse ve kırmızı Nötr yoksa Demokratlar kazanır', () => {
+  it('Lider tutuklanırsa ve kırmızı Nötr yoksa Demokratlar kazanır', () => {
     const base = ackAll(makeControlledGame({ startPresidentIndex: 1 }));
     const state = forceAssassination(base, 'p2');
     const prepared: GameState = {
@@ -902,6 +902,16 @@ describe('geçiş kapıları, açık oylama ve dönem özeti', () => {
       p5: true,
     });
     expect(redacted.public.lastVoteTally?.entries).toHaveLength(5);
+    // Gizli Büyük Vezir'in 2 oylu ağırlığı açık oylamada istemciye sızmaz.
+    expect(
+      result.lastVoteTally?.entries.find((entry) => entry.playerId === 'p3')
+        ?.weight,
+    ).toBe(2);
+    expect(
+      redacted.public.lastVoteTally?.entries.find(
+        (entry) => entry.playerId === 'p3',
+      )?.weight,
+    ).toBe(1);
   });
 
   it('gizli oylamada bireysel tercihler redaksiyonda saklanır', () => {

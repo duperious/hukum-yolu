@@ -137,10 +137,11 @@ function VoteBreakdown({
     );
   }
 
-  const entries = [...tally.entries].sort((a, b) => {
-    if (a.choice !== b.choice) return a.choice ? -1 : 1;
-    return b.weight - a.weight;
-  });
+  // Ağırlığa göre sıralama, gizli Büyük Vezir'in kimliğini oy listesinde
+  // ele veriyordu. Sıra korunur; yalnızca Evet/Hayır gruplaması yapılır.
+  const entries = [...tally.entries].sort(
+    (a, b) => Number(b.choice) - Number(a.choice),
+  );
 
   return (
     <ul className="gate-vote-list" aria-label="Bireysel oylar">
@@ -161,7 +162,8 @@ function VoteBreakdown({
             </span>
             {entry.weight === 0 ? (
               <span className="gate-vote-list__blocked">Oy engellendi</span>
-            ) : entry.weight > 1 ? (
+            ) : entry.weight > 1 &&
+              game.publiclyRevealedRoles[entry.playerId] === 'buyuk_vezir' ? (
               <span className="gate-vote-list__weight">{entry.weight} oy</span>
             ) : null}
             <span className="gate-vote-list__stamp">

@@ -20,6 +20,7 @@ export interface ModalProps {
   hideClose?: boolean;
   closeOnOverlay?: boolean;
   className?: string;
+  overlayClassName?: string;
 }
 
 export function Modal({
@@ -34,6 +35,7 @@ export function Modal({
   hideClose = false,
   closeOnOverlay = true,
   className,
+  overlayClassName,
 }: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
@@ -61,7 +63,7 @@ export function Modal({
 
   return createPortal(
     <div
-      className="modal-overlay"
+      className={cn('modal-overlay', overlayClassName)}
       onMouseDown={(event) => {
         if (closeOnOverlay && event.target === event.currentTarget) onClose();
       }}

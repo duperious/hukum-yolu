@@ -307,7 +307,7 @@ export default function HomePage() {
               <h3>Reformları yönlendir</h3>
               <p>
                 Altı Demokratik Reform Demokratları, yedi Otokrat Reform Otokratları
-                zafere taşır. Suikastlar ve özel yetkiler dengeleri değiştirir.
+                zafere taşır. Tutuklamalar ve özel yetkiler dengeleri değiştirir.
               </p>
             </article>
           </div>

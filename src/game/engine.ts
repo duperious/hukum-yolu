@@ -382,9 +382,7 @@ function endGame(
   state.pendingPolicy = null;
   state.gateEndAt = null;
   state.revealedRoles = Object.fromEntries(state.players.map((p) => [p.id, p.role]));
-  const label =
-    winner === 'demokrat' ? 'Demokratlar' : winner === 'otokrat' ? 'Otokratlar' : 'Nötr (kişisel zafer)';
-  addLog(state, 'win', `Oyun sona erdi. Kazanan: ${label}. ${reason}`);
+  addLog(state, 'win', `Oyun sona erdi. ${reason}`);
 }
 
 function reassignOffices(state: GameState): void {
@@ -513,7 +511,7 @@ function resolveFirstThree(state: GameState): void {
       addLog(
         state,
         'transition',
-        'Monarşi sona erdi. Büyük Vezir idam edildi. Rolü açıklandı: Büyük Vezir.',
+        'Monarşi sona erdi. Büyük Vezir idam edildi.',
       );
     } else {
       if (bigVezir) bigVezir.effectiveTeam = 'monarsi';
@@ -543,7 +541,7 @@ function resolveFirstThree(state: GameState): void {
 function applyNotrChoiceMut(state: GameState, side: NotrSide, rng: () => number): void {
   const notr = roleHolder(state, 'notr');
   if (!notr?.alive) {
-    throw new GameError('NOTR_DEAD', 'Nötr hayatta değil.');
+    throw new GameError('NOTR_DEAD', 'Nötr oyun dışı.');
   }
   if (!state.notrChoicePending || state.notrSide !== null) {
     throw new GameError('NOTR_CHOICE_DONE', 'Nötr taraf seçimini zaten yaptı.');
@@ -625,7 +623,7 @@ function advanceAfterEffects(state: GameState, rng: () => number): void {
       addLog(
         state,
         'power',
-        'Kart inceleme yetkisi, yetkili oyuncu hayatta olmadığı için kullanılamadı.',
+        'Kart inceleme yetkisi, yetkili oyuncu oyun dışı olduğu için kullanılamadı.',
       );
     } else {
       state.phase = 'peek';
@@ -641,14 +639,14 @@ function advanceAfterEffects(state: GameState, rng: () => number): void {
       addLog(
         state,
         'power',
-        'Suikast yetkisi, yetkili oyuncu hayatta olmadığı için kullanılamadı.',
+        'Tutuklama yetkisi, yetkili oyuncu oyun dışı olduğu için kullanılamadı.',
       );
     } else if (!hasTarget) {
       state.pendingAssassination = null;
       addLog(
         state,
         'power',
-        'Suikast için uygun hedef kalmadığı için yetki kullanılamadı.',
+        'Tutuklama için uygun hedef kalmadığı için yetki kullanılamadı.',
       );
     } else {
       state.phase = 'assassination';
@@ -688,11 +686,11 @@ function nominateMut(state: GameState, actorId: string, targetId: string): void 
   }
   const president = requirePlayer(state, actorId);
   if (!president.alive) {
-    throw new GameError('DEAD', 'Ölü oyuncular aday gösteremez.');
+    throw new GameError('DEAD', 'Oyun dışı oyuncular aday gösteremez.');
   }
   const target = requirePlayer(state, targetId);
   if (!target.alive) {
-    throw new GameError('TARGET_DEAD', 'Ölü bir oyuncu aday gösterilemez.');
+    throw new GameError('TARGET_DEAD', 'Oyun dışı bir oyuncu aday gösterilemez.');
   }
   const eligible = getEligibleChancellorIds(state);
   if (!eligible.includes(targetId)) {
@@ -973,7 +971,7 @@ function enactPolicy(
     'policy',
     meta.auto
       ? `${policyLabel(card)} yürürlüğe girdi. Demokratik: ${state.enacted.democratic}/${GAME_CONFIG.democraticWinThreshold}, Otokrat: ${state.enacted.fascist}/${GAME_CONFIG.fascistTrackLength}.`
-      : `Başbakan ${chancellorName}, ${policyLabel(card)} reformunu yürürlüğe koydu. Demokratik: ${state.enacted.democratic}/${GAME_CONFIG.democraticWinThreshold}, Otokrat: ${state.enacted.fascist}/${GAME_CONFIG.fascistTrackLength}.`,
+      : `Başbakan ${chancellorName}, ${policyLabel(card)} kartını yürürlüğe koydu. Demokratik: ${state.enacted.democratic}/${GAME_CONFIG.democraticWinThreshold}, Otokrat: ${state.enacted.fascist}/${GAME_CONFIG.fascistTrackLength}.`,
   );
   maybeBotSpeakAfterEvent(state, rng);
 
@@ -1047,7 +1045,7 @@ function resolvePolicyEffects(
       addLog(
         state,
         'power',
-        `Başkan ${getPlayer(state, presidentId)?.name ?? '—'} bir suikast düzenlemek zorunda.`,
+        `Başkan ${getPlayer(state, presidentId)?.name ?? '—'} bir tutuklama emri vermek zorunda.`,
       );
     }
   }
@@ -1061,7 +1059,7 @@ function investigateMut(state: GameState, actorId: string, targetId: string): vo
   }
   const target = requirePlayer(state, targetId);
   if (!target.alive) {
-    throw new GameError('TARGET_DEAD', 'Ölü bir oyuncu soruşturulamaz.');
+    throw new GameError('TARGET_DEAD', 'Oyun dışı bir oyuncu soruşturulamaz.');
   }
   if (target.id === actorId) {
     throw new GameError('SELF_TARGET', 'Kendinizi soruşturamazsınız.');
@@ -1081,7 +1079,7 @@ function useBlockMut(state: GameState, actorId: string, targetId: string): void 
   }
   const target = requirePlayer(state, targetId);
   if (!target.alive) {
-    throw new GameError('TARGET_DEAD', 'Ölü bir oyuncunun oyu engellenemez.');
+    throw new GameError('TARGET_DEAD', 'Oyun dışı bir oyuncunun oyu engellenemez.');
   }
   if (target.id === actorId) {
     throw new GameError('SELF_TARGET', 'Kendi oyunuzu engelleyemezsiniz.');
@@ -1130,23 +1128,23 @@ function assassinateMut(
   rng: () => number,
 ): void {
   if (state.phase !== 'assassination' || !state.pendingAssassination) {
-    throw new GameError('WRONG_PHASE', 'Suikast aşaması değil.');
+    throw new GameError('WRONG_PHASE', 'Tutuklama aşaması değil.');
   }
   if (state.pendingAssassination.presidentId !== actorId) {
-    throw new GameError('NOT_PRESIDENT', 'Suikastı yalnızca Başkan düzenleyebilir.');
+    throw new GameError('NOT_PRESIDENT', 'Tutuklamayı yalnızca Başkan yapabilir.');
   }
   const target = requirePlayer(state, targetId);
   if (!target.alive) {
-    throw new GameError('TARGET_DEAD', 'Ölü bir oyuncu hedef alınamaz.');
+    throw new GameError('TARGET_DEAD', 'Oyun dışı bir oyuncu tutuklanamaz.');
   }
   if (target.id === actorId) {
-    throw new GameError('SELF_TARGET', 'Kendinize suikast düzenleyemezsiniz.');
+    throw new GameError('SELF_TARGET', 'Kendinizi tutuklatamazsınız.');
   }
 
   state.pendingAssassination = null;
   target.alive = false;
   target.votePower = 0;
-  addLog(state, 'death', `${target.name} suikaste kurban gitti.`);
+  addLog(state, 'death', `${target.name} tutuklandı.`);
 
   if (target.id === state.leaderId) {
     const notr = roleHolder(state, 'notr');
@@ -1154,7 +1152,7 @@ function assassinateMut(
       endGame(
         state,
         'demokrat',
-        'Liderliği devralan Nötr suikaste kurban gitti. Demokratlar kazandı.',
+        'Liderliği devralan Nötr tutuklandı. Demokratlar kazandı.',
         computeWinnerIds(state, 'demokrat'),
       );
       return;
@@ -1170,7 +1168,7 @@ function assassinateMut(
     endGame(
       state,
       'demokrat',
-      'Otokrat Lider suikaste kurban gitti. Demokratlar kazandı.',
+      'Otokrat Lider tutuklandı. Demokratlar kazandı.',
       computeWinnerIds(state, 'demokrat'),
     );
     return;
@@ -1216,7 +1214,7 @@ function applyActionMut(
         throw new GameError('WRONG_PHASE', 'Şu anda oylama aşaması değil.');
       }
       if (!actor.alive) {
-        throw new GameError('DEAD', 'Ölü oyuncular oy kullanamaz.');
+        throw new GameError('DEAD', 'Oyun dışı oyuncular oy kullanamaz.');
       }
       if (state.votes[actor.id] !== undefined) {
         throw new GameError('ALREADY_VOTED', 'Bu dönemde zaten oy kullandınız.');
@@ -1342,7 +1340,7 @@ function autoResolveBotsMut(state: GameState, rng: () => number): void {
       return;
     }
 
-    // Botların isteğe bağlı soruşturma yetkisi, ana eylemden önce kullanılır.
+    // Botların zorunlu soruşturma yetkisi, ana eylemden önce kullanılır.
     const investigator = state.players.find(
       (p) => p.isBot && p.alive && canInvestigateNow(state, p.id),
     );

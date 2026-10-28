@@ -2,16 +2,16 @@ import {
   AlertTriangle,
   ArrowRight,
   Check,
-  Crosshair,
   Eye,
   Flag,
   Gavel,
   Landmark,
+  LockKeyhole,
   Scale,
   ScrollText,
-  Skull,
   Sparkles,
   UserPlus,
+  UserX,
   Vote,
   X,
   type LucideIcon,
@@ -74,9 +74,9 @@ export const PHASE_META: Record<
     icon: Eye,
   },
   assassination: {
-    title: 'Suikast',
-    description: 'Başkan bir suikast hedefi seçiyor.',
-    icon: Crosshair,
+    title: 'Tutuklama',
+    description: 'Başkan bir tutuklama hedefi seçiyor.',
+    icon: LockKeyhole,
   },
   termEnd: {
     title: 'Dönem Kapanışı',
@@ -196,8 +196,8 @@ export function ActionPanel({
 
       {!view.isAlive ? (
         <div className="action-note action-note--dead">
-          <Skull size={16} />
-          <p>Öldün. Oyunu izliyorsun; takımın kazanırsa sen de kazanırsın.</p>
+          <UserX size={16} />
+          <p>Oyun dışı kaldın. Oyunu izliyorsun; takımın kazanırsa sen de kazanırsın.</p>
         </div>
       ) : null}
 
@@ -347,7 +347,7 @@ export function ActionPanel({
                 </span>
               </div>
             ) : (
-              <p className="muted">Ölü oyuncular oy kullanamaz.</p>
+              <p className="muted">Oyun dışı oyuncular oy kullanamaz.</p>
             )}
           </div>
         ) : null}
@@ -585,11 +585,11 @@ export function ActionPanel({
 
         {game.phase === 'assassination' ? (
           <div className="action-block">
-            <h3>{view.canAssassinate ? 'Suikast hedefini seç' : 'Suikast hedefi seçiliyor'}</h3>
+            <h3>{view.canAssassinate ? 'Tutuklama hedefini seç' : 'Tutuklama hedefi seçiliyor'}</h3>
             <p>
               {view.canAssassinate
-                ? 'Bu seçim geri alınamaz. Lideri öldürürsen ve kırmızı Nötr yoksa Demokratlar kazanır.'
-                : `Başkan ${presidentName} bir suikast hedefi seçiyor.`}
+                ? 'Bu seçim geri alınamaz. Lideri tutuklarsan ve kırmızı Nötr yoksa Demokratlar kazanır.'
+                : `Başkan ${presidentName} bir tutuklama hedefi seçiyor.`}
             </p>
             {view.canAssassinate ? (
               <>
@@ -625,15 +625,15 @@ export function ActionPanel({
                     }}
                     disabled={!selectedTarget || actionPending}
                     loading={actionPending}
-                    icon={<Crosshair size={16} />}
+                    icon={<LockKeyhole size={16} />}
                   >
-                    Suikastı Onayla
+                    Tutuklamayı Onayla
                   </Button>
                 </div>
               </>
             ) : (
               <div className="waiting-illustration">
-                <Crosshair size={30} />
+                <LockKeyhole size={30} />
                 <span>Hedef seçiliyor…</span>
               </div>
             )}

@@ -8,8 +8,8 @@ const DEFAULT_FASCIST_LABELS = [
   'Özel yetki yok',
   '3. reform yetkisi',
   'Lider PM ise zafer',
-  'Suikast',
-  'Suikast',
+  'Tutuklama',
+  'Tutuklama',
   'Otokrat zaferi',
 ];
 

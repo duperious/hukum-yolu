@@ -38,10 +38,10 @@ Gizli rollü, sosyal çıkarım masa oyununun Türkçe, mobil öncelikli PWA uyg
 - **16 avatar** ve cihazda saklanan profil.
 - **Reform destesi:** 8 demokratik + 12 otokrat reform, iki ayrı çizelge.
 - **Gizli oylama**, ağırlıklı Büyük Vezir oyu, 3 ret sonrası otomatik reform.
-- **Soruşturma**, 3. reform özel yetkileri, suikast, liderlik devri, tasfiye.
+- **Soruşturma**, 3. reform özel yetkileri, tutuklama, liderlik devri, tasfiye.
 - **Kazanma koşulları:** demokratik, otokratik ve Nötr kişisel zafer.
 - **PWA:** yüklenebilir uygulama, çevrimdışı kabuk, üretilmiş ikonlar.
-- **Testler:** rol dağılımı, fazlar, oylama, ağırlıklar, engelleme, otomatik reform, geçişler, Nötr, 3. reform güçleri, suikast, liderlik devri, tüm kazanma koşulları, tasfiye, redaksiyon, botlar ve oda sahibi yetkili oda akışı.
+- **Testler:** rol dağılımı, fazlar, oylama, ağırlıklar, engelleme, otomatik reform, geçişler, Nötr, 3. reform güçleri, tutuklama, liderlik devri, tüm kazanma koşulları, tasfiye, redaksiyon, botlar ve oda sahibi yetkili oda akışı.
 
 ---
 
@@ -240,7 +240,7 @@ Mevcut test kapsamı:
 - Rol dağılımı ve rol bilgileri
 - Faz geçişleri, adaylık, oylama, oy ağırlıkları
 - Üç ret sonrası otomatik reform
-- Soruşturma, engelleme, suikast, liderlik devri, tasfiye
+- Soruşturma, engelleme, tutuklama, liderlik devri, tasfiye
 - Demokratik, otokratik ve Nötr kazanma koşulları
 - Redaksiyon: istemciye yalnızca güvenli görünümün gitmesi
 - Bot davranışı

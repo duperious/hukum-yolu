@@ -2,17 +2,76 @@
 
 > **Önce bu dosyayı oku.** Bu dosya Hüküm Yolu üzerinde yapılan tüm değişikliklerin
 > güncel kaydıdır. Farklı bir oturumda çalışmaya başlamadan önce bu dosyayı oku;
-> her değişiklikten sonra da buraya yeni bir kayıt ekle. Kayıt eklemeden iş
-> bitirilmiş sayılmaz.
+> her değişiklikten sonra da buraya yeni bir kayıt ekle. Kayıtlar **kronolojiktir**:
+> en eski değişiklik üstte, en yeni değişiklik altta yer alır.
 
 - **Proje:** Hüküm Yolu
 - **Son güncelleme:** 2026-10-28
 - **Son özellik commit'i:** `7727e98` — Rol kartlarını çerçeveye oturt, yerel test ve online rehberi kaldır
-- **Bu dosyadaki son değişiklikler:** Commit edildi ve `origin/main` dalına push edildi.
+- **Bu dosyadaki son değişiklikler:** Tutuklama adlandırması, tekrarlı günlük metinlerinin temizliği ve kronolojik düzen. Yerel değişiklikler commit/push için kullanıcı onayı bekliyor.
 
 ---
 
-## 2026-10-28 — Rol kartları, yerel test ve online rehber temizliği
+## Commit kronolojisi
+
+| Commit | Tarih | Özet |
+| --- | --- | --- |
+| `c7e19e4` | 2026-10-26 00:45 | Hüküm Yolu — gizli rollü Türkçe sosyal çıkarım oyunu |
+| `7d22532` | 2026-10-26 01:29 | Online oyunu PeerJS/WebRTC’ye taşı, rol/görev arayüzünü iyileştir |
+| `6c38548` | 2026-10-26 01:32 | Bağlantı hatalarını yükleme ekranında göster |
+| `d5b79ba` | 2026-10-26 03:58 | Arayüzü referans tasarımla yenile |
+| `30f8152` | 2026-10-26 11:34 | Oyun ekranını kompaktlaştır, merkez oylama kartı ve olay bandı ekle |
+| `a624452` | 2026-10-26 12:25 | Rol kartını doğrudan göster, oylama ve reform kartlarını düzenle |
+| `c5b1c83` | 2026-10-26 14:04 | Oyun olaylarını merkezde animasyonla göster, oylamayı ortala |
+| `6b9f7db` | 2026-10-27 12:00 | Arayüzü Mazbata kimliğine taşı, dönem geçişi ve adaylık sahnesi ekle |
+| `8e09002` | 2026-10-27 13:31 | Reform seçimini merkezî sahneye taşı, tutanak tasarımını yenile |
+| `9e52b4b` | 2026-10-27 21:55 | Oyuncu kartları galerisini ekle, tur dışı olayları temizle |
+| `d23a3aa` | 2026-10-27 22:15 | Reform çizelgelerini banner tasarımıyla yenile |
+| `4b8973b` | 2026-10-27 22:46 | Rol açılışında eşleşen oyuncu kartını göster |
+| `ee14836` | 2026-10-28 05:06 | Dönem ritmi ve geçit sahnesini uygula: oy sonucu, yasama açılışı, dönem özeti |
+| `dccae3c` | 2026-10-28 20:54 | Soruşturma hakkını 2. dönemden itibaren her dönem yenile |
+| `a16dcaa` | 2026-10-28 20:56 | İlk üç dönemden sonra tüm oylamaları açık yap |
+| `4f9923a` | 2026-10-28 22:05 | Reform kartlarını görselleştir ve ilerleme kâğıdına yerleştir |
+| `cc2a25e` | 2026-10-28 22:27 | Soruşturma kimliğini gizle ve karanlık tema kontrastını düzelt |
+| `1822708` | 2026-10-28 22:59 | Oylama ve Nötr seçimini görsel kartlarla modal sahneye taşı |
+| `7727e98` | 2026-10-28 23:13 | Rol kartlarını çerçeveye oturt, yerel test ve online rehberi kaldır |
+| `4979651` | 2026-10-28 23:13 | Yapılanlar dosyasındaki son commit bilgisini güncelle |
+| — (yerel) | 2026-10-28 23:41 | Zorunlu soruşturma, Demokrat/Otokrat kartları ve 2 oy ifşası düzeltmesi |
+| — (yerel) | 2026-10-28 | Tutuklama adlandırması, günlük tekrar temizliği ve kronolojik düzen |
+
+---
+
+## 2026-10-28 — Commit `cc2a25e`: Soruşturma gizliliği ve karanlık tema
+
+- Soruşturma kaydı `Gizli bir soruşturma yürütüldü.` olarak genelleştirildi.
+- Eski `sorguya çekti` kayıtları `src/game/redact.ts` içinde maskeleniyor.
+- Soruşturma kimliği ve hedefi oyun günlüğünden ve dönem özetinden gizlendi.
+- Karanlık tema kontrastı iyileştirildi.
+- İlgili testler eklendi; typecheck, test ve build başarılı.
+
+---
+
+## 2026-10-28 — Commit `1822708`: Görsel oylama ve Nötr seçimi
+
+- Evet/Hayır oylaması metin/ikon yerine görsel kartlarla sunuldu.
+  - `src/assets/vote/evet.jpg`
+  - `src/assets/vote/hayir.jpg`
+- Nötr’ün (Kararsız) taraf seçimi ekranın ortasındaki modal sahneye taşındı.
+  - `Cumhuriyet Yolu` = mavi / Demokrat
+  - `İmparatorluk Yolu` = kırmızı / Otokrat
+  - `src/assets/vote/cumhuriyet-yolu.jpg`
+  - `src/assets/vote/imparatorluk-yolu.jpg`
+- Yeni `src/components/NotrStage.tsx` eklendi.
+- Seçim kartlarında renkli çerçeve ve `Seçildi` rozeti eklendi.
+- Nötr seçimi sıra geldiğinde otomatik açılıyor; kapatılırsa `ActionPanel`
+  içindeki “Yol Seçimini Aç” butonuyla yeniden açılabiliyor.
+- `src/components/VoteStage.tsx`, `src/components/ActionPanel.tsx`,
+  `src/components/GameScreen.tsx` ve `src/styles/identity.css` güncellendi.
+- Doğrulama: typecheck, 56/56 test ve production build başarılı.
+
+---
+
+## 2026-10-28 — Commit `7727e98`: Rol kartları, yerel test ve online rehber temizliği
 
 ### 1. Rol kartı görselleri çerçevelerine tam oturtuldu
 
@@ -112,41 +171,196 @@ Etkilenen dosyalar:
   edilmedi.
 - Bu turdaki değişiklikler `7727e98` numaralı commit ile kaydedildi ve push
   edildi.
+- Ardından `4979651` numaralı commit ile bu dosyadaki son commit bilgisi
+  güncellendi.
 
 ---
 
-## 2026-10-28 — Commit `1822708`: Görsel oylama ve Nötr seçimi
+## 2026-10-28 — Yerel: Zorunlu soruşturma, Demokrat/Otokrat kartları ve 2 oy ifşası
 
-- Evet/Hayır oylaması metin/ikon yerine görsel kartlarla sunuldu.
-  - `src/assets/vote/evet.jpg`
-  - `src/assets/vote/hayir.jpg`
-- Nötr’ün (Kararsız) taraf seçimi ekranın ortasındaki modal sahneye taşındı.
-  - `Cumhuriyet Yolu` = mavi / Demokrat
-  - `İmparatorluk Yolu` = kırmızı / Otokrat
-  - `src/assets/vote/cumhuriyet-yolu.jpg`
-  - `src/assets/vote/imparatorluk-yolu.jpg`
-- Yeni `src/components/NotrStage.tsx` eklendi.
-- Seçim kartlarında renkli çerçeve ve `Seçildi` rozeti eklendi.
-- Nötr seçimi sıra geldiğinde otomatik açılıyor; kapatılırsa `ActionPanel`
-  içindeki “Yol Seçimini Aç” butonuyla yeniden açılabiliyor.
-- `src/components/VoteStage.tsx`, `src/components/ActionPanel.tsx`,
-  `src/components/GameScreen.tsx` ve `src/styles/identity.css` güncellendi.
-- Doğrulama: typecheck, 56/56 test ve production build başarılı.
+### 1. Soruşturma zorunlu ve merkezî modal oldu
 
-## 2026-10-28 — Commit `cc2a25e`: Soruşturma gizliliği ve karanlık tema
+Sorun: Soruşturma yalnızca sağ panelde küçük bir düğme olarak duruyordu ve
+unutulabiliyordu. Kullanıcı, her dönem soruşturma yapılmadan oyunun ilerlememesi
+gerektiğini belirtti.
 
-- Soruşturma kaydı `Gizli bir soruşturma yürütüldü.` olarak genelleştirildi.
-- Eski `sorguya çekti` kayıtları `src/game/redact.ts` içinde maskeleniyor.
-- Soruşturma kimliği ve hedefi oyun günlüğünden ve dönem özetinden gizlendi.
-- Karanlık tema kontrastı iyileştirildi.
-- İlgili testler eklendi; typecheck, test ve build başarılı.
+Yapılanlar:
+
+- `src/components/InvestigationStage.tsx` oluşturuldu. İstihbarat Başkanı'nın
+  soruşturma hakkı açıldığında ekranın ortasında zorunlu bir modal açılıyor.
+- Modal, hedef seçilip soruşturma gönderilene kadar kapatılamıyor. Escape ve
+  arka plana tıklama devre dışı; kapatma düğmesi gizli.
+- Soruşturma sırasında oylama, adaylık, reform ve Nötr seçim sahneleri
+  bastırılıyor; `EventStage` duraklatılıyor.
+- `PowerPanel` içindeki ikinci soruşturma seçici kaldırıldı; panel yalnızca
+  durum ve geçmiş sonuçları gösteriyor.
+- `src/components/ui/Modal.tsx` bileşenine isteğe bağlı `overlayClassName`
+  desteği eklendi. Soruşturma katmanı `z-index: 180` ile diğer sahnelerin
+  üstünde tutuluyor.
+
+### 2. Sonuçlar “İyi/Kötü” yerine Demokrat/Otokrat kartıyla gösteriliyor
+
+- Kullanıcının verdiği iki görsel `src/assets/investigation/demokrat.jpg` ve
+  `src/assets/investigation/otokrat.jpg` altına alındı.
+- `src/components/investigationMeta.ts` sonuç → kart eşlemesini tutuyor:
+  `iyi` → Demokrat kartı, `kotu` → Otokrat kartı.
+- Sonuç modalı kart görselini, hedefin adını ve Demokrat/Otokrat etiketini
+  gösteriyor. “İyi/Kötü” metni kullanıcı arayüzünden kaldırıldı.
+- Otokrat Lider ve Nötr soruşturmada Demokrat kartı veriyor; bu durum sonuç
+  ekranında ve rehberde açıkça belirtiliyor.
+- `PowerPanel`, `RoleCard`, `GuidePage`, roller ve kural metinleri yeni
+  terminolojiye ve zorunlu soruşturma kuralına göre güncellendi.
+
+### 3. 4. dönemde Büyük Vezir’in “2 oy” ile ifşa olması düzeltildi
+
+Kök neden:
+
+- Açık oylama `openVotingAfterRound: 3` nedeniyle 4. dönemde başlıyor.
+- Büyük Vezir’in tek oya düşmesi ise dönem sayısına değil, **ilk üç reformun
+  tamamlanmasına** bağlı (`resolveFirstThree`, `getTotalReforms === 3`).
+- 4. döneme girildiğinde henüz üç reform tamamlanmadıysa Büyük Vezir hâlâ
+  2 oy gücünde kalıyor. Oylama sonucu ekranındaki `VoteBreakdown` oyları
+  ağırlığa göre sıralıyor ve `2 oy` rozetini gösteriyordu; bu da vezirin
+  kimliğini ifşa ediyordu.
+
+Yapılanlar:
+
+- `VoteBreakdown` artık oyları ağırlığa göre sıralamıyor; yalnızca Evet/Hayır
+  gruplaması korunuyor.
+- `2 oy` rozeti yalnızca rolü zaten herkese açıklanmış Büyük Vezir için
+  gösteriliyor.
+- `redact.ts` içindeki `publicTally`, rolü açıklanmamış Büyük Vezir’in 2 oylu
+  ağırlığını istemciye gönderilen oy listesinde 1 olarak maskeliyor. Engellenen
+  oylar (`0`) olduğu gibi kalıyor.
+- Açık oylamada toplam Evet/Hayır sayısı yine ağırlıklıdır; değişiklik yalnızca
+  bireysel oy listesindeki kimlik ifşasını engeller.
+- Geçiş kuralının kendisi (ilk üç reform) değiştirilmedi. İstenirse Büyük
+  Vezir’in 3. dönem sonunda tek oya düşmesi ayrıca kural değişikliği olarak
+  değerlendirilebilir.
+
+### Etkilenen dosyalar
+
+- `src/components/InvestigationStage.tsx` (yeni)
+- `src/components/investigationMeta.ts` (yeni)
+- `src/assets/investigation/demokrat.jpg` (yeni)
+- `src/assets/investigation/otokrat.jpg` (yeni)
+- `src/components/GameScreen.tsx`
+- `src/components/PowerPanel.tsx`
+- `src/components/PlayerCards.tsx`
+- `src/components/RoleCard.tsx`
+- `src/components/TransitionStages.tsx`
+- `src/components/ui/Modal.tsx`
+- `src/game/config.ts`
+- `src/game/engine.ts`
+- `src/game/redact.ts`
+- `src/game/roles.ts`
+- `src/pages/GuidePage.tsx`
+- `src/styles/identity.css`
+- `tests/engine.test.ts`
+
+### Doğrulama
+
+- `npm run typecheck`
+- `npm run test -- --run` — 56 test geçti
+- `npm run build`
+- Tarayıcıda geçici önizleme ile doğrulandı:
+  - 2. dönem oylamasında zorunlu soruşturma modalı otomatik açılıyor.
+  - Escape modalı kapatmıyor; oylama sahnesi altta açılmıyor.
+  - Demokrat ve Otokrat kart görselleri doğru sonuçla yükleniyor.
+- Gizli Büyük Vezir’in oy ağırlığının redaksiyonda 1’e maskelendiğini
+  doğrulayan test eklendi.
+
+### Commit
+
+- Yerel değişiklikler hazır. Kullanıcı onayı olmadan commit/push yapılmadı.
+
+---
+
+## 2026-10-28 — Yerel: Tutuklama adlandırması ve günlük tekrar temizliği
+
+### 1. Soruşturma dipnotundaki yazım hatası düzeltildi
+
+- `src/components/InvestigationStage.tsx` içindeki
+  `Otokrat Lider ve Nötr da soruşturmada Demokrat kartı verir.` cümlesi
+  `Otokrat Lider ve Nötr de soruşturmada Demokrat kartı verir.` olarak
+  düzeltildi.
+- Aynı metin ve benzer dipnotlar tarandı; başka bir yazım hatası bulunmadı.
+
+### 2. Tekrarlı günlük metinleri sadeleştirildi
+
+- `resolveFirstThree` içindeki idam kaydı
+  `Monarşi sona erdi. Büyük Vezir idam edildi. Rolü açıklandı: Büyük Vezir.`
+  yerine `Monarşi sona erdi. Büyük Vezir idam edildi.` oldu. “Büyük Vezir”
+  bilgisi aynı cümlede ikinci kez yazılmıyor; rol yine `publiclyRevealedRoles`
+  üzerinden açıklanmaya devam ediyor.
+- `endGame` içindeki `Oyun sona erdi. Kazanan: X. ... X kazandı.` tekrarı
+  kaldırıldı. Günlük artık yalnızca `Oyun sona erdi. <kazanma nedeni>` yazıyor.
+- `enactPolicy` içindeki `Otokrat Reform reformunu` ifadesi
+  `Otokrat Reform kartını` olarak düzeltildi.
+- Diğer günlük mesajları tarandı; aynı bilgiyi aynı cümlede iki kez yazan başka
+  bir kayıt kalmadı.
+
+### 3. “Suikast” özelliği kullanıcıya “Tutuklama” olarak sunuluyor
+
+- Reform çizelgesi etiketleri, kural rehberi, ana sayfa, rol kartları, eylem
+  paneli, olay sahnesi, oyun günlüğü ve README’deki tüm kullanıcıya görünen
+  “Suikast/suikast” metinleri “Tutuklama/tutuklama” olarak değiştirildi.
+- Başkanın hedef seçme akışı artık “Tutuklama hedefini seç” ve
+  “Tutuklamayı Onayla” olarak gösteriliyor.
+- Oyun günlüğü `X tutuklandı.` yazıyor; kazanma koşulları
+  “Otokrat Lider tutuklanırsa…” biçiminde güncellendi.
+- Olay sahnesinde ve günlükte `LockKeyhole` ikonu kullanılıyor; eski
+  `Crosshair`/`Skull` ikonları kaldırıldı.
+- Oyun dışı kalan oyuncular için arayüzde “Ölü/Öldün” yerine “Oyun dışı”
+  kullanılıyor. Bu ifade hem tutuklama hem de Büyük Vezir’in idamı sonrasındaki
+  durumu kapsıyor.
+- İç kimlikler (`assassinate`, `assassination`, `pendingAssassination`,
+  `assassinationAtFascist`, `canAssassinate`) protokol ve `localStorage` ile
+  kaydedilmiş oda durumuyla uyumluluk için korundu. Değişiklik yalnızca
+  kullanıcıya görünen metinlerde ve ikonlarda yapıldı.
+
+### Etkilenen dosyalar
+
+- `src/components/InvestigationStage.tsx`
+- `src/components/ActionPanel.tsx`
+- `src/components/EndScreen.tsx`
+- `src/components/EventStage.tsx`
+- `src/components/GameLog.tsx`
+- `src/components/GameScreen.tsx`
+- `src/components/GovernmentPanel.tsx`
+- `src/components/PlayerCircle.tsx`
+- `src/components/PolicyTrack.tsx`
+- `src/components/PowerPanel.tsx`
+- `src/components/RoleCard.tsx`
+- `src/game/config.ts`
+- `src/game/engine.ts`
+- `src/game/roles.ts`
+- `src/pages/GuidePage.tsx`
+- `src/pages/HomePage.tsx`
+- `README.md`
+- `tests/engine.test.ts`
+- `yapılanlar.md`
+
+### Doğrulama
+
+- `npm run typecheck`
+- `npm run test -- --run` — 56/56 test geçti
+- `npm run build`
+- Kullanıcıya görünen metinlerde `suikast` araması yapıldı; sonuç kalmadı.
+- `yapılanlar.md` en eski kayıt üstte, en yeni kayıt altta olacak şekilde
+  kronolojik sıraya getirildi.
+
+### Commit
+
+- Yerel değişiklikler hazır. Kullanıcı onayı olmadan commit/push yapılmadı.
+- `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
 
 ---
 
 ## Değişiklik ekleme şablonu
 
 Yeni bir değişiklikten sonra aşağıdaki şablonu kopyalayıp tarih ve başlıkla
-birlikte en üste ekle:
+birlikte **en alta** ekle:
 
 ```md
 ## YYYY-MM-DD — Kısa başlık

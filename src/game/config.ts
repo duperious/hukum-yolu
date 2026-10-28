@@ -40,8 +40,8 @@ export const GAME_CONFIG: GameConfig = {
   },
   /**
    * Kural metninde Büyük Vezir ve İstihbarat Başkanı için sonuç açıkça
-   * yazmıyor. Metindeki tek "Kötü" sonucu sıradan Otokrat olduğu için
-   * diğer tüm roller "İyi" kabul edilir. README'de varsayım olarak belirtilir.
+   * yazmıyor. Metindeki tek "Otokrat" sonucu sıradan Otokrat olduğu için
+   * diğer tüm roller "Demokrat" kabul edilir. README'de varsayım olarak belirtilir.
    */
   investigationResults: {
     otokrat_lider: 'iyi',
@@ -73,8 +73,8 @@ export const FASCIST_TRACK_LABELS: string[] = [
   'Özel yetki yok',
   'Oyuncu sayısına göre yetki',
   'Lider Başbakan olursa zafer',
-  'Suikast',
-  'Suikast',
+  'Tutuklama',
+  'Tutuklama',
   'Otokrat zaferi',
 ];
 
@@ -95,24 +95,24 @@ export const ROLE_ORDER: Role[] = [
 export const RULE_ASSUMPTIONS: string[] = [
   'Başkan kendisini Başbakan adayı gösteremez. Başka uygun aday kalmadığında bu kısıt gevşetilir.',
   'Önceki dönemin Başbakanı bir sonraki dönemde aday gösterilemez. Başka uygun aday kalmadığında bu kısıt gevşetilir.',
-  'Soruşturma yetkisi 2. dönemde açılır ve her dönem bir kez yenilenir; 2. Otokrat Reform’a bağlı değildir.',
-  'Soruşturma sonucu yalnızca sıradan Otokrat için "Kötü"; diğer tüm roller için "İyi" kabul edilir. Büyük Vezir ve İstihbarat Başkanı da "İyi" döner.',
+  'Soruşturma yetkisi 2. dönemde açılır ve her dönem bir kez yenilenir; 2. Otokrat Reform’a bağlı değildir. Soruşturma her dönem zorunludur.',
+  'Soruşturma sonucu yalnızca sıradan Otokrat için "Otokrat"; diğer tüm roller için "Demokrat" kabul edilir. Büyük Vezir, Otokrat Lider ve İstihbarat Başkanı da "Demokrat" döner.',
   'Tasfiye hedefleri tablodaki rol kartlarına göre çözülür. Tablo ile "Demokrat Parti Başkanı ve halefi" açıklaması arasındaki fark README\'de belirtilmiştir.',
   'Tasfiye zaferi yalnızca kırmızı Nötr liderliği devraldıktan sonra geçerli kişisel zaferdir.',
-  'Kırmızı Nötr, İstihbarat Başkanlığı görevini yalnızca Büyük Vezir ölmüşse devralır. Bu devir gizli tutulur.',
-  'Büyük Vezir ilk üç reform tamamlandığında ölmüşse, çoğunluk sonucuna göre varsayımsal taraf atanır; kimliği açıklanmaz.',
-  'Demokrat Parti Başkanı ölürse halef sırası: hayattaki Nötr → İstihbarat Başkanı rolü sahibi → boş.',
+  'Kırmızı Nötr, İstihbarat Başkanlığı görevini yalnızca Büyük Vezir oyun dışı kalmışsa devralır. Bu devir gizli tutulur.',
+  'Büyük Vezir ilk üç reform tamamlandığında oyun dışı kalmışsa, çoğunluk sonucuna göre varsayımsal taraf atanır; kimliği açıklanmaz.',
+  'Demokrat Parti Başkanı tutuklanırsa halef sırası: oyunda olan Nötr → İstihbarat Başkanı rolü sahibi → boş.',
   'Üçüncü Otokrat Reform\'un kart inceleme/oy engelleme yetkisi yalnızca hükümet eliyle yürürlüğe girerse kazanılır; üç ret sonrası otomatik yürürlüğe giren kart özel yetki kazandırmaz.',
   'Oy engelleme yetkisi sonraki hükümet oylamasında, sonuç açıklanmadan önce kullanılabilir; hedef kendisi olamaz. Kullanılmazsa sonuçla birlikte sona erer.',
-  'İlk üç dönem tamamlandıktan sonra, yani 4. dönemden itibaren tüm oylamalar açık yapılır; her oyuncunun Evet/Hayır tercihi sonuçla birlikte görünür.',
+  'İlk üç dönem tamamlandıktan sonra, yani 4. dönemden itibaren tüm oylamalar açık yapılır; her oyuncunun Evet/Hayır tercihi sonuçla birlikte görünür. Açık oylamada bir oyuncunun oy ağırlığı, rolü açıklanmadıkça gösterilmez; Büyük Vezir ilk üç reform tamamlanmadıysa oyu 2 kalabilir.',
   'Büyük Vezir ilk üç reformdan sonra Demokratik tarafa geçip oy gücü 2’den 1’e düşerse oylama açık yapılır; bireysel oylar sonuçla birlikte açıklanır. Oy gücü 0’a düşerse oylama gizli kalır.',
   'Nötr, üçüncü reform tamamlandığında (otomatik yürürlüğe girse bile) tarafını seçer. Seçim yalnızca Nötr ve oyun motoru tarafından bilinir.',
-  'Büyük Vezir\'in kimliği ilk üç reform geçişinde (demokratik tarafa geçiş veya idam) açıklanır. Önceden ölmüşse açıklanmaz.',
+  'Büyük Vezir\'in kimliği ilk üç reform geçişinde (demokratik tarafa geçiş veya idam) açıklanır. Önceden oyun dışı kalmışsa açıklanmaz.',
   'Demokrat Parti Başkanı makamı herkese açıktır. Bu makam Nötr\'e geçerse Nötr\'ün rolü duyulur; seçtiği taraf duyurulmaz.',
-  'İstihbarat Başkanlığı makamı ve soruşturma sonuçları gizlidir. Ölen yetkilinin eski sonuçları yeni yetkiliye geçmez.',
-  'Ölen oyuncular rolleriyle birlikte kazanabilir; oy kullanamaz, aday olamaz ve eylem yapamaz.',
+  'İstihbarat Başkanlığı makamı ve soruşturma sonuçları gizlidir. Oyun dışı kalan yetkilinin eski sonuçları yeni yetkiliye geçmez.',
+  'Oyun dışı kalan oyuncular rolleriyle birlikte kazanabilir; oy kullanamaz, aday olamaz ve eylem yapamaz.',
   'Botlar yalnızca herkese açık bilgileri ve kendi gizli bilgilerini kullanır. Gizli bilgileri oyun günlüğüne yazmaz.',
-  'Başlangıç Başkanı canlı oyuncular arasından rastgele seçilir; sonrasında sıra canlı oyuncular arasında ilerler.',
+  'Başlangıç Başkanı oyunda olan oyuncular arasından rastgele seçilir; sonrasında sıra oyunda olan oyuncular arasında ilerler.',
   'Üçüncü Otokrat Reform\'un 5-6 oyunculu inceleme yetkisi, destenin üstündeki üç kartı aynı sırayla geri koyar.',
   '5-6 oyunculu oyunlarda Otokratlar birbirini ve Lider\'i tanır. 7-10 oyunculu oyunlarda sıradan Otokratlar birbirini tanır, Lider\'i tanımaz; Lider tüm Otokratları tanır.',
 ];

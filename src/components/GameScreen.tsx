@@ -20,6 +20,7 @@ import { EventBanner } from './EventBanner';
 import { EventStage } from './EventStage';
 import { GameLog } from './GameLog';
 import { GovernmentPanel } from './GovernmentPanel';
+import { InvestigationStage } from './InvestigationStage';
 import { NomineeStage } from './NomineeStage';
 import { NotrStage } from './NotrStage';
 import { PlayerCardGallery } from './PlayerCards';
@@ -161,25 +162,37 @@ export function GameScreen({
   }, [gatePhase]);
 
   // Oylama sırası gelince merkez oylama kartı otomatik açılır; kapatılsa
-  // bile yeni oylama turunda yeniden açılır.
+  // bile yeni oylama turunda yeniden açılır. Soruşturma zorunluysa önce o
+  // ekran tamamlanır.
   useEffect(() => {
-    setVoteStageOpen(view.canVote);
-  }, [view.canVote, game.round, game.chancellorId]);
+    setVoteStageOpen(view.canVote && !view.canInvestigate);
+  }, [view.canVote, view.canInvestigate, game.round, game.chancellorId]);
 
   // Adaylık sırası Başkan'a geldiğinde seçim ekranın ortasında açılır.
   useEffect(() => {
-    setNomineeStageOpen(view.canNominate);
-  }, [view.canNominate, game.round]);
+    setNomineeStageOpen(view.canNominate && !view.canInvestigate);
+  }, [view.canNominate, view.canInvestigate, game.round]);
 
   // Kart eleme veya reform seçimi sırası geldiğinde mazbata sahnesi açılır.
   useEffect(() => {
-    setPolicyStageOpen(view.canDiscard || view.canEnact);
-  }, [view.canDiscard, view.canEnact, game.round, game.phase]);
+    setPolicyStageOpen(
+      (view.canDiscard || view.canEnact) && !view.canInvestigate,
+    );
+  }, [view.canDiscard, view.canEnact, view.canInvestigate, game.round, game.phase]);
 
   // Nötr'ün taraf seçimi sırası geldiğinde yol kartları ortada açılır.
   useEffect(() => {
-    setNotrStageOpen(view.canChooseNotrSide);
-  }, [view.canChooseNotrSide, game.round]);
+    setNotrStageOpen(view.canChooseNotrSide && !view.canInvestigate);
+  }, [view.canChooseNotrSide, view.canInvestigate, game.round]);
+
+  // Zorunlu soruşturma açıldığında alttaki karar sahnelerini kapat.
+  useEffect(() => {
+    if (!view.canInvestigate) return;
+    setVoteStageOpen(false);
+    setNomineeStageOpen(false);
+    setPolicyStageOpen(false);
+    setNotrStageOpen(false);
+  }, [view.canInvestigate]);
 
   // Tema portal bileşenlerine de ulaşsın diye body üzerinde tutulur.
   useEffect(() => {
@@ -241,7 +254,7 @@ export function GameScreen({
     chancellorEnact: `${playerName(game.chancellorId)} reformu yürürlüğe koyuyor.`,
     policyReveal: `${game.lastEnactedPolicy === 'otokrat' ? 'Otokrat' : 'Demokratik'} reform yürürlüğe girdi.`,
     peek: `${playerName(game.presidentId)} destenin üstündeki üç kartı inceliyor.`,
-    assassination: `${playerName(game.presidentId)} bir suikast hedefi seçiyor.`,
+    assassination: `${playerName(game.presidentId)} bir tutuklama hedefi seçiyor.`,
     notrChoice: 'Nötr gizlice tarafını seçiyor.',
     termEnd: `Dönem ${game.round} tamamlandı; kapanış tutanağı bekleniyor.`,
     roleReveal: 'Roller dağıtıldı. Herkes rolünü görüyor.',
@@ -359,7 +372,7 @@ export function GameScreen({
             <div className="table-stage__meta">
               <span className="table-stat">
                 <Users size={13} />
-                <strong>{game.livingPlayers}</strong> / {game.totalPlayers} hayatta
+                <strong>{game.livingPlayers}</strong> / {game.totalPlayers} oyunda
               </span>
               <span className="table-stat">
                 <ScrollText size={13} />
@@ -513,6 +526,7 @@ export function GameScreen({
           policyStageOpen ||
           notrStageOpen ||
           gateOpen ||
+          view.canInvestigate ||
           game.phase === 'gameOver'
         }
       />
@@ -588,6 +602,14 @@ export function GameScreen({
         error={error}
         open={policyStageOpen}
         onClose={closePolicyStage}
+      />
+
+      <InvestigationStage
+        game={game}
+        view={view}
+        onAction={onAction}
+        actionPending={actionPending}
+        error={error}
       />
 
       {eraShift ? (
