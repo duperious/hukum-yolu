@@ -7,8 +7,8 @@
 
 - **Proje:** Hüküm Yolu
 - **Son güncelleme:** 2026-10-28
-- **Son commit:** `8013777` — Rol kartlarını çerçeveye oturt, yerel test ve online rehberi kaldır
-- **Bu dosyadaki son değişiklikler:** `8013777` ile commit edildi ve push edildi.
+- **Son özellik commit'i:** `7727e98` — Rol kartlarını çerçeveye oturt, yerel test ve online rehberi kaldır
+- **Bu dosyadaki son değişiklikler:** Commit edildi ve `origin/main` dalına push edildi.
 
 ---
 
@@ -110,7 +110,7 @@ Etkilenen dosyalar:
 
 - `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı ve commit
   edilmedi.
-- Bu turdaki değişiklikler `8013777` numaralı commit ile kaydedildi ve push
+- Bu turdaki değişiklikler `7727e98` numaralı commit ile kaydedildi ve push
   edildi.
 
 ---
