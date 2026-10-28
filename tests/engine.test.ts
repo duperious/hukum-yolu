@@ -693,6 +693,50 @@ describe('gizlilik ve redaksiyon', () => {
     expect(redactGameState(next, 'p5').private.investigations['p2']).toBe('kotu');
     expect(redactGameState(next, 'p1').private.investigations).toEqual({});
     expect(JSON.stringify(next.log)).not.toContain('kotu');
+
+    const investigationLog = next.log.find((entry) =>
+      entry.text.includes('soruşturma'),
+    );
+    expect(investigationLog?.text).toBe('Gizli bir soruşturma yürütüldü.');
+    expect(investigationLog?.text).not.toContain('Oyuncu 5');
+    expect(investigationLog?.text).not.toContain('Oyuncu 2');
+  });
+
+  it('eski soruşturma kayıtları herkese açık görünümde temizlenir', () => {
+    const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
+    const legacyText = 'İstihbarat Başkanı Oyuncu 5, Oyuncu 2’i sorguya çekti.';
+    const state: GameState = {
+      ...base,
+      log: [
+        {
+          id: 'legacy-investigation',
+          round: 2,
+          at: Date.now(),
+          kind: 'power',
+          text: legacyText,
+        },
+      ],
+      termSummary: {
+        round: 2,
+        presidentId: 'p1',
+        chancellorId: 'p2',
+        voteResult: 'kabul',
+        tally: null,
+        openVoting: false,
+        policy: null,
+        policyAuto: false,
+        failedVotes: 0,
+        outcome: 'legislative',
+        nextPresidentId: 'p3',
+        notes: [legacyText],
+        endedAt: 0,
+      },
+    };
+    const publicState = redactGameState(state, 'p1').public;
+    expect(publicState.log[0]?.text).toBe('Gizli bir soruşturma yürütüldü.');
+    expect(publicState.termSummary?.notes).toEqual([
+      'Gizli bir soruşturma yürütüldü.',
+    ]);
   });
 
   it('oy engelleme hedefi yalnızca engelleyene, engellendi bilgisi yalnızca hedefe gider', () => {

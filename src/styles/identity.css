@@ -2563,6 +2563,18 @@ body[data-era] .confirm-bar__hint {
   font-size: 9px;
 }
 
+/* Kâğıt zeminli Nötr taraf seçenekleri karanlık dönemde de koyu metin kullanır. */
+
+body[data-era='dark'] .notr-choice--blue:hover:not(:disabled),
+body[data-era='dark'] .notr-choice--blue.notr-choice--selected {
+  color: #244f78;
+}
+
+body[data-era='dark'] .notr-choice--red:hover:not(:disabled),
+body[data-era='dark'] .notr-choice--red.notr-choice--selected {
+  color: #7d2424;
+}
+
 /* Reform kartları: kâğıt, her dönemde kâğıt kalır */
 
 body[data-era] .policy-card {
@@ -3390,6 +3402,7 @@ body[data-era] .vote-stage__government {
   border: 2px solid var(--sheet-line-strong);
   border-radius: 2px;
   background: var(--sheet);
+  color: var(--sheet-ink);
   box-shadow: 3px 3px 0 rgba(27, 35, 32, 0.14);
 }
 
@@ -3465,8 +3478,32 @@ body[data-era] .vote-stage__choice--no {
   text-transform: none;
 }
 
+.vote-stage__choice--yes .vote-stage__choice-picked {
+  color: var(--sheet-mustard);
+}
+
+.vote-stage__choice--no .vote-stage__choice-picked {
+  color: var(--sheet-oxblood);
+}
+
+.vote-stage__choice--yes.vote-stage__choice--selected {
+  border-color: var(--sheet-petrol);
+  box-shadow:
+    0 0 0 2px var(--sheet),
+    0 0 0 4px var(--sheet-petrol),
+    3px 3px 0 rgba(27, 35, 32, 0.16);
+}
+
+.vote-stage__choice--no.vote-stage__choice--selected {
+  border-color: var(--sheet-oxblood);
+  box-shadow:
+    0 0 0 2px var(--sheet),
+    0 0 0 4px var(--sheet-oxblood),
+    3px 3px 0 rgba(27, 35, 32, 0.16);
+}
+
 .vote-stage__note {
-  color: var(--sheet-dim);
+  color: var(--sheet-muted);
   font-family: var(--font-mono);
   font-size: 9px;
   line-height: 1.5;
@@ -3474,6 +3511,20 @@ body[data-era] .vote-stage__choice--no {
 
 .vote-stage__note svg {
   color: var(--sheet-oxblood);
+}
+
+.vote-stage__confirm {
+  border: 1px solid var(--sheet-line-strong);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--sheet-ink) 4%, var(--sheet));
+}
+
+.vote-stage__confirm-hint {
+  color: var(--sheet-ink-soft);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 .vote-stage__done {
@@ -3518,7 +3569,7 @@ body[data-era] .vote-stage__choice--no {
 }
 
 .vote-stage__pending {
-  color: var(--sheet-dim);
+  color: var(--sheet-muted);
   font-family: var(--font-mono);
   font-size: 9px;
   text-align: center;
@@ -5933,4 +5984,15 @@ body[data-era] .policy-card__check {
   .policy-track__placed-caption strong {
     font-size: 15px;
   }
+}
+
+/* ---------- dönem özeti notları ---------- */
+
+body[data-era] .gate-summary__notes {
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+body[data-era='dark'] .gate-summary__notes {
+  color: var(--parchment-2);
 }

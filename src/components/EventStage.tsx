@@ -145,7 +145,10 @@ function describeEvent(entry: LogEntry): StageInfo {
           visual: 'icon',
         };
       }
-      if (text.includes('sorguya çekti')) {
+      if (
+        text.includes('soruşturma yürüttü') ||
+        text.includes('sorguya çekti')
+      ) {
         return {
           title: 'Soruşturma',
           kicker: KICKERS.power,

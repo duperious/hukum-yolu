@@ -36,6 +36,16 @@ function publicTally(tally: VoteTally | null, open: boolean): VoteTally | null {
 }
 
 /**
+ * Eski sürümlerde soruşturma kaydı yetkilinin ve hedefin adını içeriyordu.
+ * Devam eden oyunlardan gelen bu kayıtları herkese açık görünümde temizle.
+ */
+function publicLogText(text: string): string {
+  return text.includes('sorguya çekti')
+    ? 'Gizli bir soruşturma yürütüldü.'
+    : text;
+}
+
+/**
  * Herkese gönderilebilecek oyun durumu. Desteyi, oyları, rolleri,
  * Nötr'ün seçimini ve özel kartları içermez.
  */
@@ -77,7 +87,7 @@ export function getPublicGameState(state: GameState): PublicGameState {
     discardCount: state.discardPile.length,
     policyHistory: [...state.policyHistory],
     governmentHistory: state.governmentHistory.map((g) => ({ ...g })),
-    log: state.log.map((l) => ({ ...l })),
+    log: state.log.map((l) => ({ ...l, text: publicLogText(l.text) })),
     lastVoteResult: state.lastVoteResult,
     lastVoteTally: publicTally(state.lastVoteTally, state.lastVoteOpen),
     lastVoteOpen: state.lastVoteOpen,
@@ -101,7 +111,7 @@ export function getPublicGameState(state: GameState): PublicGameState {
             state.termSummary.tally,
             state.termSummary.openVoting,
           ),
-          notes: [...state.termSummary.notes],
+          notes: state.termSummary.notes.map(publicLogText),
         }
       : null,
     gateEndAt: state.gateEndAt,

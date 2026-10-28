@@ -1071,11 +1071,8 @@ function investigateMut(state: GameState, actorId: string, targetId: string): vo
   state.investigations[actorId][targetId] = result;
   if (!state.investigatedThisRound[actorId]) state.investigatedThisRound[actorId] = [];
   state.investigatedThisRound[actorId].push(targetId);
-  addLog(
-    state,
-    'power',
-    `İstihbarat Başkanı ${getPlayer(state, actorId)?.name ?? '—'}, ${target.name}’i sorguya çekti.`,
-  );
+  // Soruşturmanın kim tarafından ve kimin üzerinde yapıldığı gizli kalır.
+  addLog(state, 'power', 'Gizli bir soruşturma yürütüldü.');
 }
 
 function useBlockMut(state: GameState, actorId: string, targetId: string): void {
