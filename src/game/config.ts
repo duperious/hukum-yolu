@@ -22,6 +22,7 @@ export const GAME_CONFIG: GameConfig = {
   drawCount: 3,
   passCount: 2,
   failedGovernmentLimit: 3,
+  openVotingAfterRound: 3,
   powers: {
     investigationStartRound: 2,
     thirdReformAtFascist: 3,
@@ -103,6 +104,7 @@ export const RULE_ASSUMPTIONS: string[] = [
   'Demokrat Parti Başkanı ölürse halef sırası: hayattaki Nötr → İstihbarat Başkanı rolü sahibi → boş.',
   'Üçüncü Otokrat Reform\'un kart inceleme/oy engelleme yetkisi yalnızca hükümet eliyle yürürlüğe girerse kazanılır; üç ret sonrası otomatik yürürlüğe giren kart özel yetki kazandırmaz.',
   'Oy engelleme yetkisi sonraki hükümet oylamasında, sonuç açıklanmadan önce kullanılabilir; hedef kendisi olamaz. Kullanılmazsa sonuçla birlikte sona erer.',
+  'İlk üç dönem tamamlandıktan sonra, yani 4. dönemden itibaren tüm oylamalar açık yapılır; her oyuncunun Evet/Hayır tercihi sonuçla birlikte görünür.',
   'Büyük Vezir ilk üç reformdan sonra Demokratik tarafa geçip oy gücü 2’den 1’e düşerse oylama açık yapılır; bireysel oylar sonuçla birlikte açıklanır. Oy gücü 0’a düşerse oylama gizli kalır.',
   'Nötr, üçüncü reform tamamlandığında (otomatik yürürlüğe girse bile) tarafını seçer. Seçim yalnızca Nötr ve oyun motoru tarafından bilinir.',
   'Büyük Vezir\'in kimliği ilk üç reform geçişinde (demokratik tarafa geçiş veya idam) açıklanır. Önceden ölmüşse açıklanmaz.',

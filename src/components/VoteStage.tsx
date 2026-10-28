@@ -251,8 +251,8 @@ export function VoteStage({
               {game.openVoting ? (
                 <>
                   <Vote size={12} aria-hidden="true" />
-                  Açık oylama: Büyük Vezir tek oya düştü. Bireysel oylar sonuçla
-                  birlikte açıklanır. {game.votesSubmitted}/{game.totalVoters} oy geldi.
+                  Açık oylama: bireysel oylar sonuçla birlikte açıklanır.{' '}
+                  {game.votesSubmitted}/{game.totalVoters} oy geldi.
                 </>
               ) : (
                 <>

@@ -308,11 +308,10 @@ export function ActionPanel({
                   <Vote size={16} />
                   <p>
                     Oylama kartı ekranın ortasında açılır. Evet veya Hayır seçip
-                    onayladığında oyun gönderilir. Oyun gizli tutulur; yalnızca toplam
-                    sonuç açıklanır.
+                    onayladığında oyun gönderilir.{' '}
                     {game.openVoting
-                      ? ' Büyük Vezir tek oya düştüğü için bu oylama açıktır; bireysel oylar sonuçla birlikte görünür.'
-                      : ''}
+                      ? 'Bu oylama açıktır; bireysel oylar sonuçla birlikte görünür.'
+                      : 'Oyun gizli tutulur; yalnızca toplam sonuç açıklanır.'}
                   </p>
                 </div>
                 {onOpenVoteStage ? (

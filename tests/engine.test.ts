@@ -828,6 +828,38 @@ describe('geçiş kapıları, açık oylama ve dönem özeti', () => {
     expect(redacted.public.lastVoteTally?.entries).toHaveLength(5);
   });
 
+  it('ilk üç dönem tamamlandıktan sonra tüm oylar açık yapılır', () => {
+    const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
+    const thirdRound: GameState = { ...forceVote(base, 'p1', 'p2'), round: 3 };
+    expect(redactGameState(thirdRound, 'p1').public.openVoting).toBe(false);
+
+    const fourthRound: GameState = { ...forceVote(base, 'p1', 'p2'), round: 4 };
+    expect(redactGameState(fourthRound, 'p1').public.openVoting).toBe(true);
+
+    const votes: Record<string, boolean> = {
+      p1: true,
+      p2: true,
+      p3: false,
+      p4: false,
+      p5: true,
+    };
+    let result = fourthRound;
+    for (const [id, choice] of Object.entries(votes)) {
+      result = applyAction(result, id, { type: 'vote', choice });
+    }
+
+    expect(result.phase).toBe('voteResult');
+    expect(result.lastVoteOpen).toBe(true);
+    expect(result.lastVoteTally).toMatchObject({ yes: 3, no: 3 });
+    const redacted = redactGameState(result, 'p1');
+    expect(redacted.public.revealedVotes).toMatchObject({
+      p1: true,
+      p3: false,
+      p5: true,
+    });
+    expect(redacted.public.lastVoteTally?.entries).toHaveLength(5);
+  });
+
   it('gizli oylamada bireysel tercihler redaksiyonda saklanır', () => {
     const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
     const state = forceVote(base, 'p1', 'p2');

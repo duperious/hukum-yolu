@@ -89,11 +89,15 @@ export function getVotePower(player: Player): number {
 }
 
 /**
- * Oy gizliliği kuralı: Büyük Vezir ilk üç reformdan sonra Demokratik tarafa
- * geçip oy gücü 2'den 1'e düştüyse oylama açık yapılır. Oy gücü 0'a düşerse
- * (engellendiyse) oylama yeniden gizli kalır.
+ * Oy gizliliği kuralı: İlk üç dönem tamamlandıktan sonra (4. dönemden
+ * itibaren) tüm oylamalar açık yapılır. Ayrıca Büyük Vezir ilk üç reformdan
+ * sonra Demokratik tarafa geçip oy gücü 2'den 1'e düşerse oylama açık yapılır.
+ * Oy gücü 0'a düşerse (engellendiyse) oylama yeniden gizli kalır.
  */
 export function isOpenVoting(state: GameState): boolean {
+  if (state.round > GAME_CONFIG.openVotingAfterRound) {
+    return true;
+  }
   if (!state.firstThreeResolved || state.bigVezirOutcome !== 'demokrat') {
     return false;
   }

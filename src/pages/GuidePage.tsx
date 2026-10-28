@@ -52,7 +52,7 @@ const PHASES: Array<{ title: string; text: string }> = [
   },
   {
     title: 'Gizli oylama',
-    text: 'Yaşayan tüm oyuncular kabul veya ret oyu verir. Oylar gizlidir; yalnızca toplam sonuç açıklanır. Büyük Vezir’in oyu iki sayılır. Büyük Vezir ilk üç reformdan sonra Demokratik tarafa geçip oy gücü 2’den 1’e düşerse oylama açık yapılır ve bireysel oylar sonuçla birlikte açıklanır.',
+    text: 'Yaşayan tüm oyuncular kabul veya ret oyu verir. Oylar normalde gizlidir; yalnızca toplam sonuç açıklanır. Büyük Vezir’in oyu iki sayılır. İlk üç dönem tamamlandıktan sonra, yani 4. dönemden itibaren tüm oylamalar açık yapılır. Büyük Vezir ilk üç reformdan sonra Demokratik tarafa geçip oy gücü 2’den 1’e düşerse de oylama açık yapılır ve bireysel oylar sonuçla birlikte açıklanır.',
   },
   {
     title: 'Oylama sonucu',
