@@ -33,7 +33,6 @@ const WINNER_META: Record<
 export function EndScreen({
   game,
   viewerId,
-  mode,
   isHost,
   onRestart,
   onLeave,
@@ -42,7 +41,6 @@ export function EndScreen({
 }: {
   game: PublicGameState;
   viewerId: string;
-  mode: 'local' | 'multiplayer';
   isHost: boolean;
   onRestart?: () => void;
   onLeave: () => void;
@@ -135,13 +133,13 @@ export function EndScreen({
             >
               Yeniden Oyna
             </Button>
-          ) : mode === 'multiplayer' ? (
+          ) : (
             <p className="end-screen__wait">
               {isHost
                 ? 'Yeniden başlatmak için hazır olduğunda butona bas.'
                 : 'Host’un yeniden başlatması bekleniyor.'}
             </p>
-          ) : null}
+          )}
           {onOpenRole ? (
             <Button variant="outline" onClick={onOpenRole}>
               Rol kartım
@@ -152,7 +150,7 @@ export function EndScreen({
             onClick={onLeave}
             icon={<LogOut size={16} />}
           >
-            {mode === 'multiplayer' ? 'Odadan Ayrıl' : 'Ana Sayfa'}
+            Odadan Ayrıl
           </Button>
         </div>
       </div>

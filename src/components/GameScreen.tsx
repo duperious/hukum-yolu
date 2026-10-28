@@ -5,7 +5,6 @@ import {
   LogOut,
   Moon,
   ScrollText,
-  ShieldCheck,
   Sun,
   Users,
   Vote,
@@ -45,7 +44,6 @@ import { useToast } from './ui/Toast';
 export function GameScreen({
   redacted,
   viewerId,
-  mode,
   roomCode,
   connection,
   actionPending = false,
@@ -59,7 +57,6 @@ export function GameScreen({
 }: {
   redacted: RedactedGameState;
   viewerId: string;
-  mode: 'local' | 'multiplayer';
   roomCode?: string;
   connection?: ConnectionState;
   actionPending?: boolean;
@@ -274,7 +271,7 @@ export function GameScreen({
 
   return (
     <div
-      className={`game-screen game-screen--${mode} game-screen--${era}${
+      className={`game-screen game-screen--${era}${
         game.firstThreeResolved && game.bigVezirOutcome === 'idam'
           ? ' game-screen--mourning'
           : ''
@@ -288,7 +285,7 @@ export function GameScreen({
       <header className="game-topbar">
         <div className="game-topbar__left">
           <Logo compact />
-          {mode === 'multiplayer' && roomCode ? (
+          {roomCode ? (
             <button
               type="button"
               className="room-code-pill"
@@ -299,14 +296,8 @@ export function GameScreen({
               <strong>{roomCode}</strong>
               <Copy size={13} />
             </button>
-          ) : (
-            <span className="chip chip--gold">
-              <ShieldCheck size={13} /> Yerel test
-            </span>
-          )}
-          {mode === 'multiplayer' && connection ? (
-            <ConnectionPill connection={connection} />
           ) : null}
+          {connection ? <ConnectionPill connection={connection} /> : null}
           <span
             className={`era-chip era-chip--${era}`}
             title={
@@ -351,7 +342,7 @@ export function GameScreen({
             type="button"
             className="icon-btn game-topbar__leave"
             onClick={() => setLeaveOpen(true)}
-            aria-label={mode === 'multiplayer' ? 'Odadan ayrıl' : 'Oyundan çık'}
+            aria-label="Odadan ayrıl"
           >
             <LogOut size={18} />
           </button>
@@ -631,13 +622,9 @@ export function GameScreen({
       <Modal
         open={leaveOpen}
         onClose={() => setLeaveOpen(false)}
-        title={mode === 'multiplayer' ? 'Odadan ayrıl?' : 'Oyundan çık?'}
-        eyebrow={mode === 'multiplayer' ? 'Bağlantı' : 'Yerel test'}
-        subtitle={
-          mode === 'multiplayer'
-            ? 'Oturumun bu cihazdan kapatılacak. Oyun sırasında ayrılırsan rolün bot tarafından devralınır.'
-            : 'Yerel test oyunu bu cihazda saklanmıyor. Çıkarsan oyun kaybolur.'
-        }
+        title="Odadan ayrıl?"
+        eyebrow="Bağlantı"
+        subtitle="Oturumun bu cihazdan kapatılacak. Oyun sırasında ayrılırsan rolün bot tarafından devralınır."
         size="sm"
         footer={
           <div className="modal-actions">
@@ -652,15 +639,15 @@ export function GameScreen({
               }}
               icon={<LogOut size={16} />}
             >
-              {mode === 'multiplayer' ? 'Ayrıl' : 'Çık'}
+              Ayrıl
             </Button>
           </div>
         }
       >
         <p className="muted">
-          {mode === 'multiplayer'
-            ? 'Bağlantın koparsa oturumun cihazda kalır ve ana sayfadaki “Devam eden oda” kartından dönebilirsin. “Ayrıl” seçersen oturum silinir; oyun sırasındaysa yerini bot alır.'
-            : 'Ana sayfaya dönüp yeni bir test oyunu başlatabilirsin.'}
+          Bağlantın koparsa oturumun cihazda kalır ve ana sayfadaki “Devam eden
+          oda” kartından dönebilirsin. “Ayrıl” seçersen oturum silinir; oyun
+          sırasındaysa yerini bot alır.
         </p>
       </Modal>
 
@@ -668,7 +655,6 @@ export function GameScreen({
         <EndScreen
           game={game}
           viewerId={viewerId}
-          mode={mode}
           isHost={isHost ?? view.isHost}
           onRestart={onRestart}
           onLeave={onLeave}

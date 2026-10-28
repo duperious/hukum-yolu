@@ -10,10 +10,8 @@ import { ToastProvider } from './components/ui/Toast';
 import GuidePage from './pages/GuidePage';
 import HomePage from './pages/HomePage';
 import JoinPage from './pages/JoinPage';
-import LocalPage from './pages/LocalPage';
 import NotFoundPage from './pages/NotFoundPage';
 import RoomPage from './pages/RoomPage';
-import SetupPage from './pages/SetupPage';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -32,8 +30,6 @@ export default function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/guide" element={<GuidePage />} />
-            <Route path="/local" element={<LocalPage />} />
-            <Route path="/setup" element={<SetupPage />} />
             <Route path="/join" element={<JoinPage />} />
             <Route path="/join/:code" element={<JoinPage />} />
             <Route path="/room/:code" element={<RoomPage />} />

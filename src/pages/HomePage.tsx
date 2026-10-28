@@ -2,10 +2,8 @@ import {
   BookOpen,
   Download,
   Gavel,
-  Key,
   Lock,
   LogIn,
-  Play,
   Plus,
   Smartphone,
   Users,
@@ -97,10 +95,6 @@ export default function HomePage() {
             <BookOpen size={15} />
             Nasıl Oynanır?
           </Link>
-          <Link to="/setup" className="nav-link">
-            <Key size={15} />
-            Online Rehber
-          </Link>
           {canInstall ? (
             <Button
               variant="outline"
@@ -150,14 +144,6 @@ export default function HomePage() {
                 icon={<LogIn size={18} />}
               >
                 Odaya Katıl
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => navigate('/local')}
-                icon={<Play size={18} />}
-              >
-                Yerel Test Oyunu
               </Button>
             </div>
 
@@ -227,9 +213,6 @@ export default function HomePage() {
               gerekmez; oda sahibi teknik olarak tüm rolleri görebilir.
             </p>
           </div>
-          <Link to="/setup" className="btn btn--outline btn--sm">
-            Nasıl Çalışır?
-          </Link>
         </section>
 
         {session ? (
@@ -336,14 +319,11 @@ export default function HomePage() {
           </span>
           <div>
             <h2>Masayı kurmaya hazır mısın?</h2>
-            <p>Tek başına botlara karşı dene veya arkadaşlarınla oda kur.</p>
+            <p>Arkadaşlarınla çok oyunculu bir oda kur.</p>
           </div>
           <div className="home-cta__actions">
-            <Button variant="gold" onClick={() => navigate('/local')} icon={<Play size={16} />}>
-              Yerel Test
-            </Button>
             <Button
-              variant="outline"
+              variant="gold"
               onClick={() => openModal('create')}
               icon={<Plus size={16} />}
             >
@@ -358,7 +338,6 @@ export default function HomePage() {
         <p>Özgün bir sosyal çıkarım oyunu. Gizli roller, açık hesaplaşmalar.</p>
         <div className="site-footer__links">
           <Link to="/guide">Nasıl Oynanır?</Link>
-          <Link to="/setup">Online Rehber</Link>
         </div>
       </footer>
 

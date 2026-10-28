@@ -222,7 +222,6 @@ export default function RoomPage() {
         <GameScreen
           redacted={snapshot.game}
           viewerId={snapshot.you.playerId}
-          mode="multiplayer"
           roomCode={snapshot.room.code}
           connection={room.connection}
           actionPending={room.actionPending}

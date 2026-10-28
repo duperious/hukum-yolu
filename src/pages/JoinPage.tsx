@@ -4,7 +4,6 @@ import {
   BookOpen,
   Key,
   LogIn,
-  Play,
   Wifi,
   Users,
   X,
@@ -123,9 +122,6 @@ export default function JoinPage() {
               kurulur; ayrı bir sunucu gerekmez.
             </p>
           </div>
-          <Link to="/setup" className="text-link">
-            Nasıl çalışır?
-          </Link>
         </div>
 
         {session ? (
@@ -238,9 +234,6 @@ export default function JoinPage() {
             <div className="join-card__links">
               <Link to="/" className="text-link">
                 Oda kur
-              </Link>
-              <Link to="/local" className="text-link">
-                <Play size={14} /> Yerel test
               </Link>
             </div>
           </div>

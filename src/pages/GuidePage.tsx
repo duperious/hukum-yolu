@@ -5,7 +5,6 @@ import {
   Crosshair,
   Eye,
   Landmark,
-  Play,
   Scale,
   ShieldAlert,
   Skull,
@@ -115,10 +114,6 @@ export default function GuidePage() {
       <header className="site-nav">
         <Logo />
         <nav className="site-nav__links">
-          <Link to="/local" className="nav-link">
-            <Play size={15} />
-            Yerel Test
-          </Link>
           <Link to="/" className="nav-link">
             <ArrowLeft size={15} />
             Ana Sayfa
@@ -146,19 +141,13 @@ export default function GuidePage() {
             <span className="chip">
               <ShieldAlert size={13} /> Gizli roller
             </span>
-            <span className="chip">
-              <Sparkles size={13} /> Yerel bot modu
-            </span>
           </div>
           <div className="guide-hero__actions">
-            <Link to="/local" className="btn btn--gold btn--md">
+            <Link to="/" className="btn btn--gold btn--md">
               <span className="btn__icon" aria-hidden="true">
-                <Play size={17} />
+                <Users size={17} />
               </span>
-              <span className="btn__label">Botlara Karşı Oyna</span>
-            </Link>
-            <Link to="/setup" className="btn btn--outline btn--md">
-              <span className="btn__label">Online Rehber</span>
+              <span className="btn__label">Oda Kur</span>
             </Link>
           </div>
         </section>
@@ -213,7 +202,7 @@ export default function GuidePage() {
           <SectionHeading
             eyebrow="Dağılım"
             title="Rol dağılımı"
-            description="Oyuncu sayısına göre sabit dağılım aşağıdadır. Yerel test modunda botlar eksik oyuncuları doldurur; çok oyunculu odada insanlar ve eklenen botlar birlikte sayılır."
+            description="Oyuncu sayısına göre sabit dağılım aşağıdadır. Botlar eksik oyuncuları doldurur; çok oyunculu odada insanlar ve eklenen botlar birlikte sayılır."
           />
           <div className="table-scroll">
             <table className="rules-table">
@@ -420,17 +409,11 @@ export default function GuidePage() {
             <p className="eyebrow">Masa hazır</p>
             <h2>Şimdi sıra sende.</h2>
             <p>
-              Botlara karşı hemen oyna veya arkadaşlarınla çok oyunculu oda kur.
+              Arkadaşlarınla çok oyunculu bir oda kur.
             </p>
           </div>
           <div className="guide-cta__actions">
-            <Link to="/local" className="btn btn--gold btn--md">
-              <span className="btn__icon" aria-hidden="true">
-                <Play size={17} />
-              </span>
-              <span className="btn__label">Yerel Test</span>
-            </Link>
-            <Link to="/" className="btn btn--outline btn--md">
+            <Link to="/" className="btn btn--gold btn--md">
               <span className="btn__icon" aria-hidden="true">
                 <Users size={16} />
               </span>
@@ -442,8 +425,7 @@ export default function GuidePage() {
         <footer className="guide-footer">
           <BookOpen size={16} />
           <span>
-            Hüküm Yolu: Kurallar ve varsayımlar bu sayfada özetlenmiştir. Ayrıntılı
-            online oyunun nasıl çalıştığı için <Link to="/setup">Online Rehber</Link> sayfasına bak.
+            Hüküm Yolu: Kurallar ve varsayımlar bu sayfada özetlenmiştir.
           </span>
         </footer>
       </main>

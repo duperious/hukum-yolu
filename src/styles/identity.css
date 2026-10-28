@@ -2993,6 +2993,7 @@ body[data-era='dark'] .role-card {
 
 .role-card__card-frame {
   position: relative;
+  overflow: hidden;
   padding: 6px;
   border: 1px solid var(--sheet-ink);
   background: var(--sheet-2);
@@ -3013,7 +3014,10 @@ body[data-era='dark'] .role-card {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: 324 / 454;
+  object-fit: cover;
   user-select: none;
+  -webkit-user-drag: none;
 }
 
 .role-card__card figcaption {
@@ -5618,6 +5622,8 @@ body[data-era] .era-ambience--dark .era-ambience__motes {
 
 .player-card__frame {
   position: relative;
+  overflow: hidden;
+  aspect-ratio: 324 / 454;
   border: 1px solid var(--sheet-ink);
   background: var(--sheet-2);
   box-shadow: 4px 4px 0 rgba(27, 35, 32, 0.18);
@@ -5634,8 +5640,10 @@ body[data-era] .era-ambience--dark .era-ambience__motes {
 .player-card__frame img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   user-select: none;
+  -webkit-user-drag: none;
 }
 
 .player-card figcaption {

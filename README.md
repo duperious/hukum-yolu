@@ -2,11 +2,11 @@
 
 Gizli rollü, sosyal çıkarım masa oyununun Türkçe, mobil öncelikli PWA uygulaması.
 
-**Hüküm Yolu**, 5–10 oyuncunun iki gizli takıma ayrıldığı; Başkan, Başbakan, reform destesi, gizli oylama, soruşturma, idam ve tasfiye mekaniklerini bir araya getiren bir oyundur. Depo hem **tek cihazda botlara karşı yerel test modunu** hem de **PeerJS/WebRTC üzerinden sunucusuz çok oyunculu oda sistemini** içerir.
+**Hüküm Yolu**, 5–10 oyuncunun iki gizli takıma ayrıldığı; Başkan, Başbakan, reform destesi, gizli oylama, soruşturma, idam ve tasfiye mekaniklerini bir araya getiren bir oyundur. Depo, **PeerJS/WebRTC üzerinden sunucusuz çok oyunculu oda sistemini** içerir.
 
 **Canlı site:** [duperious.github.io/hukum-yolu](https://duperious.github.io/hukum-yolu/)
 
-> **Dürüst durum notu:** Yerel bot modu, oyun motoru testleri, oda sahibi yetkili oda akışı testleri, tip kontrolü ve üretim derlemesi doğrulandı. Online mod PeerJS/WebRTC kullanır; bu geliştirme ortamındaki tarayıcı hiçbir ICE adayı üretmediği için **iki ayrı cihaz arasındaki gerçek WebRTC bağlantısı burada uçtan uca doğrulanamadı**. Ağ üzerinden oynarken kendi cihazlarınızda test etmeniz gerekir. Ayrıntılar [Bilinen sınırlamalar](#bilinen-sınırlamalar) bölümünde.
+> **Dürüst durum notu:** Oyun motoru testleri, oda sahibi yetkili oda akışı testleri, tip kontrolü ve üretim derlemesi doğrulandı. Online mod PeerJS/WebRTC kullanır; bu geliştirme ortamındaki tarayıcı hiçbir ICE adayı üretmediği için **iki ayrı cihaz arasındaki gerçek WebRTC bağlantısı burada uçtan uca doğrulanamadı**. Ağ üzerinden oynarken kendi cihazlarınızda test etmeniz gerekir. Ayrıntılar [Bilinen sınırlamalar](#bilinen-sınırlamalar) bölümünde.
 
 ---
 
@@ -30,7 +30,6 @@ Gizli rollü, sosyal çıkarım masa oyununun Türkçe, mobil öncelikli PWA uyg
 ## Özellikler
 
 - **Türkçe arayüz**, koyu siyasi-gerilim teması: lacivert/kömür, demokratik mavi-turkuaz, otokratik koyu kırmızı, altın vurgular.
-- **Yerel bot modu:** 1 insan + 4–9 bot. Kurulum ve ağ bağlantısı gerekmez.
 - **Sunucusuz online odalar:** 5–10 oyuncu, 6 karakterlik davet kodu, hazır durumu, bot ekleme/çıkarma, yeniden bağlanma.
 - **PeerJS/WebRTC:** Genel sinyal sunucusu ve STUN/TURN ile doğrudan bağlantı. Supabase, Firebase veya özel backend gerekmez.
 - **Oda sahibi yetkili akış:** Oyun durumu oda sahibinin tarayıcısında tutulur; her oyuncuya yalnızca `redactGameState` ile filtrelenmiş görünüm gönderilir.
@@ -190,7 +189,7 @@ Bu komut `sharp` kullanır ve `public/favicon.svg` ile 192/512/maskable/180 px i
 │   │   ├── storage.ts     # Host durumu ve istemci token’ı
 │   │   └── roomCode.ts    # Oda kodu, peer kimliği, token
 │   ├── components/        # Oyun ve lobi arayüzü
-│   ├── pages/             # Ana sayfa, rehber, oda, online rehber
+│   ├── pages/             # Ana sayfa, kural rehberi, oda ve katılma sayfaları
 │   ├── hooks/             # React hook’ları
 │   ├── lib/               # Profil, doğrulama, oturum, yardımcılar
 │   └── styles/            # Tema ve bileşen stilleri

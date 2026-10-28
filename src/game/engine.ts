@@ -139,8 +139,8 @@ function rolePoolFor(totalPlayers: number): Role[] {
 }
 
 /**
- * Yeni bir oyun kurar. Roller burada, sunucu tarafında (veya yerel test
- * modunda bellekte) rastgele dağıtılır. İstemciden rol kabul edilmez.
+ * Yeni bir oyun kurar. Roller oda sahibinin tarayıcısında rastgele
+ * dağıtılır. İstemciden rol kabul edilmez.
  */
 export function startGame(input: StartGameInput): GameState {
   const rng = input.rng ?? secureRng();

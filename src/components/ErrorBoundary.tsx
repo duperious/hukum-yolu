@@ -9,8 +9,8 @@ interface ErrorBoundaryState {
 
 /**
  * Beklenmeyen bir render hatasında beyaz ekran yerine anlaşılır bir
- * kurtarma ekranı gösterir. Oyun durumu bellekte olduğu için yeniden
- * yükleme, yerel test oyununu sıfırlar; bu ekran bunu açıkça söyler.
+ * kurtarma ekranı gösterir. Sayfayı yenilemek genellikle sorunu çözer;
+ * oyun sırasında yenileme oturumu lobiye döndürebilir.
  */
 export class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -46,8 +46,8 @@ export class ErrorBoundary extends Component<
           <h1>Bir şeyler ters gitti</h1>
           <p>
             Arayüz beklenmeyen bir hatayla karşılaştı. Sayfayı yenilemek
-            genellikle sorunu çözer. Yerel test oyunu bellekte tutulduğu için
-            yenileme oyunu sıfırlayabilir.
+            genellikle sorunu çözer. Oyun sırasında yenileme oturumun lobiye
+            dönmesine neden olabilir.
           </p>
           {this.state.message ? (
             <code className="error-screen__detail">{this.state.message}</code>
