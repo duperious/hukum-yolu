@@ -7,8 +7,8 @@
 
 - **Proje:** Hüküm Yolu
 - **Son güncelleme:** 2026-10-29
-- **Son özellik commit'i:** `6942af8` — Zorunlu soruşturmayı ekle, tutuklama adlandırmasını ve günlük tekrarlarını düzelt
-- **Bu dosyadaki son değişiklikler:** Gizli oylama sızıntısının kapatılması, açık oylamanın ilk üç reforma bağlanması, blok hedefinin açık oylamada gösterilmesi ve 60 sn kopma/bot koltuğunu geri alma akışı. Yerel değişiklikler commit/push için kullanıcı onayı bekliyor.
+- **Son özellik commit'i:** `71d4880` — Gizli oylama sızıntısını kapat, açık oylama eşiğini ve bot koltuğunu düzelt
+- **Bu dosyadaki son değişiklikler:** Gizli oylama sızıntısının kapatılması, açık oylamanın ilk üç reforma bağlanması, blok hedefinin açık oylamada gösterilmesi ve 60 sn kopma/bot koltuğunu geri alma akışı. `71d4880` commit'iyle `main` dalına push edildi.
 
 ---
 
@@ -37,7 +37,7 @@
 | `7727e98` | 2026-10-28 23:13 | Rol kartlarını çerçeveye oturt, yerel test ve online rehberi kaldır |
 | `4979651` | 2026-10-28 23:13 | Yapılanlar dosyasındaki son commit bilgisini güncelle |
 | `6942af8` | 2026-10-28 23:54 | Zorunlu soruşturma, tutuklama adlandırması ve günlük tekrar temizliği |
-| — (yerel) | 2026-10-29 | Gizli oylama gizliliği, açık oylama eşiği, blok hedefi görünürlüğü ve 60 sn kopma akışı |
+| `71d4880` | 2026-10-29 | Gizli oylama gizliliği, açık oylama eşiği, blok hedefi görünürlüğü ve 60 sn kopma akışı |
 
 ---
 
@@ -437,7 +437,7 @@ Yapılanlar:
 
 ### Commit
 
-- Yerel değişiklikler hazır. Kullanıcı onayı olmadan commit/push yapılmadı.
+- `71d4880` olarak commit edildi ve `main` dalına push edildi.
 - `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
 
 ---
