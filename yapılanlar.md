@@ -7,8 +7,8 @@
 
 - **Proje:** Hüküm Yolu
 - **Son güncelleme:** 2026-10-29
-- **Son özellik commit'i:** `8f879e0` — Rol kartındaki soruşturma isimlerinin görünürlüğünü düzelt
-- **Bu dosyadaki son değişiklikler:** İstihbarat Başkanı'nın soruşturma hakkı iki dönemde bir yenilendi (`5dd6abd`), Demokratik zafer eşiği 5 reforma düşürüldü ve rol kartındaki soruşturma isimlerinin soluk/kırpık görünmesi düzeltildi (`8f879e0`). Tüm değişiklikler `main` dalına push edildi.
+- **Son özellik commit'i:** `17cc370` — Başkanın kart incelemesini otomatik açılan modala taşı
+- **Bu dosyadaki son değişiklikler:** Başkanın kart inceleme sahnesi sayfa akışından çıkarılıp otomatik açılan modal hâline getirildi (`17cc370`); önceki soruşturma temposu, 5 reform eşiği ve rol kartı isim düzeltmeleri de `main` dalında.
 
 ---
 
@@ -530,6 +530,46 @@ Yapılanlar:
 ### Commit
 
 - `8f879e0` olarak commit edildi ve `main` dalına push edildi.
+- `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
+
+---
+
+## 2026-10-29 — Yerel: Başkanın kart incelemesi modal sahnesi
+
+### Yapılanlar
+
+- Kart inceleme aşamasındaki üç kart, sayfanın altındaki karar paneli yerine
+  ekranın ortasındaki modal sahneye taşındı.
+- Başkanın kart inceleme sırası geldiğinde modal otomatik açılıyor; oyuncunun
+  kartları görmek için sayfayı kaydırması gerekmiyor.
+- “Kartları Desteye Geri Koy” eylemi modalın altına alındı; kartlar aynı
+  sırayla desteye dönüyor.
+- Modal kapatılırsa karar panelindeki “Kart İncelemeyi Aç” düğmesiyle yeniden
+  açılabiliyor.
+- Başkan dışındaki oyuncular bekleme durumunu görmeye devam ediyor.
+- `PeekStage` bileşeni eklendi; `GameScreen`, `ActionPanel` ve `identity.css`
+  güncellendi.
+
+### Etkilenen dosyalar
+
+- `src/components/PeekStage.tsx`
+- `src/components/GameScreen.tsx`
+- `src/components/ActionPanel.tsx`
+- `src/styles/identity.css`
+- `yapılanlar.md`
+
+### Doğrulama
+
+- `npm run typecheck`
+- `npm run test -- --run` — 58/58 test geçti
+- `npm run build` — production build başarılı
+- Tarayıcıda geçici oyun durumuyla modalın otomatik açıldığı, kapatılıp
+  yeniden açılabildiği ve “Kartları Desteye Geri Koy” eyleminin çalıştığı
+  doğrulandı.
+
+### Commit
+
+- `17cc370` olarak commit edildi ve `main` dalına push edildi.
 - `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
 
 ---
