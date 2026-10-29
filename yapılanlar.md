@@ -7,8 +7,8 @@
 
 - **Proje:** Hüküm Yolu
 - **Son güncelleme:** 2026-10-29
-- **Son özellik commit'i:** `683084a` — Üç zafer için final posterlerini oyun sonu ekranına ekle
-- **Bu dosyadaki son değişiklikler:** Demokratlar, Otokratlar ve kırmızı Nötr’ün “Yüce İmparator” zaferi için final posterleri oyun sonu ekranına eklendi (`683084a`).
+- **Son özellik commit'i:** `4b7e3fe` — Oyun sonu ekranını kompaktlaştır
+- **Bu dosyadaki son değişiklikler:** Oyun sonu ekranı kompaktlaştırıldı; poster, başlık, listeler ve eylemler tek ekrana sığacak şekilde küçültüldü (`4b7e3fe`).
 
 ---
 
@@ -611,6 +611,41 @@ Yapılanlar:
 ### Commit
 
 - `683084a` olarak commit edildi ve `main` dalına push edildi.
+- `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
+
+---
+
+## 2026-10-29 — Yerel: Oyun sonu ekranını kompaktlaştır
+
+### Yapılanlar
+
+- Oyun sonu ekranındaki poster `232px` genişlikten ekran yüksekliğine göre
+  ölçeklenen `132–178px` aralığına indirildi; başlık, alt başlık ve zafer
+  nedeni metinleri küçültüldü.
+- Panel boşlukları, bölüm iç boşlukları ve liste satırları sıkılaştırıldı;
+  “Tüm roller” listesi geniş ekranda iki sütuna alındı.
+- Panel, ekrana sığdığında dikey olarak ortalanıyor; içerik uzarsa sayfa
+  kaydırılabiliyor.
+- Kısa ekranlar için ayrı bir yükseklik kuralı eklendi; poster ve butonlar
+  daha da küçülüyor.
+- Mobilde poster ve metin tek sütunda kalıyor, rol listesi tek sütuna dönüyor.
+
+### Etkilenen dosyalar
+
+- `src/styles/identity.css`
+- `yapılanlar.md`
+
+### Doğrulama
+
+- `npm run build` — production build başarılı
+- `npm run test -- --run` — 58/58 test geçti
+- Tarayıcıda 1000×700 görünümde 5 ve 10 oyunculu oyun sonu ekranları
+  ölçüldü; panel tamamı ekrana sığdı (`scrollHeight === clientHeight`) ve
+  sayfa kaydırması oluşmadı.
+
+### Commit
+
+- `4b7e3fe` olarak commit edildi ve `main` dalına push edildi.
 - `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
 
 ---
