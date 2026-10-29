@@ -65,6 +65,10 @@ export type RoomAction = LobbyAction | GameAction;
 /** Host tarafında tutulan, istemciye asla ham hâlde gönderilmeyen oyuncu kaydı. */
 export interface NetPlayer {
   id: string;
+  /**
+   * Kopma nedeniyle bota devredilen insan koltuğunda korunur; oyuncu dönerse
+   * bu token ile koltuğunu geri alabilir. Bilerek ayrılan oyuncuda silinir.
+   */
   token: string;
   name: string;
   avatarId: string;

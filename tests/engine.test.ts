@@ -705,6 +705,8 @@ describe('gizlilik ve redaksiyon', () => {
   it('eski soruşturma kayıtları herkese açık görünümde temizlenir', () => {
     const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
     const legacyText = 'İstihbarat Başkanı Oyuncu 5, Oyuncu 2’i sorguya çekti.';
+    const legacyVote =
+      'Hükümet kabul edildi. Başbakan: Oyuncu 2. Oylar kullanıldı — Evet: 4, Hayır: 2.';
     const state: GameState = {
       ...base,
       log: [
@@ -714,6 +716,13 @@ describe('gizlilik ve redaksiyon', () => {
           at: Date.now(),
           kind: 'power',
           text: legacyText,
+        },
+        {
+          id: 'legacy-vote',
+          round: 2,
+          at: Date.now(),
+          kind: 'vote',
+          text: legacyVote,
         },
       ],
       termSummary: {
@@ -728,14 +737,18 @@ describe('gizlilik ve redaksiyon', () => {
         failedVotes: 0,
         outcome: 'legislative',
         nextPresidentId: 'p3',
-        notes: [legacyText],
+        notes: [legacyText, legacyVote],
         endedAt: 0,
       },
     };
     const publicState = redactGameState(state, 'p1').public;
     expect(publicState.log[0]?.text).toBe('Gizli bir soruşturma yürütüldü.');
+    expect(publicState.log[1]?.text).toBe(
+      'Hükümet kabul edildi. Başbakan: Oyuncu 2.',
+    );
     expect(publicState.termSummary?.notes).toEqual([
       'Gizli bir soruşturma yürütüldü.',
+      'Hükümet kabul edildi. Başbakan: Oyuncu 2.',
     ]);
   });
 
@@ -751,6 +764,41 @@ describe('gizlilik ve redaksiyon', () => {
     expect(JSON.stringify(redactGameState(state, 'p2').public)).not.toContain(
       'blockedVotePlayerId',
     );
+    // Gizli oylamada günlük hedefin adını ele vermez.
+    const publicLog = redactGameState(state, 'p2').public.log;
+    const blockLog = publicLog.find(
+      (entry) => entry.kind === 'power' && entry.text.includes('engelledi'),
+    );
+    expect(blockLog?.text).toBe('Oyuncu 1 bir oyuncunun oyunu engelledi.');
+  });
+
+  it('açık oylamada blok hedefi günlükte ve oy dökümünde görünür', () => {
+    const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
+    let state: GameState = {
+      ...forceVote(base, 'p1', 'p2'),
+      firstThreeResolved: true,
+      notrChoicePending: false,
+      notrSide: 'mavi',
+    };
+    state = forceBlock(state, 'p1', state.round);
+    state = applyAction(state, 'p1', { type: 'use_block', targetId: 'p3' });
+
+    const openView = redactGameState(state, 'p2').public;
+    expect(openView.openVoting).toBe(true);
+    const blockLog = openView.log.find(
+      (entry) => entry.kind === 'power' && entry.text.includes('engelledi'),
+    );
+    expect(blockLog?.text).toBe('Oyuncu 1, Oyuncu 3’in oyunu engelledi.');
+
+    const result = voteAll(state, true);
+    expect(result.phase).toBe('voteResult');
+    const redacted = redactGameState(result, 'p2');
+    expect(redacted.public.lastVoteTally?.blockedPlayerId).toBe('p3');
+    expect(
+      redacted.public.lastVoteTally?.entries.find(
+        (entry) => entry.playerId === 'p3',
+      )?.weight,
+    ).toBe(0);
   });
 
   it('kart inceleme kartları yalnızca Başkan’a gösterilir', () => {
@@ -872,13 +920,21 @@ describe('geçiş kapıları, açık oylama ve dönem özeti', () => {
     expect(redacted.public.lastVoteTally?.entries).toHaveLength(5);
   });
 
-  it('ilk üç dönem tamamlandıktan sonra tüm oylar açık yapılır', () => {
+  it('açık oylama dönem sayısına değil ilk üç reformun tamamlanmasına bağlıdır', () => {
     const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
-    const thirdRound: GameState = { ...forceVote(base, 'p1', 'p2'), round: 3 };
-    expect(redactGameState(thirdRound, 'p1').public.openVoting).toBe(false);
-
     const fourthRound: GameState = { ...forceVote(base, 'p1', 'p2'), round: 4 };
-    expect(redactGameState(fourthRound, 'p1').public.openVoting).toBe(true);
+    // Dönem sayısı tek başına açık oylamayı başlatmaz.
+    expect(redactGameState(fourthRound, 'p1').public.openVoting).toBe(false);
+
+    const resolved: GameState = { ...fourthRound, firstThreeResolved: true };
+    expect(redactGameState(resolved, 'p1').public.openVoting).toBe(true);
+
+    const early: GameState = {
+      ...forceVote(base, 'p1', 'p2'),
+      round: 1,
+      firstThreeResolved: true,
+    };
+    expect(redactGameState(early, 'p1').public.openVoting).toBe(true);
 
     const votes: Record<string, boolean> = {
       p1: true,
@@ -887,7 +943,7 @@ describe('geçiş kapıları, açık oylama ve dönem özeti', () => {
       p4: false,
       p5: true,
     };
-    let result = fourthRound;
+    let result = resolved;
     for (const [id, choice] of Object.entries(votes)) {
       result = applyAction(result, id, { type: 'vote', choice });
     }
@@ -914,7 +970,7 @@ describe('geçiş kapıları, açık oylama ve dönem özeti', () => {
     ).toBe(1);
   });
 
-  it('gizli oylamada bireysel tercihler redaksiyonda saklanır', () => {
+  it('gizli oylamada yalnızca kabul/ret sonucu açıklanır; sayılar ve oy dökümü sızmaz', () => {
     const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
     const state = forceVote(base, 'p1', 'p2');
     expect(redactGameState(state, 'p1').public.openVoting).toBe(false);
@@ -934,8 +990,27 @@ describe('geçiş kapıları, açık oylama ve dönem özeti', () => {
     const redacted = redactGameState(result, 'p1');
     expect(redacted.public.lastVoteOpen).toBe(false);
     expect(redacted.public.revealedVotes).toEqual({});
-    expect(redacted.public.lastVoteTally?.entries).toEqual([]);
-    expect(redacted.public.lastVoteTally).toMatchObject({ yes: 4, no: 2 });
+    expect(redacted.public.lastVoteTally).toBeNull();
+    const voteLog = redacted.public.log.find((entry) => entry.kind === 'vote');
+    expect(voteLog?.text).toContain('Hükümet kabul edildi.');
+    expect(voteLog?.text).not.toMatch(/Evet|Hayır|Oylar kullanıldı/);
+
+    const legislative = closeGate(result, 'p1');
+    const presidentCards = legislative.legislative?.presidentCards ?? [];
+    const discarded = applyAction(legislative, 'p1', {
+      type: 'president_discard',
+      card: presidentCards[0],
+    });
+    const chancellorCards = discarded.legislative?.chancellorCards ?? [];
+    const revealed = applyAction(discarded, 'p2', {
+      type: 'chancellor_enact',
+      card: chancellorCards[0],
+    });
+    const termEnd = closeGate(revealed, 'p1');
+    expect(termEnd.termSummary?.tally).not.toBeNull();
+    const publicTermEnd = redactGameState(termEnd, 'p1').public;
+    expect(publicTermEnd.termSummary?.openVoting).toBe(false);
+    expect(publicTermEnd.termSummary?.tally).toBeNull();
   });
 
   it('oy sonucu ve dönem özeti yalnızca yetkili oyuncu ya da host tarafından kapatılır', () => {

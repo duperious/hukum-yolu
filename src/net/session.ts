@@ -11,6 +11,7 @@ import {
   findPlayerByToken,
   markConnected,
   projectRoom,
+  reclaimBotSeat,
   removePlayerFromRoom,
   RoomError,
   updateProfileInRoom,
@@ -52,7 +53,8 @@ export interface RoomSession {
   dispose(): void;
 }
 
-const DISCONNECT_GRACE_MS = 45_000;
+/** Mobil kopmalarda oyuncuya bot devrinden önce tanınan süre. */
+const DISCONNECT_GRACE_MS = 60_000;
 
 const ICE_SERVERS = [
   { urls: 'stun:stun.l.google.com:19302' },
@@ -471,15 +473,19 @@ export class HostSession extends BaseSession {
         return;
       }
       if (existing.isBot) {
-        safeSend(conn, {
-          t: 'error',
-          message: 'Bu oyuncu bot tarafından devralındı. Oyun sırasında yeniden katılamazsın.',
-        });
-        safeClose(conn, 250);
-        return;
+        // Token'ı korunmuş bir bot koltuğu, kopma nedeniyle devredilmiş
+        // bir insan oyuncuya aittir. Oyuncu döndüğünde koltuğu geri alır.
+        try {
+          this.state = reclaimBotSeat(this.state, existing.id);
+        } catch (error) {
+          safeSend(conn, { t: 'error', message: messageOf(error) });
+          safeClose(conn, 250);
+          return;
+        }
       }
       this.cancelDisconnect(existing.id);
-      let player = existing;
+      let player =
+        this.state.players.find((entry) => entry.id === existing.id) ?? existing;
       if (
         this.state.status === 'lobby' &&
         (player.name !== name || player.avatarId !== avatarId)
@@ -660,7 +666,11 @@ export class HostSession extends BaseSession {
       }
       if (this.state.game && this.state.game.phase !== 'gameOver') {
         try {
-          this.state = convertPlayerToBot(this.state, playerId);
+          // Token korunur: oyuncu 60 saniyelik süre içinde dönerse
+          // botun devraldığı koltuğu geri alabilir.
+          this.state = convertPlayerToBot(this.state, playerId, {
+            reclaimable: true,
+          });
           this.afterStateChange();
         } catch {
           // yoksay
@@ -766,12 +776,21 @@ export class ClientSession extends BaseSession {
       event.returnValue = '';
     }
   };
+  private readonly onVisibilityChange = () => {
+    if (this.disposed || document.visibilityState !== 'visible') return;
+    if (this.snap.status === 'closed') return;
+    // Bağlantı hâlâ açıksa dokunma. Mobil tarayıcı sekmeden dönüldüğünde
+    // kopmuş bağlantıyı beklemeden yeniden kur.
+    if (this.conn?.open || this.snap.status === 'connecting') return;
+    this.retry();
+  };
 
   constructor(code: string, profile: { name: string; avatarId: string }) {
     super('client');
     this.code = code;
     this.profile = profile;
     window.addEventListener('beforeunload', this.beforeUnload);
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
     this.openPeer();
   }
 
@@ -1102,6 +1121,7 @@ export class ClientSession extends BaseSession {
   private teardown(): void {
     this.disposed = true;
     window.removeEventListener('beforeunload', this.beforeUnload);
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
     this.clearTimers();
     this.closeConnection();
     const peer = this.peer;

@@ -88,10 +88,14 @@ function GateShell({
 function TallyDisplay({
   tally,
   open,
+  blockedName,
 }: {
   tally: VoteTally | null;
   open: boolean;
+  blockedName?: string | null;
 }) {
+  // Gizli oylamada sayı gösterilmez; yalnızca kabul/ret sonucu açıklanır.
+  if (!open || !tally) return null;
   return (
     <div className="gate-tally" aria-label="Oy sonucu">
       <div className="gate-tally__side gate-tally__side--yes">
@@ -111,7 +115,10 @@ function TallyDisplay({
       </div>
       {tally?.blockedPlayerId ? (
         <span className="gate-tally__blocked">
-          <ShieldCheck size={12} /> Bir oy engellendi
+          <ShieldCheck size={12} />
+          {blockedName
+            ? `${blockedName}’in oyu engellendi`
+            : 'Bir oy engellendi'}
         </span>
       ) : null}
       <span className={cn('gate-tally__mode', open && 'gate-tally__mode--open')}>
@@ -132,7 +139,9 @@ function VoteBreakdown({
     return (
       <p className="gate-reveal__secrecy">
         <Lock size={14} aria-hidden="true" />
-        Bireysel oylar gizli kaldı; yalnızca ağırlıklı toplam açıklandı.
+        {game.lastVoteOpen
+          ? 'Bireysel oy dökümü bulunamadı.'
+          : 'Gizli oylama: sayılar ve bireysel oylar saklı; yalnızca hükümetin kabul/ret sonucu açıklandı.'}
       </p>
     );
   }
@@ -258,7 +267,15 @@ export function VoteResultStage({
         >
           {accepted ? <CheckCircle2 size={34} /> : <XCircle size={34} />}
         </span>
-        <TallyDisplay tally={tally} open={game.lastVoteOpen} />
+        <TallyDisplay
+          tally={tally}
+          open={game.lastVoteOpen}
+          blockedName={
+            tally?.blockedPlayerId
+              ? playerName(game, tally.blockedPlayerId)
+              : null
+          }
+        />
       </div>
 
       <VoteBreakdown game={game} tally={tally} />

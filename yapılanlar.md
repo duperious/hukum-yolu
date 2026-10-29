@@ -6,9 +6,9 @@
 > en eski değişiklik üstte, en yeni değişiklik altta yer alır.
 
 - **Proje:** Hüküm Yolu
-- **Son güncelleme:** 2026-10-28
-- **Son özellik commit'i:** `7727e98` — Rol kartlarını çerçeveye oturt, yerel test ve online rehberi kaldır
-- **Bu dosyadaki son değişiklikler:** Tutuklama adlandırması, tekrarlı günlük metinlerinin temizliği ve kronolojik düzen. Yerel değişiklikler commit/push için kullanıcı onayı bekliyor.
+- **Son güncelleme:** 2026-10-29
+- **Son özellik commit'i:** `6942af8` — Zorunlu soruşturmayı ekle, tutuklama adlandırmasını ve günlük tekrarlarını düzelt
+- **Bu dosyadaki son değişiklikler:** Gizli oylama sızıntısının kapatılması, açık oylamanın ilk üç reforma bağlanması, blok hedefinin açık oylamada gösterilmesi ve 60 sn kopma/bot koltuğunu geri alma akışı. Yerel değişiklikler commit/push için kullanıcı onayı bekliyor.
 
 ---
 
@@ -36,8 +36,8 @@
 | `1822708` | 2026-10-28 22:59 | Oylama ve Nötr seçimini görsel kartlarla modal sahneye taşı |
 | `7727e98` | 2026-10-28 23:13 | Rol kartlarını çerçeveye oturt, yerel test ve online rehberi kaldır |
 | `4979651` | 2026-10-28 23:13 | Yapılanlar dosyasındaki son commit bilgisini güncelle |
-| — (yerel) | 2026-10-28 23:41 | Zorunlu soruşturma, Demokrat/Otokrat kartları ve 2 oy ifşası düzeltmesi |
-| — (yerel) | 2026-10-28 | Tutuklama adlandırması, günlük tekrar temizliği ve kronolojik düzen |
+| `6942af8` | 2026-10-28 23:54 | Zorunlu soruşturma, tutuklama adlandırması ve günlük tekrar temizliği |
+| — (yerel) | 2026-10-29 | Gizli oylama gizliliği, açık oylama eşiği, blok hedefi görünürlüğü ve 60 sn kopma akışı |
 
 ---
 
@@ -349,6 +349,91 @@ Yapılanlar:
 - Kullanıcıya görünen metinlerde `suikast` araması yapıldı; sonuç kalmadı.
 - `yapılanlar.md` en eski kayıt üstte, en yeni kayıt altta olacak şekilde
   kronolojik sıraya getirildi.
+
+### Commit
+
+- Yerel değişiklikler hazır. Kullanıcı onayı olmadan commit/push yapılmadı.
+- `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
+
+---
+
+## 2026-10-29 — Yerel: Oylama gizliliği, açık oylama eşiği ve 60 sn kopma
+
+### 1. Gizli oylama artık yalnızca kabul/ret sonucunu gösteriyor
+
+- `redactGameState`, gizli oylamada `lastVoteTally` ve `termSummary.tally`
+  alanlarını `null` döndürüyor; `revealedVotes` boş kalıyor.
+- Motor günlüğü gizli oylamada Evet/Hayır sayılarını yazmıyor; yalnızca
+  `Hükümet kabul edildi. Başbakan: X.` veya `Hükümet reddedildi. Başbakan: X.`
+  kaydı düşüyor.
+- Düzeltmeden önce kaydedilmiş oyunlardaki `Oylar kullanıldı — Evet: X,
+  Hayır: Y.` metinleri herkese açık günlükten ve dönem notlarından temizleniyor.
+- Sonuç ekranı gizli oylamada sayı göstermiyor; “yalnızca hükümetin kabul/ret
+  sonucu açıklandı” bilgisini gösteriyor. Açık oylamada Evet/Hayır sayıları ve
+  bireysel oy dökümü korunuyor.
+
+### 2. Açık oylama ilk üç reformun tamamlanmasına bağlandı
+
+- `isOpenVoting` artık yalnızca `state.firstThreeResolved` döndürüyor.
+  `round > 3` kısayolu ve Büyük Vezir’in oy gücüne bağlı ek koşullar kaldırıldı.
+- `openVotingAfterRound` ayarı ve `GameConfig` tip alanı kaldırıldı.
+- İlk üç reform gecikirse dönem sayısına bakılmaksızın oylar gizli kalıyor;
+  üçüncü reform tamamlandığında açık oylama başlıyor.
+- Rehber, lobi özeti, oy kartı, adaylık ekranı ve README metinleri yeni eşiğe
+  göre güncellendi.
+
+### 3. Blok hedefi açık oylamada görünür, gizli oylamada saklı
+
+- `useBlockMut` günlüğü açık oylamada
+  `X, Y’in oyunu engelledi.` yazıyor; gizli oylamada hedefin adı
+  `X bir oyuncunun oyunu engelledi.` biçiminde gizleniyor.
+- Açık oylamada `lastVoteTally.blockedPlayerId` istemciye gidiyor ve sonuç
+  ekranı `Y’in oyu engellendi` rozetini gösteriyor. Gizli oylamada hedef
+  kimliği kamuya gitmiyor.
+- Kural varsayımları ve rehberde blok görünürlüğü açıklandı.
+
+### 4. Mobil kopmada 60 saniye ve bot koltuğunu geri alma
+
+- `DISCONNECT_GRACE_MS` 45.000 → 60.000 olarak değiştirildi.
+- `convertPlayerToBot(..., { reclaimable: true })` kopma kaynaklı devirde
+  token’ı koruyor. Bilerek **Ayrıl** yolunda token hâlâ siliniyor.
+- Yeni `reclaimBotSeat` fonksiyonu, token’ı korunmuş bot koltuğunu dönen
+  oyuncuya geri veriyor; oda kaydında ve oyun motorunda `isBot` false yapılıyor.
+- `ClientSession`, `visibilitychange` olayıyla sekmeye dönüşte kopmuş bağlantıyı
+  beklemeden yeniden deniyor.
+- Token’ı silinmiş (bilerek ayrılan) oyuncu koltuğu geri alamıyor.
+- `vite.config.ts` PWA önbelleğine `jpg` ve `jpeg` eklendi; reform/oy kartı
+  görselleri çevrimdışı kabukta yer alıyor.
+
+### Etkilenen dosyalar
+
+- `src/game/helpers.ts`
+- `src/game/redact.ts`
+- `src/game/engine.ts`
+- `src/game/config.ts`
+- `src/game/types.ts`
+- `src/net/room.ts`
+- `src/net/session.ts`
+- `src/net/types.ts`
+- `src/components/TransitionStages.tsx`
+- `src/components/ActionPanel.tsx`
+- `src/components/VoteStage.tsx`
+- `src/components/NomineeStage.tsx`
+- `src/components/LobbyView.tsx`
+- `src/pages/GuidePage.tsx`
+- `README.md`
+- `vite.config.ts`
+- `tests/engine.test.ts`
+- `tests/room.test.ts`
+- `yapılanlar.md`
+
+### Doğrulama
+
+- `npm run typecheck`
+- `npm run test -- --run` — 58/58 test geçti
+- `npm run build` — PWA 40 kayıt oluşturdu; `jpg` görselleri precache listesinde
+- Eski “4. dönemden itibaren”, “ağırlıklı toplam” ve “oylar gizli kalır”
+  metinleri tarandı; kullanıcıya görünen yerde kalmadı.
 
 ### Commit
 

@@ -263,7 +263,7 @@ export function VoteStage({
               ) : (
                 <>
                   <Vote size={12} aria-hidden="true" />
-                  Oyun gizlidir; yalnızca ağırlıklı toplam açıklanır.{' '}
+                  Oyun gizlidir; yalnızca hükümetin kabul/ret sonucu açıklanır.{' '}
                   {game.votesSubmitted}/{game.totalVoters} oy geldi.
                 </>
               )}

@@ -310,7 +310,7 @@ export function ActionPanel({
                     onayladığında oyun gönderilir.{' '}
                     {game.openVoting
                       ? 'Bu oylama açıktır; bireysel oylar sonuçla birlikte görünür.'
-                      : 'Oyun gizli tutulur; yalnızca toplam sonuç açıklanır.'}
+                      : 'Oyun gizli tutulur; yalnızca hükümetin kabul/ret sonucu açıklanır.'}
                   </p>
                 </div>
                 {onOpenVoteStage ? (
@@ -361,11 +361,15 @@ export function ActionPanel({
             </h3>
             <p>
               {game.lastVoteTally
-                ? `Ağırlıklı sonuç — Evet: ${game.lastVoteTally.yes}, Hayır: ${game.lastVoteTally.no}.`
+                ? `Açık oylama sonucu — Evet: ${game.lastVoteTally.yes}, Hayır: ${game.lastVoteTally.no}.${
+                    game.lastVoteTally.blockedPlayerId
+                      ? ` ${playerName(game, game.lastVoteTally.blockedPlayerId)}’in oyu engellendi.`
+                      : ''
+                  }`
                 : 'Oylar sayıldı.'}{' '}
               {game.lastVoteOpen
-                ? 'Açık oylama: bireysel tercihler sonuç ekranında görünüyor.'
-                : 'Bireysel oylar gizli kaldı.'}
+                ? 'Bireysel tercihler sonuç ekranında görünüyor.'
+                : 'Gizli oylama: yalnızca kabul/ret sonucu açıklandı.'}
             </p>
             {view.canContinue ? (
               <Button

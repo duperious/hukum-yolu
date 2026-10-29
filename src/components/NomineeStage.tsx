@@ -111,7 +111,7 @@ export function NomineeStage({
 
         <p className="nominee-stage__hint">
           Uygun bir oyuncuyu aday göster. Adaylık onaylandığında hükümet oylaması
-          başlar; oylar gizli kalır.
+          başlar.
         </p>
 
         {error ? (

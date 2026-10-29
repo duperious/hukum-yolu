@@ -404,7 +404,8 @@ export function LobbyView({
               <li>6 Demokratik Reform Demokrat zaferini getirir.</li>
               <li>7 Otokrat Reform Otokrat zaferini getirir.</li>
               <li>3 üst üste ret, destenin üst kartını otomatik yürürlüğe sokar.</li>
-              <li>Oylar gizlidir; Büyük Vezir başlangıçta 2 oy gücüne sahiptir.</li>
+              <li>İlk üç reforma kadar oylar gizlidir; sonrasında açık oylama başlar.</li>
+              <li>Büyük Vezir başlangıçta 2 oy gücüne sahiptir.</li>
             </ul>
             <Link to="/guide" className="text-link">
               <BookOpen size={14} /> Kuralların tamamını oku

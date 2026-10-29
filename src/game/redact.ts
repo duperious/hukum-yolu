@@ -30,22 +30,23 @@ function publicTally(
   open: boolean,
   revealed: Record<string, Role>,
 ): VoteTally | null {
-  if (!tally) return null;
+  if (!tally || !open) return null;
   return {
     yes: tally.yes,
     no: tally.no,
+    // Açık oylamada engellenen oyuncu oy dökümünde görünür.
     blockedPlayerId: tally.blockedPlayerId,
-    entries: open
-      ? tally.entries.map((entry) => ({
-          ...entry,
-          // Gizli Büyük Vezir'in 2 oylu ağırlığı istemciye sızmasın.
-          // Engellenen oy (0) ve rolü açıklanmış vezir olduğu gibi kalır.
-          weight:
-            entry.weight > 1 && revealed[entry.playerId] !== 'buyuk_vezir'
-              ? 1
-              : entry.weight,
-        }))
-      : [],
+    entries: tally.entries.map((entry) => ({
+      ...entry,
+      // Savunma amaçlı: açık oylamada rolü açıklanmamış bir ağırlık
+      // kalırsa istemciye 1 olarak gönderilir. Normal akışta açık oylama
+      // yalnızca ilk üç reform sonrası başladığı için Büyük Vezir ya
+      // açıklanmış ya da oyun dışıdır.
+      weight:
+        entry.weight > 1 && revealed[entry.playerId] !== 'buyuk_vezir'
+          ? 1
+          : entry.weight,
+    })),
   };
 }
 
@@ -54,9 +55,15 @@ function publicTally(
  * Devam eden oyunlardan gelen bu kayıtları herkese açık görünümde temizle.
  */
 function publicLogText(text: string): string {
-  return text.includes('sorguya çekti')
+  const withoutInvestigation = text.includes('sorguya çekti')
     ? 'Gizli bir soruşturma yürütüldü.'
     : text;
+  // Düzeltmeden önce kaydedilmiş oyunlardaki oy sayıları, gizli oylamada
+  // kamuya gönderilen günlükten ve dönem notlarından temizlenir.
+  return withoutInvestigation.replace(
+    / Oylar kullanıldı — Evet: \d+, Hayır: \d+\./g,
+    '',
+  );
 }
 
 /**
@@ -103,7 +110,11 @@ export function getPublicGameState(state: GameState): PublicGameState {
     governmentHistory: state.governmentHistory.map((g) => ({ ...g })),
     log: state.log.map((l) => ({ ...l, text: publicLogText(l.text) })),
     lastVoteResult: state.lastVoteResult,
-    lastVoteTally: publicTally(state.lastVoteTally, state.lastVoteOpen, revealed),
+    // Gizli oylamada sayılar ve bireysel oylar kamuya gitmez; yalnızca
+    // kabul/ret sonucu açıklanır.
+    lastVoteTally: state.lastVoteOpen
+      ? publicTally(state.lastVoteTally, true, revealed)
+      : null,
     lastVoteOpen: state.lastVoteOpen,
     revealedVotes:
       state.lastVoteOpen && state.lastVoteTally
@@ -121,11 +132,9 @@ export function getPublicGameState(state: GameState): PublicGameState {
     termSummary: state.termSummary
       ? {
           ...state.termSummary,
-          tally: publicTally(
-            state.termSummary.tally,
-            state.termSummary.openVoting,
-            revealed,
-          ),
+          tally: state.termSummary.openVoting
+            ? publicTally(state.termSummary.tally, true, revealed)
+            : null,
           notes: state.termSummary.notes.map(publicLogText),
         }
       : null,

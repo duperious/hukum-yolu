@@ -51,12 +51,12 @@ const PHASES: Array<{ title: string; text: string }> = [
     text: 'Başkan sırayla belirlenir. Başkan, kendisi ve önceki Başbakan dışından bir Başbakan adayı gösterir. Uygun aday kalmazsa kısıt gevşer.',
   },
   {
-    title: 'Gizli oylama',
-    text: 'Oyunda olan tüm oyuncular kabul veya ret oyu verir. Oylar normalde gizlidir; yalnızca toplam sonuç açıklanır. Büyük Vezir’in oyu ilk üç reform tamamlanana kadar iki sayılır. İlk üç dönem tamamlandıktan sonra, yani 4. dönemden itibaren tüm oylamalar açık yapılır. Açık oylamada bir oyuncunun oy ağırlığı, rolü açıklanmadıkça gösterilmez. Büyük Vezir ilk üç reformdan sonra Demokratik tarafa geçip oy gücü 2’den 1’e düşerse de oylama açık yapılır ve bireysel oylar sonuçla birlikte açıklanır.',
+    title: 'Hükümet oylaması',
+    text: 'Oyunda olan tüm oyuncular kabul veya ret oyu verir. İlk üç reform tamamlanana kadar oylar gizlidir; yalnızca hükümetin kabul/ret sonucu açıklanır. Büyük Vezir’in oyu bu dönemde iki sayılır. İlk üç reform tamamlandığında, dönem sayısından bağımsız olarak oylama açık yapılır; bireysel oylar ve blok hedefi sonuçla birlikte görünür. Açık oylamada bir oyuncunun oy ağırlığı, rolü açıklanmadıkça gösterilmez.',
   },
   {
     title: 'Oylama sonucu',
-    text: 'Ağırlıklı Evet ve Hayır toplamı açıklanır. Hükümet kabul edilirse yasama başlar; reddedilirse ret sayacı artar ve yeni döneme geçilir.',
+    text: 'Gizli oylamada yalnızca hükümetin kabul/ret sonucu açıklanır; sayılar ve bireysel oylar saklı kalır. Açık oylamada Evet/Hayır toplamı ve bireysel tercihler de görünür. Hükümet kabul edilirse yasama başlar; reddedilirse ret sayacı artar ve yeni döneme geçilir.',
   },
   {
     title: 'Reform seçimi',
@@ -65,6 +65,10 @@ const PHASES: Array<{ title: string; text: string }> = [
   {
     title: 'Dönem kapanışı',
     text: 'Reform ve özel yetkiler çözüldükten sonra dönem tutanağı açılır. Dönemi Başkan kapatır; kapatmazsa host 45 saniye sonra ilerletir.',
+  },
+  {
+    title: 'Bağlantı kopması',
+    text: 'Bağlantı koparsa koltuğun 60 saniye bekletilir. Süre dolarsa bot devralır; oyuncu dönerse botun oynadığı koltuğu geri alabilir. Bilerek “Ayrıl” diyen oyuncunun token’ı silinir ve koltuğu geri alınamaz.',
   },
   {
     title: 'Özel yetkiler',
@@ -127,10 +131,11 @@ export default function GuidePage() {
           <p className="eyebrow">Kural rehberi</p>
           <h1>Hüküm Yolu nasıl oynanır?</h1>
           <p>
-            Hüküm Yolu; gizli roller, yarı gizli oylamalar ve reform çizelgeleri
-            üzerine kurulu bir sosyal çıkarım oyunudur. Demokratlar ülkeyi
-            korumaya, Otokratlar ise reformları kendi lehlerine çevirmeye çalışır.
-            Ortada bir de kendi çıkarını kovalayan Nötr vardır.
+            Hüküm Yolu; gizli roller, ilk üç reforma kadar gizli kalan oylamalar
+            ve reform çizelgeleri üzerine kurulu bir sosyal çıkarım oyunudur.
+            Demokratlar ülkeyi korumaya, Otokratlar ise reformları kendi
+            lehlerine çevirmeye çalışır. Ortada bir de kendi çıkarını kovalayan
+            Nötr vardır.
           </p>
           <div className="guide-hero__meta">
             <span className="chip">

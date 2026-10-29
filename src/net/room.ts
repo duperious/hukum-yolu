@@ -274,6 +274,7 @@ export function markConnected(
 export function convertPlayerToBot(
   state: HostRoomState,
   playerId: string,
+  options: { reclaimable?: boolean } = {},
 ): HostRoomState {
   const player = requirePlayer(state, playerId);
   if (player.isHost) throw new RoomError('Oda sahibi bota devredilemez.');
@@ -298,7 +299,56 @@ export function convertPlayerToBot(
     game,
     players: state.players.map((entry) =>
       entry.id === playerId
-        ? { ...entry, isBot: true, connected: false, token: '', ready: true }
+        ? {
+            ...entry,
+            isBot: true,
+            connected: false,
+            // Kopma kaynaklı devirde token korunur; oyuncu dönerse
+            // botun devraldığı koltuğu geri alabilir. Bilerek ayrılan
+            // oyuncunun token'ı ise silinir.
+            token: options.reclaimable ? entry.token : '',
+            ready: true,
+          }
+        : entry,
+    ),
+  });
+}
+
+/**
+ * Kopma nedeniyle bota devredilen insan koltuğunu eski sahibine geri verir.
+ * Yalnızca token'ı korunmuş botlar geri alınabilir.
+ */
+export function reclaimBotSeat(
+  state: HostRoomState,
+  playerId: string,
+): HostRoomState {
+  const player = requirePlayer(state, playerId);
+  if (player.isHost || !player.isBot) {
+    throw new RoomError('Bu koltuk geri alınamaz.');
+  }
+  if (!player.token) {
+    throw new RoomError('Bu bot koltuğu bir oyuncuya ait değil.');
+  }
+
+  let game = state.game;
+  if (game && game.phase !== 'gameOver') {
+    game = {
+      ...game,
+      players: game.players.map((entry) =>
+        entry.id === playerId ? { ...entry, isBot: false } : entry,
+      ),
+      updatedAt: now(),
+      version: game.version + 1,
+    };
+  }
+
+  return touch({
+    ...state,
+    status: game?.phase === 'gameOver' ? 'finished' : game ? 'playing' : 'lobby',
+    game,
+    players: state.players.map((entry) =>
+      entry.id === playerId
+        ? { ...entry, isBot: false, connected: true, ready: true }
         : entry,
     ),
   });

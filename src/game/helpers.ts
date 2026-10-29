@@ -89,24 +89,16 @@ export function getVotePower(player: Player): number {
 }
 
 /**
- * Oy gizliliği kuralı: İlk üç dönem tamamlandıktan sonra (4. dönemden
- * itibaren) tüm oylamalar açık yapılır. Ayrıca Büyük Vezir ilk üç reformdan
- * sonra Demokratik tarafa geçip oy gücü 2'den 1'e düşerse oylama açık yapılır.
- * Oy gücü 0'a düşerse (engellendiyse) oylama yeniden gizli kalır.
+ * Oy gizliliği kuralı: İlk üç reform tamamlanana kadar oylar gizlidir;
+ * yalnızca hükümetin kabul/ret sonucu açıklanır. İlk üç reform
+ * tamamlandığında Büyük Vezir ya açıklanmış ya da oyun dışı kalmış olur,
+ * bu yüzden tüm oylamalar güvenle açık yapılabilir.
+ *
+ * Dönem sayısı tek başına açık oylamayı başlatmaz: ilk üç reform gecikirse
+ * Büyük Vezir hâlâ 2 oyla oy kullanıyor olabilir.
  */
 export function isOpenVoting(state: GameState): boolean {
-  if (state.round > GAME_CONFIG.openVotingAfterRound) {
-    return true;
-  }
-  if (!state.firstThreeResolved || state.bigVezirOutcome !== 'demokrat') {
-    return false;
-  }
-  const bigVezir = roleHolder(state, 'buyuk_vezir');
-  return Boolean(
-    bigVezir?.alive &&
-      bigVezir.effectiveTeam === 'demokrat' &&
-      bigVezir.votePower === 1,
-  );
+  return state.firstThreeResolved;
 }
 
 export function countFirstThree(state: GameState): { democratic: number; fascist: number } {

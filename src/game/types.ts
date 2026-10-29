@@ -405,8 +405,6 @@ export interface GameConfig {
   drawCount: number;
   passCount: number;
   failedGovernmentLimit: number;
-  /** Bu dönem sayısı tamamlandıktan sonra tüm oylamalar açık yapılır. */
-  openVotingAfterRound: number;
   powers: {
     investigationStartRound: number;
     thirdReformAtFascist: number;

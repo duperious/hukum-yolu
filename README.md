@@ -34,10 +34,10 @@ Gizli rollü, sosyal çıkarım masa oyununun Türkçe, mobil öncelikli PWA uyg
 - **PeerJS/WebRTC:** Genel sinyal sunucusu ve STUN/TURN ile doğrudan bağlantı. Supabase, Firebase veya özel backend gerekmez.
 - **Oda sahibi yetkili akış:** Oyun durumu oda sahibinin tarayıcısında tutulur; her oyuncuya yalnızca `redactGameState` ile filtrelenmiş görünüm gönderilir.
 - **Belirgin rol ve görev kartı:** Rolünüz, takımınız, göreviniz ve yetenekleriniz oyun içinde öne çıkar.
-- **Büyük Evet/Hayır oyları:** Hükümet oylamasında iki büyük kart; oylar gizli, yalnızca sonuç açıklanır.
+- **Büyük Evet/Hayır oyları:** Hükümet oylamasında iki büyük kart; ilk üç reforma kadar oylar gizli, sonrasında açık.
 - **16 avatar** ve cihazda saklanan profil.
 - **Reform destesi:** 8 demokratik + 12 otokrat reform, iki ayrı çizelge.
-- **Gizli oylama**, ağırlıklı Büyük Vezir oyu, 3 ret sonrası otomatik reform.
+- **Gizli oylama:** İlk üç reform tamamlanana kadar yalnızca kabul/ret sonucu açıklanır; sonrasında açık oylama başlar. Ağırlıklı Büyük Vezir oyu, 3 ret sonrası otomatik reform.
 - **Soruşturma**, 3. reform özel yetkileri, tutuklama, liderlik devri, tasfiye.
 - **Kazanma koşulları:** demokratik, otokratik ve Nötr kişisel zafer.
 - **PWA:** yüklenebilir uygulama, çevrimdışı kabuk, üretilmiş ikonlar.
@@ -102,11 +102,12 @@ Oda kodları karıştırılabilen `I`, `O`, `0` ve `1` karakterlerini içermez.
 
 ## Bağlantı kopmaları
 
-- Bir insan oyuncunun bağlantısı koparsa **45 saniyelik** bekleme süresi başlar.
+- Bir insan oyuncunun bağlantısı koparsa **60 saniyelik** bekleme süresi başlar.
 - Oyuncu bu süre içinde geri dönerse aynı oyuncu ve aynı rolle devam eder.
 - Süre dolarsa:
   - **Lobideyse** odadan çıkarılır.
-  - **Oyun sırasındaysa** rolü bot tarafından devralınır. Aynı oyuncu oyun sırasında yeni kimlikle yeniden katılamaz.
+  - **Oyun sırasındaysa** koltuğu bot devralır. Oyuncunun token’ı korunur; aynı cihazla dönerse botun oynadığı koltuğu geri alabilir.
+- Oyuncu bilerek **Ayrıl** derse token’ı silinir; oyun sırasında koltuğu bota devredilir ve geri alınamaz.
 - Oda sahibi sekmeyi yenilerse oda durumu `localStorage`’dan geri yüklenir; istemciler otomatik yeniden bağlanmayı dener.
 - Oda sahibi **Ayrıl** derse oda kapanır ve oda verisi temizlenir.
 
@@ -244,7 +245,7 @@ Mevcut test kapsamı:
 - Demokratik, otokratik ve Nötr kazanma koşulları
 - Redaksiyon: istemciye yalnızca güvenli görünümün gitmesi
 - Bot davranışı
-- Oda sahibi yetkili oda akışı: oda kurma, katılma, hazır durumu, bot ekleme, oyun başlatma, rol onayı, bot oyuncu reddi ve bağlantı kopunca bota devretme
+- Oda sahibi yetkili oda akışı: oda kurma, katılma, hazır durumu, bot ekleme, oyun başlatma, rol onayı, bot oyuncu reddi, bağlantı kopunca bota devretme ve kopan oyuncunun bot koltuğunu geri alması
 
 ---
 

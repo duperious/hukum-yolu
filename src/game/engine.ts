@@ -744,12 +744,15 @@ function resolveVote(state: GameState, rng: () => number): void {
     chancellorId: state.chancellorId ?? '',
   };
   const chancellorName = getPlayer(state, state.chancellorId ?? '')?.name ?? 'Bilinmeyen';
+  // Gizli oylamada yalnızca sonuç açıklanır. Açık oylamada sayılar zaten
+  // bireysel oylardan türetilebildiği için toplam da yazılır.
+  const tallyDetail = open ? ` Oylar kullanıldı — Evet: ${yes}, Hayır: ${no}.` : '';
   addLog(
     state,
     'vote',
     accepted
-      ? `Hükümet kabul edildi. Başbakan: ${chancellorName}. Oylar kullanıldı — Evet: ${yes}, Hayır: ${no}.`
-      : `Hükümet reddedildi. Başbakan: ${chancellorName}. Oylar kullanıldı — Evet: ${yes}, Hayır: ${no}.`,
+      ? `Hükümet kabul edildi. Başbakan: ${chancellorName}.${tallyDetail}`
+      : `Hükümet reddedildi. Başbakan: ${chancellorName}.${tallyDetail}`,
   );
   if (state.pendingBlock) state.pendingBlock = null;
   maybeBotSpeakAfterEvent(state, rng);
@@ -1089,10 +1092,15 @@ function useBlockMut(state: GameState, actorId: string, targetId: string): void 
   if (target.role === 'buyuk_vezir') {
     target.votePower = 0;
   }
+  const blockerName = getPlayer(state, actorId)?.name ?? '—';
   addLog(
     state,
     'power',
-    `${getPlayer(state, actorId)?.name ?? '—'}, ${target.name}’in oyunu engelledi.`,
+    // Gizli oylamada hedefin adı Büyük Vezir'in kimliğini ele verebilir;
+    // açık oylamada ise blok hedefi herkese açıktır.
+    isOpenVoting(state)
+      ? `${blockerName}, ${target.name}’in oyunu engelledi.`
+      : `${blockerName} bir oyuncunun oyunu engelledi.`,
   );
 }
 

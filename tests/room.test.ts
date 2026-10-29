@@ -8,6 +8,7 @@ import {
   createHostRoom,
   findPlayerByToken,
   projectRoom,
+  reclaimBotSeat,
   RoomError,
   startRoomGame,
   toggleReadyInRoom,
@@ -91,15 +92,35 @@ describe('host-authoritative room', () => {
     ).toThrow(RoomError);
   });
 
-  it('turns a disconnected human into a bot and invalidates the old token', () => {
+  it('kopma kaynaklı bot devri token’ı korur ve oyuncu koltuğunu geri alabilir', () => {
+    const room = startedRoom();
+    const converted = convertPlayerToBot(room.state, room.clientId, {
+      reclaimable: true,
+    });
+    const player = converted.players.find((entry) => entry.id === room.clientId)!;
+    expect(player.isBot).toBe(true);
+    expect(player.connected).toBe(false);
+    // Token korunur; aynı oyuncu döndüğünde kimliğini kanıtlayabilir.
+    expect(player.token).toBe(room.clientToken);
+    expect(findPlayerByToken(converted, room.clientToken)?.id).toBe(room.clientId);
+    expect(converted.game?.players.find((entry) => entry.id === room.clientId)?.isBot).toBe(true);
+
+    const reclaimed = reclaimBotSeat(converted, room.clientId);
+    const restored = reclaimed.players.find((entry) => entry.id === room.clientId)!;
+    expect(restored.isBot).toBe(false);
+    expect(restored.connected).toBe(true);
+    expect(findPlayerByToken(reclaimed, room.clientToken)?.id).toBe(room.clientId);
+    expect(reclaimed.game?.players.find((entry) => entry.id === room.clientId)?.isBot).toBe(false);
+  });
+
+  it('bilerek ayrılan oyuncunun token’ı silinir ve koltuğu geri alınamaz', () => {
     const room = startedRoom();
     const converted = convertPlayerToBot(room.state, room.clientId);
     const player = converted.players.find((entry) => entry.id === room.clientId)!;
     expect(player.isBot).toBe(true);
-    expect(player.connected).toBe(false);
     expect(player.token).toBe('');
     expect(findPlayerByToken(converted, room.clientToken)).toBeNull();
-    expect(converted.game?.players.find((entry) => entry.id === room.clientId)?.isBot).toBe(true);
+    expect(() => reclaimBotSeat(converted, room.clientId)).toThrow(RoomError);
   });
 
   it('does not let a non-host restart the game', () => {
