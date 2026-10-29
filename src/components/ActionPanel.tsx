@@ -22,7 +22,6 @@ import type { GameAction, PrivateView, PublicGameState } from '../game';
 import { cn } from '../lib/cn';
 import { Avatar } from './ui/Avatar';
 import { Button } from './ui/Button';
-import { PolicyCard } from './PolicyCard';
 
 export const PHASE_META: Record<
   string,
@@ -118,6 +117,7 @@ export function ActionPanel({
   onOpenNomineeStage,
   onOpenPolicyStage,
   onOpenNotrStage,
+  onOpenPeekStage,
 }: {
   game: PublicGameState;
   view: PrivateView;
@@ -130,6 +130,7 @@ export function ActionPanel({
   onOpenNomineeStage?: () => void;
   onOpenPolicyStage?: () => void;
   onOpenNotrStage?: () => void;
+  onOpenPeekStage?: () => void;
 }) {
   const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
 
@@ -559,25 +560,15 @@ export function ActionPanel({
                 : `Başkan ${presidentName} destenin üstündeki üç kartı inceliyor.`}
             </p>
             {view.pendingPeekCards ? (
-              <>
-                <div className="policy-choice-grid policy-choice-grid--peek">
-                  {view.pendingPeekCards.map((card, index) => (
-                    <div key={`${game.round}-${game.phase}-${card}-${index}`} className="peek-card-wrap">
-                      <span className="peek-card-wrap__order">{index + 1}. kart</span>
-                      <PolicyCard type={card} size="sm" showSubtitle={false} />
-                    </div>
-                  ))}
-                </div>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={() => onAction({ type: 'ack_peek' })}
-                  loading={actionPending}
-                  icon={<Eye size={16} />}
-                >
-                  Kartları Desteye Geri Koy
-                </Button>
-              </>
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={onOpenPeekStage}
+                disabled={!onOpenPeekStage}
+                icon={<Eye size={16} />}
+              >
+                Kart İncelemeyi Aç
+              </Button>
             ) : (
               <div className="waiting-illustration">
                 <Eye size={30} />

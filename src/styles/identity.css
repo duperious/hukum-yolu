@@ -3049,6 +3049,88 @@ body[data-era] .investigation-list__item--kotu {
   }
 }
 
+/* Başkanın kart inceleme modalı */
+
+.modal-overlay.peek-stage-overlay {
+  z-index: 179;
+}
+
+.peek-stage .modal__body {
+  padding-top: 16px;
+}
+
+.peek-stage__notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--mustard);
+  background: color-mix(in srgb, var(--mustard) 8%, transparent);
+  color: var(--text-soft);
+}
+
+.peek-stage__notice svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--mustard);
+}
+
+.peek-stage__notice p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.peek-stage__cards {
+  max-width: 580px;
+  margin-top: 18px;
+}
+
+.peek-stage__cards .peek-card-wrap__order {
+  color: var(--text-soft);
+  font-size: 9px;
+}
+
+.peek-stage__actions {
+  justify-content: space-between;
+}
+
+.peek-stage__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 560px) {
+  .peek-stage__cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .peek-stage__cards .policy-card {
+    padding: 22px 5px 10px;
+  }
+
+  .peek-stage__cards .policy-card__title {
+    font-size: 13px;
+  }
+
+  .peek-stage__actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .peek-stage__hint {
+    justify-content: center;
+  }
+}
+
 
 body[data-era] .log-entry {
   padding: 5px 0 5px 8px;

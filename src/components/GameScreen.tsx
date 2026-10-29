@@ -23,6 +23,7 @@ import { GovernmentPanel } from './GovernmentPanel';
 import { InvestigationStage } from './InvestigationStage';
 import { NomineeStage } from './NomineeStage';
 import { NotrStage } from './NotrStage';
+import { PeekStage } from './PeekStage';
 import { PlayerCardGallery } from './PlayerCards';
 import { PlayerCircle } from './PlayerCircle';
 import { PolicyStage } from './PolicyStage';
@@ -76,6 +77,7 @@ export function GameScreen({
   const [nomineeStageOpen, setNomineeStageOpen] = useState(false);
   const [notrStageOpen, setNotrStageOpen] = useState(false);
   const [policyStageOpen, setPolicyStageOpen] = useState(false);
+  const [peekStageOpen, setPeekStageOpen] = useState(false);
   const [playerCardsOpen, setPlayerCardsOpen] = useState(false);
   const [playerCardsClosedFor, setPlayerCardsClosedFor] = useState<string | null>(
     null,
@@ -91,6 +93,7 @@ export function GameScreen({
   const toast = useToast();
   const viewer = game.players.find((player) => player.id === viewerId);
   const phaseMeta = PHASE_META[game.phase] ?? PHASE_META.roleReveal;
+  const hasPendingPeek = Boolean(view.pendingPeekCards);
   const reformsEnacted = game.enacted.democratic + game.enacted.fascist;
   const era: 'light' | 'dark' = game.firstThreeResolved ? 'dark' : 'light';
   const eraLabel =
@@ -104,6 +107,7 @@ export function GameScreen({
   const closeNomineeStage = useCallback(() => setNomineeStageOpen(false), []);
   const closeNotrStage = useCallback(() => setNotrStageOpen(false), []);
   const closePolicyStage = useCallback(() => setPolicyStageOpen(false), []);
+  const closePeekStage = useCallback(() => setPeekStageOpen(false), []);
   const closePlayerCards = useCallback(() => {
     setPlayerCardsOpen(false);
     setPlayerCardsClosedFor(String(game.createdAt));
@@ -159,6 +163,7 @@ export function GameScreen({
     setNomineeStageOpen(false);
     setPolicyStageOpen(false);
     setNotrStageOpen(false);
+    setPeekStageOpen(false);
   }, [gatePhase]);
 
   // Oylama sırası gelince merkez oylama kartı otomatik açılır; kapatılsa
@@ -185,6 +190,19 @@ export function GameScreen({
     setNotrStageOpen(view.canChooseNotrSide && !view.canInvestigate);
   }, [view.canChooseNotrSide, view.canInvestigate, game.round]);
 
+  // Başkanın kart inceleme sırası geldiğinde üç kart ortada açılır.
+  useEffect(() => {
+    setPeekStageOpen(
+      hasPendingPeek && game.phase === 'peek' && !view.canInvestigate,
+    );
+  }, [
+    hasPendingPeek,
+    view.canInvestigate,
+    game.phase,
+    game.round,
+    game.createdAt,
+  ]);
+
   // Zorunlu soruşturma açıldığında alttaki karar sahnelerini kapat.
   useEffect(() => {
     if (!view.canInvestigate) return;
@@ -192,6 +210,7 @@ export function GameScreen({
     setNomineeStageOpen(false);
     setPolicyStageOpen(false);
     setNotrStageOpen(false);
+    setPeekStageOpen(false);
   }, [view.canInvestigate]);
 
   // Tema portal bileşenlerine de ulaşsın diye body üzerinde tutulur.
@@ -495,6 +514,9 @@ export function GameScreen({
                   ? () => setNotrStageOpen(true)
                   : undefined
               }
+              onOpenPeekStage={
+                hasPendingPeek ? () => setPeekStageOpen(true) : undefined
+              }
             />
           </div>
 
@@ -525,6 +547,7 @@ export function GameScreen({
           voteStageOpen ||
           policyStageOpen ||
           notrStageOpen ||
+          peekStageOpen ||
           gateOpen ||
           view.canInvestigate ||
           game.phase === 'gameOver'
@@ -602,6 +625,16 @@ export function GameScreen({
         error={error}
         open={policyStageOpen}
         onClose={closePolicyStage}
+      />
+
+      <PeekStage
+        game={game}
+        view={view}
+        onAction={onAction}
+        actionPending={actionPending}
+        error={error}
+        open={peekStageOpen}
+        onClose={closePeekStage}
       />
 
       <InvestigationStage
