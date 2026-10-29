@@ -3447,6 +3447,32 @@ body[data-era='dark'] .role-card {
   color: var(--sheet-dim);
 }
 
+.role-card .investigation-list__item {
+  color: var(--sheet-ink);
+  font-size: 11px;
+}
+
+.role-card .investigation-list__who {
+  flex: 1;
+}
+
+.role-card .investigation-list__who > span {
+  overflow: visible;
+  color: var(--sheet-ink);
+  font-weight: 600;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.role-card .investigation-list__item--iyi strong {
+  color: var(--sheet-petrol);
+}
+
+.role-card .investigation-list__item--kotu strong {
+  color: var(--sheet-oxblood);
+}
+
 .role-card .status-note {
   border-left: 3px solid var(--role-accent);
   border-radius: 0;
