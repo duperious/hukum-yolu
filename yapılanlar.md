@@ -7,8 +7,8 @@
 
 - **Proje:** Hüküm Yolu
 - **Son güncelleme:** 2026-10-29
-- **Son özellik commit'i:** `71d4880` — Gizli oylama sızıntısını kapat, açık oylama eşiğini ve bot koltuğunu düzelt
-- **Bu dosyadaki son değişiklikler:** Gizli oylama sızıntısının kapatılması, açık oylamanın ilk üç reforma bağlanması, blok hedefinin açık oylamada gösterilmesi ve 60 sn kopma/bot koltuğunu geri alma akışı. `71d4880` commit'iyle `main` dalına push edildi.
+- **Son özellik commit'i:** `8f879e0` — Rol kartındaki soruşturma isimlerinin görünürlüğünü düzelt
+- **Bu dosyadaki son değişiklikler:** İstihbarat Başkanı'nın soruşturma hakkı iki dönemde bir yenilendi (`5dd6abd`), Demokratik zafer eşiği 5 reforma düşürüldü ve rol kartındaki soruşturma isimlerinin soluk/kırpık görünmesi düzeltildi (`8f879e0`). Tüm değişiklikler `main` dalına push edildi.
 
 ---
 
@@ -438,6 +438,98 @@ Yapılanlar:
 ### Commit
 
 - `71d4880` olarak commit edildi ve `main` dalına push edildi.
+- `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
+
+---
+
+## 2026-10-29 — Yerel: Soruşturma temposu ve Demokratik zafer eşiği
+
+### 1. İstihbarat sorgusu iki dönemde bir
+
+- `GAME_CONFIG.powers.investigationCadenceRounds` ayarı `2` olarak eklendi.
+- `canInvestigateNow`, 2. dönemden itibaren yalnızca 2, 4, 6… dönemlerinde
+  `true` dönüyor. Aradaki dönemlerde İstihbarat Başkanı sorgu yapamıyor.
+- Zorunlu soruşturma modalı yalnızca `view.canInvestigate` gerçekten `true`
+  olduğunda açılıyor; hakkın olmadığı dönemde oyun akışı kilitlenmiyor.
+- `PrivateView` içine `isIntelligenceOfficeHolder` ve `nextInvestigationRound`
+  eklendi. Özel Yetkiler paneli, soruşturma hakkı olmayan dönemde bir sonraki
+  fırsat dönemini gösteriyor.
+- Soruşturma sonucu modalı yalnızca aynı dönemde yapılan sorgu için açılıyor;
+  `investigationUsedThisRound` kontrolü eski sonucun sonraki dönemlerde
+  yeniden açılmasını engelliyor.
+- Kalıcı `GameState` alanı eklenmedi. Tempo `round` üzerinden hesaplandığı
+  için mevcut kayıtlı oyunlar migration gerektirmiyor.
+
+### 2. Demokratik zafer eşiği 5 reforma düştü
+
+- `GAME_CONFIG.democraticWinThreshold` 6 → 5 olarak değiştirildi.
+- Demokratik çizelge etiketleri son adımı “Demokratik zafer” olacak şekilde
+  tek kaynaktan üretiliyor; `PolicyTrack` içindeki ayrı sabit etiket listesi
+  kaldırıldı.
+- Lobi, ana sayfa, rehber, rol kartları, oyuncu kartı ve README metinleri
+  5 reforma göre güncellendi.
+- `RULE_ASSUMPTIONS` içindeki soruşturma temposu varsayımı güncellendi.
+
+### Etkilenen dosyalar
+
+- `src/game/config.ts`
+- `src/game/engine.ts`
+- `src/game/types.ts`
+- `src/game/redact.ts`
+- `src/game/roles.ts`
+- `src/components/InvestigationStage.tsx`
+- `src/components/PowerPanel.tsx`
+- `src/components/PolicyTrack.tsx`
+- `src/components/LobbyView.tsx`
+- `src/components/PlayerCards.tsx`
+- `src/pages/GuidePage.tsx`
+- `src/pages/HomePage.tsx`
+- `README.md`
+- `tests/engine.test.ts`
+- `tests/roles.test.ts`
+- `yapılanlar.md`
+
+### Doğrulama
+
+- `npm run typecheck`
+- `npm run test -- --run` — 58/58 test geçti
+- `npm run build` — PWA 40 kayıt oluşturdu
+- Kullanıcıya görünen metinlerde eski “6 Demokratik Reform” ve “her dönem
+  soruşturma” ifadeleri tarandı; kalmadı.
+
+### Commit
+
+- `5dd6abd` olarak commit edildi ve `main` dalına push edildi.
+- `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
+
+---
+
+## 2026-10-29 — Rol kartı: Soruşturma notlarındaki oyuncu adları
+
+- İstihbarat Başkanı rol kartındaki “Soruşturma notların” listesinde oyuncu
+  adları, rol kartının açık kâğıt zemini yerine koyu tema gövde metin rengini
+  miras aldığı için soluk görünüyordu.
+- `src/styles/identity.css` içinde `.role-card` kapsamına özel isim rengi,
+  font ağırlığı ve boyutu tanımlandı.
+- İsimlerin uzun olduğunda üç noktayla kırpılması yerine alt satıra geçmesi
+  sağlandı; böylece oyuncu adı her zaman tam okunabiliyor.
+- Liste etiketleri rol kartının kâğıt paletine uygun petrol/oxblood tonlarına
+  sabitlendi; koyu paneldeki kompakt liste etkilenmedi.
+
+### Etkilenen dosyalar
+
+- `src/styles/identity.css`
+- `yapılanlar.md`
+
+### Doğrulama
+
+- `npm run typecheck`
+- `npm run test -- --run` — 58/58 test geçti
+- `npm run build` — production build başarılı
+
+### Commit
+
+- `8f879e0` olarak commit edildi ve `main` dalına push edildi.
 - `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
 
 ---
