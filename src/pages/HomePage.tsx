@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { GAME_CONFIG } from '../game';
 import { ProfileModal } from '../components/ProfileModal';
 import { Avatar } from '../components/ui/Avatar';
 import { Button } from '../components/ui/Button';
@@ -306,7 +307,7 @@ export default function HomePage() {
               <span className="step-card__number">03</span>
               <h3>Reformları yönlendir</h3>
               <p>
-                Altı Demokratik Reform Demokratları, yedi Otokrat Reform Otokratları
+                {GAME_CONFIG.democraticWinThreshold} Demokratik Reform Demokratları, yedi Otokrat Reform Otokratları
                 zafere taşır. Tutuklamalar ve özel yetkiler dengeleri değiştirir.
               </p>
             </article>

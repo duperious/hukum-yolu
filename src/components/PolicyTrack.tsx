@@ -1,26 +1,8 @@
 import { Crown, Landmark, Scale, Swords } from 'lucide-react';
+import { DEMOCRATIC_TRACK_LABELS, FASCIST_TRACK_LABELS } from '../game';
 import type { PolicyCard as PolicyCardType } from '../game';
 import { cn } from '../lib/cn';
 import { PolicyCard } from './PolicyCard';
-
-const DEFAULT_FASCIST_LABELS = [
-  'Özel yetki yok',
-  'Özel yetki yok',
-  '3. reform yetkisi',
-  'Lider PM ise zafer',
-  'Tutuklama',
-  'Tutuklama',
-  'Otokrat zaferi',
-];
-
-const DEFAULT_DEMOCRATIC_LABELS = [
-  '1. reform',
-  '2. reform',
-  '3. reform',
-  '4. reform',
-  '5. reform',
-  'Demokratik zafer',
-];
 
 const TRACK_META = {
   demokratik: {
@@ -86,8 +68,8 @@ export function PolicyTrack({
   const resolvedLabels =
     labels ??
     (type === 'demokratik'
-      ? DEFAULT_DEMOCRATIC_LABELS.slice(0, length)
-      : DEFAULT_FASCIST_LABELS.slice(0, length));
+      ? DEMOCRATIC_TRACK_LABELS.slice(0, length)
+      : FASCIST_TRACK_LABELS.slice(0, length));
   const safeEnacted = Math.max(0, Math.min(enacted, length));
 
   return (

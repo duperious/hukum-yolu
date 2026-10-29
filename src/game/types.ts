@@ -338,6 +338,9 @@ export interface PrivateView {
   canInvestigate: boolean;
   investigateTargets: string[];
   investigationUsedThisRound: boolean;
+  isIntelligenceOfficeHolder: boolean;
+  /** Bir sonraki soruşturma hakkının açılacağı dönem; yetki yoksa null. */
+  nextInvestigationRound: number | null;
   canBlock: boolean;
   blockTargetId: string | null;
   youWereBlocked: boolean;
@@ -407,6 +410,7 @@ export interface GameConfig {
   failedGovernmentLimit: number;
   powers: {
     investigationStartRound: number;
+    investigationCadenceRounds: number;
     thirdReformAtFascist: number;
     thirdReformPeekMaxPlayers: number;
     assassinationAtFascist: readonly number[];

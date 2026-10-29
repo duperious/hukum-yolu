@@ -5,6 +5,7 @@ import {
   canUseBlockNow,
   getAssassinationTargets,
   getInvestigateTargets,
+  getNextInvestigationRound,
 } from './engine';
 import { getKnownPlayersFor } from './knowledge';
 import { GAME_CONFIG, getRoleCounts } from './config';
@@ -13,6 +14,7 @@ import {
   getEligibleChancellorIds,
   getPlayer,
   getVotePower,
+  isIntelligenceOfficeHolder,
   isOpenVoting,
 } from './helpers';
 import type {
@@ -188,6 +190,7 @@ export function getPrivateView(
   const isChancellor = state.chancellorId === player.id;
   const isNumericLeader = state.leaderId === player.id;
   const canInvestigate = canInvestigateNow(state, player.id);
+  const intelligenceOfficeHolder = isIntelligenceOfficeHolder(state, player.id);
   const canBlock = canUseBlockNow(state, player.id);
   const canNominate =
     state.phase === 'nomination' && isPresident && player.alive;
@@ -253,6 +256,10 @@ export function getPrivateView(
     investigateTargets: canInvestigate ? getInvestigateTargets(state, player.id) : [],
     investigationUsedThisRound:
       (state.investigatedThisRound[player.id]?.length ?? 0) > 0,
+    isIntelligenceOfficeHolder: intelligenceOfficeHolder,
+    nextInvestigationRound: intelligenceOfficeHolder
+      ? getNextInvestigationRound(state, player.id)
+      : null,
     canBlock,
     blockTargetId:
       state.pendingBlock &&

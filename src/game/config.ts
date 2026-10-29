@@ -16,7 +16,7 @@ import type {
 export const GAME_CONFIG: GameConfig = {
   minPlayers: 5,
   maxPlayers: 10,
-  democraticWinThreshold: 6,
+  democraticWinThreshold: 5,
   fascistTrackLength: 7,
   deck: { democratic: 8, fascist: 12 },
   drawCount: 3,
@@ -24,6 +24,7 @@ export const GAME_CONFIG: GameConfig = {
   failedGovernmentLimit: 3,
   powers: {
     investigationStartRound: 2,
+    investigationCadenceRounds: 2,
     thirdReformAtFascist: 3,
     thirdReformPeekMaxPlayers: 6,
     assassinationAtFascist: [5, 6],
@@ -79,7 +80,10 @@ export const FASCIST_TRACK_LABELS: string[] = [
 
 export const DEMOCRATIC_TRACK_LABELS: string[] = Array.from(
   { length: GAME_CONFIG.democraticWinThreshold },
-  (_, i) => `${i + 1}. Demokratik Reform`,
+  (_, i) =>
+    i === GAME_CONFIG.democraticWinThreshold - 1
+      ? 'Demokratik zafer'
+      : `${i + 1}. Demokratik Reform`,
 );
 
 export const ROLE_ORDER: Role[] = [
@@ -94,7 +98,7 @@ export const ROLE_ORDER: Role[] = [
 export const RULE_ASSUMPTIONS: string[] = [
   'Başkan kendisini Başbakan adayı gösteremez. Başka uygun aday kalmadığında bu kısıt gevşetilir.',
   'Önceki dönemin Başbakanı bir sonraki dönemde aday gösterilemez. Başka uygun aday kalmadığında bu kısıt gevşetilir.',
-  'Soruşturma yetkisi 2. dönemde açılır ve her dönem bir kez yenilenir; 2. Otokrat Reform’a bağlı değildir. Soruşturma her dönem zorunludur.',
+  'Soruşturma yetkisi 2. dönemde açılır ve iki dönemde bir yenilenir (2, 4, 6…); 2. Otokrat Reform’a bağlı değildir. Hak olan dönemde soruşturma zorunludur; hakkın olmadığı dönemde bu adım atlanır.',
   'Soruşturma sonucu yalnızca sıradan Otokrat için "Otokrat"; diğer tüm roller için "Demokrat" kabul edilir. Büyük Vezir, Otokrat Lider ve İstihbarat Başkanı da "Demokrat" döner.',
   'Tasfiye hedefleri tablodaki rol kartlarına göre çözülür. Tablo ile "Demokrat Parti Başkanı ve halefi" açıklaması arasındaki fark README\'de belirtilmiştir.',
   'Tasfiye zaferi yalnızca kırmızı Nötr liderliği devraldıktan sonra geçerli kişisel zaferdir.',

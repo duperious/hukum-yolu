@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   applyAction,
   autoResolveBots,
+  canInvestigateNow,
   GameError,
   restartGame,
   startGame,
@@ -504,13 +505,13 @@ describe('tutuklama, liderlik devri ve zaferler', () => {
     expect(next.winnerIds).not.toContain('p4');
   });
 
-  it('6 Demokratik Reform Demokrat zaferini getirir; mavi Nötr ve geçen Büyük Vezir kazanır', () => {
+  it('5 Demokratik Reform Demokrat zaferini getirir; mavi Nötr ve geçen Büyük Vezir kazanır', () => {
     const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
     const state = forceLegislative(base, 'p1', 'p2', ['demokratik', 'otokrat']);
     const prepared: GameState = {
       ...state,
-      enacted: { democratic: 5, fascist: 0 },
-      policyHistory: ['demokratik', 'demokratik', 'demokratik', 'demokratik', 'demokratik'],
+      enacted: { democratic: 4, fascist: 0 },
+      policyHistory: ['demokratik', 'demokratik', 'demokratik', 'demokratik'],
       firstThreeResolved: true,
       notrSide: 'mavi',
       notrChoicePending: false,
@@ -820,8 +821,8 @@ describe('gizlilik ve redaksiyon', () => {
     const state = forceLegislative(base, 'p1', 'p2', ['demokratik', 'otokrat']);
     const prepared: GameState = {
       ...state,
-      enacted: { democratic: 5, fascist: 0 },
-      policyHistory: ['demokratik', 'demokratik', 'demokratik', 'demokratik', 'demokratik'],
+      enacted: { democratic: 4, fascist: 0 },
+      policyHistory: ['demokratik', 'demokratik', 'demokratik', 'demokratik'],
       firstThreeResolved: true,
       notrSide: 'mavi',
       notrChoicePending: false,
@@ -838,7 +839,7 @@ describe('gizlilik ve redaksiyon', () => {
 });
 
 describe('soruşturma takvimi', () => {
-  it('soruşturma hakkı 2. dönemde açılır, 2. Otokrat Reform’a bağlı değildir', () => {
+  it('soruşturma hakkı 2. dönemde açılır ve iki dönemde bir yenilenir', () => {
     const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
     const firstRound: GameState = {
       ...base,
@@ -846,6 +847,7 @@ describe('soruşturma takvimi', () => {
       enacted: { democratic: 0, fascist: 3 },
       intelligenceOfficeHolderId: 'p5',
     };
+    expect(canInvestigateNow(firstRound, 'p5')).toBe(false);
     expect(() =>
       applyAction(firstRound, 'p5', { type: 'investigate', targetId: 'p2' }),
     ).toThrow(GameError);
@@ -856,22 +858,46 @@ describe('soruşturma takvimi', () => {
       enacted: { democratic: 0, fascist: 0 },
       intelligenceOfficeHolderId: 'p5',
     };
+    expect(canInvestigateNow(secondRound, 'p5')).toBe(true);
     const next = applyAction(secondRound, 'p5', {
       type: 'investigate',
       targetId: 'p2',
     });
     expect(next.investigations['p5']?.['p2']).toBe('kotu');
+    expect(canInvestigateNow(next, 'p5')).toBe(false);
+    expect(redactGameState(next, 'p5').private.nextInvestigationRound).toBe(4);
     expect(() =>
       applyAction(next, 'p5', { type: 'investigate', targetId: 'p3' }),
     ).toThrow(GameError);
 
-    // Yeni dönemde soruşturma hakkı yeniden açılır.
+    // Aradaki dönemde soruşturma hakkı yoktur; zorunlu soruşturma ekranı
+    // açılmaz ve oyun akışı kilitlenmez.
     const failedVote = voteAll(forceVote(next, 'p1', 'p2'), false);
     expect(failedVote.phase).toBe('voteResult');
-    const nextRound = closeGate(failedVote);
-    expect(nextRound.round).toBe(3);
-    expect(nextRound.investigatedThisRound['p5']).toBeUndefined();
-    const again = applyAction(nextRound, 'p5', {
+    const thirdRound = closeGate(failedVote);
+    expect(thirdRound.round).toBe(3);
+    expect(thirdRound.investigatedThisRound['p5']).toBeUndefined();
+    expect(canInvestigateNow(thirdRound, 'p5')).toBe(false);
+    const thirdView = redactGameState(thirdRound, 'p5').private;
+    expect(thirdView.isIntelligenceOfficeHolder).toBe(true);
+    expect(thirdView.canInvestigate).toBe(false);
+    expect(thirdView.investigateTargets).toEqual([]);
+    expect(thirdView.nextInvestigationRound).toBe(4);
+    expect(() =>
+      applyAction(thirdRound, 'p5', { type: 'investigate', targetId: 'p3' }),
+    ).toThrow(GameError);
+
+    // Dördüncü dönemde hak yeniden açılır.
+    const fourthRound: GameState = {
+      ...thirdRound,
+      round: 4,
+      phase: 'nomination',
+      presidentId: 'p1',
+      chancellorId: null,
+      votes: {},
+    };
+    expect(canInvestigateNow(fourthRound, 'p5')).toBe(true);
+    const again = applyAction(fourthRound, 'p5', {
       type: 'investigate',
       targetId: 'p3',
     });

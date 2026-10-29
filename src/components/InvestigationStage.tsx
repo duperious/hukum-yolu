@@ -8,9 +8,10 @@ import { Button } from './ui/Button';
 import { Modal } from './ui/Modal';
 
 /**
- * İstihbarat Başkanı'nın her dönem yapmak zorunda olduğu soruşturmayı
- * ekranın ortasında yönetir. Soruşturma tamamlanmadan kapatılamaz; sonuç
- * "iyi/kötü" olarak değil, Demokrat/Otokrat kartıyla gösterilir.
+ * İstihbarat Başkanı'nın soruşturma hakkı olan dönemde yapmak zorunda
+ * olduğu sorguyu ekranın ortasında yönetir. Soruşturma tamamlanmadan
+ * kapatılamaz; sonuç "iyi/kötü" olarak değil, Demokrat/Otokrat kartıyla
+ * gösterilir.
  */
 export function InvestigationStage({
   view,
@@ -48,8 +49,14 @@ export function InvestigationStage({
     : null;
 
   // Sonuç kartı, soruşturma eylemi sunucuya işlendikten sonra açılır.
+  // `investigationUsedThisRound` kontrolü, eski sonucun sonraki dönemlerde
+  // yeniden açılmasını engeller.
   const resultOpen = Boolean(
-    result && !view.canInvestigate && resultKey && dismissedKey !== resultKey,
+    result &&
+      view.investigationUsedThisRound &&
+      !view.canInvestigate &&
+      resultKey &&
+      dismissedKey !== resultKey,
   );
   const mandatoryOpen = view.canInvestigate && game.phase !== 'gameOver';
   const open = mandatoryOpen || resultOpen;
@@ -77,7 +84,7 @@ export function InvestigationStage({
       subtitle={
         resultOpen
           ? `${target?.name ?? 'Hedef'} için soruşturma kartı açıldı. Bu sonuç yalnızca sana gösterilir.`
-          : 'Bu dönem bir oyuncuyu soruşturmadan döneme devam edemezsin. Sonuç yalnızca sana gösterilir; seçim geri alınamaz.'
+          : 'Soruşturma döneminde bir oyuncuyu seçmeden döneme devam edemezsin. Sonuç yalnızca sana gösterilir; seçim geri alınamaz.'
       }
       size={resultOpen ? 'lg' : 'md'}
       hideClose={!resultOpen}
@@ -149,8 +156,8 @@ export function InvestigationStage({
           <div className="investigation-stage__notice">
             <Eye size={16} aria-hidden="true" />
             <p>
-              Bu dönem bir hedef seçmelisin. Soruşturma yapılmadan oy, adaylık
-              veya reform adımına geçilemez.
+              Soruşturma döneminde bir hedef seçmelisin. Soruşturma yapılmadan
+              oy, adaylık veya reform adımına geçilemez.
             </p>
           </div>
           <div

@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { GAME_CONFIG } from '../game';
 import type { ConnectionState } from '../hooks/useMultiplayerRoom';
 import type { LobbyAction, LobbyPlayerDto, RoomSnapshot } from '../lib/multiplayer';
 import { cn } from '../lib/cn';
@@ -401,7 +402,7 @@ export function LobbyView({
             </header>
             <ul className="rule-list">
               <li>5-10 oyuncu. Botlar eksikleri tamamlayabilir.</li>
-              <li>6 Demokratik Reform Demokrat zaferini getirir.</li>
+              <li>{GAME_CONFIG.democraticWinThreshold} Demokratik Reform Demokrat zaferini getirir.</li>
               <li>7 Otokrat Reform Otokrat zaferini getirir.</li>
               <li>3 üst üste ret, destenin üst kartını otomatik yürürlüğe sokar.</li>
               <li>İlk üç reforma kadar oylar gizlidir; sonrasında açık oylama başlar.</li>

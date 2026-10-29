@@ -33,6 +33,7 @@ export function PowerPanel({
 
   const showInvestigation =
     view.canInvestigate ||
+    view.isIntelligenceOfficeHolder ||
     view.investigationUsedThisRound ||
     investigationEntries.length > 0;
   const showBlock =
@@ -77,7 +78,7 @@ export function PowerPanel({
             <div>
               <h4>Soruşturma</h4>
               <p>
-                Her dönem zorunludur. Sonuç yalnızca sana gösterilir ve
+                İki dönemde bir zorunludur. Sonuç yalnızca sana gösterilir ve
                 Demokrat/Otokrat kartıyla açıklanır.
               </p>
             </div>
@@ -89,8 +90,14 @@ export function PowerPanel({
           ) : (
             <p className="muted">
               {view.investigationUsedThisRound
-                ? 'Bu dönem soruşturmanı tamamladın.'
-                : 'Soruşturma yetkisi şu anda kullanılamıyor.'}
+                ? `Bu dönem soruşturmanı tamamladın.${
+                    view.nextInvestigationRound
+                      ? ` Sonraki fırsat: ${view.nextInvestigationRound}. dönem.`
+                      : ''
+                  }`
+                : view.isIntelligenceOfficeHolder && view.nextInvestigationRound
+                  ? `Soruşturma hakkı iki dönemde bir yenilenir. Sonraki fırsat: ${view.nextInvestigationRound}. dönem.`
+                  : 'Soruşturma yetkisi şu anda kullanılamıyor.'}
             </p>
           )}
 

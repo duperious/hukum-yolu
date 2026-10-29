@@ -88,11 +88,11 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     teamLabel: 'Demokrat Takımı',
     shortDescription: 'Gizli soruşturma yetkisine sahip Demokrat.',
     mission:
-      'Soruşturma yetkini kullanarak Otokratları bul. Demokratik Reformları 6\'ya ulaştır.',
+      'Soruşturma yetkini kullanarak Otokratları bul. Demokratik Reformları 5\'e ulaştır.',
     description:
-      'Demokrat takımındasın. 2. dönemden itibaren her dönem bir oyuncuyu soruşturmak zorundasın. Sonuç yalnızca sana gösterilir. Tutuklanırsan soruşturma yetkisi Demokrat Parti Başkanı’na geçer. Demokratik Reformlar 6’ya ulaşırsa veya Otokrat Lider tutuklanırsa kazanırsın.',
+      'Demokrat takımındasın. 2. dönemden itibaren iki dönemde bir oyuncu soruşturmak zorundasın. Sonuç yalnızca sana gösterilir. Tutuklanırsan soruşturma yetkisi Demokrat Parti Başkanı’na geçer. Demokratik Reformlar 5’e ulaşırsa veya Otokrat Lider tutuklanırsa kazanırsın.',
     abilities: [
-      '2. dönemden itibaren her dönem bir oyuncuyu soruşturmak zorundasın.',
+      '2. dönemden itibaren iki dönemde bir oyuncu soruşturmak zorundasın.',
       'Soruşturma sonucu Demokrat veya Otokrat kartıyla yalnızca sana gösterilir.',
       'Tutuklanırsan yetkin Demokrat Parti Başkanı’na geçer.',
       'Demokratik zaferde kazanırsın.',
@@ -108,11 +108,11 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     teamLabel: 'Demokrat Takımı',
     shortDescription: 'Demokratik cephenin sıradan üyesi.',
     mission:
-      'Demokratik Reformları 6\'ya ulaştır veya Otokrat Lider\'i tutuklat.',
+      'Demokratik Reformları 5\'e ulaştır veya Otokrat Lider\'i tutuklat.',
     description:
-      'Demokrat takımındasın. Özel bir gizli bilgin yoktur; oylar, hükümetler ve reformlar üzerinden çıkarım yaparsın. Demokratik Reformlar 6’ya ulaşırsa veya Otokrat Lider tutuklanırsa kazanırsın.',
+      'Demokrat takımındasın. Özel bir gizli bilgin yoktur; oylar, hükümetler ve reformlar üzerinden çıkarım yaparsın. Demokratik Reformlar 5’e ulaşırsa veya Otokrat Lider tutuklanırsa kazanırsın.',
     abilities: [
-      'Demokratik Reformları 6’ya ulaştır.',
+      'Demokratik Reformları 5’e ulaştır.',
       'Otokrat Lider’in tutuklanmasını sağla.',
       'Gizli rol bilgin yoktur; sosyal çıkarım yaparsın.',
       'Demokratik zaferde kazanırsın.',

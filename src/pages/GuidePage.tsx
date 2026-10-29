@@ -72,7 +72,7 @@ const PHASES: Array<{ title: string; text: string }> = [
   },
   {
     title: 'Özel yetkiler',
-    text: 'Reform çizelgesindeki eşikler üçüncü reform yetkisi, tutuklama ve liderlik kontrolü gibi güçleri açar. Soruşturma ise İstihbarat Başkanı’nda 2. dönemden itibaren her dönem yenilenir ve zorunludur.',
+    text: 'Reform çizelgesindeki eşikler üçüncü reform yetkisi, tutuklama ve liderlik kontrolü gibi güçleri açar. Soruşturma ise İstihbarat Başkanı’nda 2. dönemden itibaren iki dönemde bir yenilenir ve hak olan dönemde zorunludur.',
   },
   {
     title: 'Oyun sonu',
@@ -315,8 +315,10 @@ export default function GuidePage() {
               <h3>Soruşturma</h3>
               <p>
                 İstihbarat Başkanı, {GAME_CONFIG.powers.investigationStartRound}. dönemden
-                itibaren her dönem bir oyuncunun kartını soruşturmak zorundadır.
-                Soruşturma tamamlanmadan oy, adaylık veya reform adımına geçilemez.
+                itibaren iki dönemde bir (2, 4, 6…) bir oyuncunun kartını
+                soruşturmak zorundadır. Hakkın olmadığı dönemlerde bu adım
+                atlanır. Soruşturma tamamlanmadan oy, adaylık veya reform adımına
+                geçilemez.
                 Sonuç yalnızca ona gösterilir. Sıradan Otokrat “Otokrat”, diğer
                 roller “Demokrat” kartı verir; Otokrat Lider ve Nötr de Demokrat
                 görünür.

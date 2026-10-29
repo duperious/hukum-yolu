@@ -12,9 +12,9 @@ import type { Role } from '../src/game/types';
 const PLAYER_COUNTS = [5, 6, 7, 8, 9, 10];
 
 describe('rol dağılımı ve sabitler', () => {
-  it('demokratik zafer eşiği tek kaynaktan 6 olarak gelir', () => {
-    expect(DEMOCRATIC_WIN_THRESHOLD).toBe(6);
-    expect(GAME_CONFIG.democraticWinThreshold).toBe(6);
+  it('demokratik zafer eşiği tek kaynaktan 5 olarak gelir', () => {
+    expect(DEMOCRATIC_WIN_THRESHOLD).toBe(5);
+    expect(GAME_CONFIG.democraticWinThreshold).toBe(5);
   });
 
   it.each(PLAYER_COUNTS)('%i oyuncu için rol sayıları toplamı oyuncu sayısına eşittir', (count) => {

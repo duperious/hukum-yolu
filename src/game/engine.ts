@@ -302,15 +302,43 @@ export function getAssassinationTargets(state: GameState, actorId: string): stri
     .map((p) => p.id);
 }
 
+/** Soruşturma hakkı, başlangıç döneminden itibaren iki dönemde bir açılır. */
+export function isInvestigationRound(round: number): boolean {
+  const { investigationStartRound, investigationCadenceRounds } = GAME_CONFIG.powers;
+  if (round < investigationStartRound) return false;
+  return (round - investigationStartRound) % investigationCadenceRounds === 0;
+}
+
 export function canInvestigateNow(state: GameState, playerId: string): boolean {
   const player = getPlayer(state, playerId);
   if (!player?.alive) return false;
   if (state.intelligenceOfficeHolderId !== playerId) return false;
-  if (state.round < GAME_CONFIG.powers.investigationStartRound) return false;
+  if (!isInvestigationRound(state.round)) return false;
   if (!['nomination', 'voting', 'presidentDiscard', 'chancellorEnact'].includes(state.phase)) {
     return false;
   }
   return (state.investigatedThisRound[playerId]?.length ?? 0) === 0;
+}
+
+/**
+ * Yetkilinin bir sonraki soruşturma fırsatının dönemi. Hak şu anda
+ * kullanılabiliyorsa içinde bulunulan dönem döner; yetki yoksa null.
+ */
+export function getNextInvestigationRound(
+  state: GameState,
+  playerId: string,
+): number | null {
+  const player = getPlayer(state, playerId);
+  if (!player?.alive || state.intelligenceOfficeHolderId !== playerId) return null;
+  if (canInvestigateNow(state, playerId)) return state.round;
+
+  const { investigationStartRound, investigationCadenceRounds } = GAME_CONFIG.powers;
+  if (state.round < investigationStartRound) return investigationStartRound;
+
+  const remainder = (state.round - investigationStartRound) % investigationCadenceRounds;
+  return remainder === 0
+    ? state.round + investigationCadenceRounds
+    : state.round + (investigationCadenceRounds - remainder);
 }
 
 export function canUseBlockNow(state: GameState, playerId: string): boolean {
