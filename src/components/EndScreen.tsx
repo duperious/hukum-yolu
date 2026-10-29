@@ -1,5 +1,8 @@
 import { Crown, LogOut, RefreshCw, Scale, Sparkles, Swords, Trophy } from 'lucide-react';
 import { useEffect } from 'react';
+import demokratKazandi from '../assets/end/demokrat-kazandi.jpg';
+import otokratKazandi from '../assets/end/otokrat-kazandi.jpg';
+import yuceImparatorKazandi from '../assets/end/yuce-imparator-kazandi.jpg';
 import { ROLE_INFO } from '../game';
 import type { PublicGameState, Winner } from '../game';
 import { cn } from '../lib/cn';
@@ -8,25 +11,42 @@ import { Button } from './ui/Button';
 
 const WINNER_META: Record<
   Winner,
-  { label: string; subtitle: string; icon: typeof Crown; tone: string }
+  {
+    label: string;
+    subtitle: string;
+    icon: typeof Crown;
+    tone: string;
+    image?: string;
+    imageWidth?: number;
+    imageHeight?: number;
+  }
 > = {
   demokrat: {
     label: 'Demokratlar kazandı',
     subtitle: 'Hüküm maviye geçti.',
     icon: Scale,
     tone: 'blue',
+    image: demokratKazandi,
+    imageWidth: 662,
+    imageHeight: 1322,
   },
   otokrat: {
     label: 'Otokratlar kazandı',
     subtitle: 'Hüküm kırmızıya geçti.',
     icon: Swords,
     tone: 'red',
+    image: otokratKazandi,
+    imageWidth: 656,
+    imageHeight: 1314,
   },
   notr: {
-    label: 'Nötr kazandı',
-    subtitle: 'Tek başına hüküm sürdü.',
+    label: 'Yüce İmparator kazandı',
+    subtitle: 'Kırmızı Nötr, tek başına hüküm sürdü.',
     icon: Sparkles,
     tone: 'violet',
+    image: yuceImparatorKazandi,
+    imageWidth: 654,
+    imageHeight: 1314,
   },
 };
 
@@ -65,19 +85,40 @@ export function EndScreen({
   return (
     <div className={cn('end-screen', meta && `end-screen--${meta.tone}`)}>
       <div className="end-screen__panel">
-        <div className="end-screen__hero">
-          <span className="end-screen__icon" aria-hidden="true">
-            <Icon size={42} strokeWidth={1.5} />
-          </span>
-          <p className="eyebrow">Hüküm verildi</p>
-          <h1>{meta?.label ?? 'Oyun sona erdi'}</h1>
-          <p className="end-screen__subtitle">{meta?.subtitle ?? game.winReason}</p>
-          {game.winReason ? (
-            <p className="end-screen__reason">{game.winReason}</p>
-          ) : null}
-          <div className={cn('outcome-badge', viewerWon ? 'outcome-badge--win' : 'outcome-badge--lose')}>
-            {viewerWon ? <Crown size={16} /> : null}
-            {`${viewerWon ? 'Kazandın' : 'Kaybettin'}${viewer ? `, ${viewer.name}` : ''}`}
+        <div
+          className={cn(
+            'end-screen__hero',
+            meta?.image && 'end-screen__hero--poster',
+          )}
+        >
+          {meta?.image ? (
+            <figure className="end-screen__poster">
+              <img
+                src={meta.image}
+                alt={`${meta.label} final görseli`}
+                width={meta.imageWidth ?? 662}
+                height={meta.imageHeight ?? 1322}
+                loading="eager"
+                decoding="async"
+              />
+            </figure>
+          ) : (
+            <span className="end-screen__icon" aria-hidden="true">
+              <Icon size={42} strokeWidth={1.5} />
+            </span>
+          )}
+
+          <div className="end-screen__hero-copy">
+            <p className="eyebrow">Hüküm verildi</p>
+            <h1>{meta?.label ?? 'Oyun sona erdi'}</h1>
+            <p className="end-screen__subtitle">{meta?.subtitle ?? game.winReason}</p>
+            {game.winReason ? (
+              <p className="end-screen__reason">{game.winReason}</p>
+            ) : null}
+            <div className={cn('outcome-badge', viewerWon ? 'outcome-badge--win' : 'outcome-badge--lose')}>
+              {viewerWon ? <Crown size={16} /> : null}
+              {`${viewerWon ? 'Kazandın' : 'Kaybettin'}${viewer ? `, ${viewer.name}` : ''}`}
+            </div>
           </div>
         </div>
 
