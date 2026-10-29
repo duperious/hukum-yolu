@@ -7,8 +7,8 @@
 
 - **Proje:** Hüküm Yolu
 - **Son güncelleme:** 2026-10-29
-- **Son özellik commit'i:** `17cc370` — Başkanın kart incelemesini otomatik açılan modala taşı
-- **Bu dosyadaki son değişiklikler:** Başkanın kart inceleme sahnesi sayfa akışından çıkarılıp otomatik açılan modal hâline getirildi (`17cc370`); önceki soruşturma temposu, 5 reform eşiği ve rol kartı isim düzeltmeleri de `main` dalında.
+- **Son özellik commit'i:** `683084a` — Üç zafer için final posterlerini oyun sonu ekranına ekle
+- **Bu dosyadaki son değişiklikler:** Demokratlar, Otokratlar ve kırmızı Nötr’ün “Yüce İmparator” zaferi için final posterleri oyun sonu ekranına eklendi (`683084a`).
 
 ---
 
@@ -570,6 +570,47 @@ Yapılanlar:
 ### Commit
 
 - `17cc370` olarak commit edildi ve `main` dalına push edildi.
+- `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
+
+---
+
+## 2026-10-29 — Yerel: Demokratlar, Otokratlar ve Yüce İmparator zafer final görselleri
+
+### Yapılanlar
+
+- Demokratlar, Otokratlar ve kırmızı Nötr’ün “Yüce İmparator” zaferi için
+  gönderilen final görselleri `src/assets/end/` altına orijinal JPEG olarak
+  eklendi.
+- Oyun sonu ekranındaki zafer başlığı iki sütunlu poster düzenine geçirildi:
+  solda final görseli, sağda zafer başlığı, açıklama ve oyuncu sonucu.
+- Nötr’ün kişisel zaferi motorda yalnızca kırmızı tarafı seçip liderliği
+  devraldığında gerçekleştiği için bu ekran “Yüce İmparator kazandı” başlığıyla
+  gösteriliyor. Mavi tarafı seçen Nötr, Demokrat zaferi ekranını görüyor.
+- Üç zafer türünde de poster görünür; poster bulunan zaferlerde eski ikon
+  gizleniyor.
+- Mobilde poster ve metin tek sütuna düşüyor; görsel okunabilir genişlikte
+  kalıyor.
+
+### Etkilenen dosyalar
+
+- `src/assets/end/demokrat-kazandi.jpg`
+- `src/assets/end/otokrat-kazandi.jpg`
+- `src/assets/end/yuce-imparator-kazandi.jpg`
+- `src/components/EndScreen.tsx`
+- `src/styles/identity.css`
+- `yapılanlar.md`
+
+### Doğrulama
+
+- `npm run typecheck`
+- `npm run test -- --run` — 58/58 test geçti
+- `npm run build` — production build başarılı
+- Tarayıcıda geçici Demokratlar ve Nötr oyun sonu durumlarıyla posterlerin
+  yüklendiği ve düzenin render edildiği doğrulandı.
+
+### Commit
+
+- `683084a` olarak commit edildi ve `main` dalına push edildi.
 - `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
 
 ---
