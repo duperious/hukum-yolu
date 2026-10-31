@@ -6,9 +6,9 @@
 > en eski değişiklik üstte, en yeni değişiklik altta yer alır.
 
 - **Proje:** Hüküm Yolu
-- **Son güncelleme:** 2026-10-29
-- **Son özellik commit'i:** `4b7e3fe` — Oyun sonu ekranını kompaktlaştır
-- **Bu dosyadaki son değişiklikler:** Oyun sonu ekranı kompaktlaştırıldı; poster, başlık, listeler ve eylemler tek ekrana sığacak şekilde küçültüldü (`4b7e3fe`).
+- **Son güncelleme:** 2026-10-31
+- **Son özellik commit'i:** `7616847` — Mobil rol onayını ve oylama kartlarını düzenle
+- **Bu dosyadaki son değişiklikler:** Mobilde rol kartı onay butonu sabit footer’a alındı ve EVET/HAYIR oylama kartları yan yana getirildi (`7616847`); `main` dalına push edildi.
 
 ---
 
@@ -646,6 +646,44 @@ Yapılanlar:
 ### Commit
 
 - `4b7e3fe` olarak commit edildi ve `main` dalına push edildi.
+- `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
+
+---
+
+## 2026-10-31 — Yerel: Mobil rol onayı ve oylama kartları
+
+### Yapılanlar
+
+- Rol kartı modalı `100dvh` içine sabitlendi; kart gövdesi kendi içinde
+  kaydırılıyor ve “Rolümü Anladım” butonu sabit (sticky) footer’da kalıyor.
+- Footer’a güvenli alan (`env(safe-area-inset-bottom)`) eklendi; iPhone’da
+  home çubuğu butonu kapatmıyor.
+- Footer arka planı kartın kâğıt rengiyle eşleştirildi; kaydırılan içerik
+  footer’ın altından görünmüyor.
+- Mobilde (≤560px) EVET ve HAYIR kartları tek sütun yerine iki sütuna alındı;
+  boşluk 8px’e indirildi. Her iki kart ve “Oyu Onayla ve Gönder” butonu aynı
+  ekranda görünüyor.
+- Eski tek sütun ve metin tabanlı kart kuralları temizlendi.
+
+### Etkilenen dosyalar
+
+- `src/styles/game.css`
+- `src/styles/identity.css`
+- `src/styles/era.css`
+- `yapılanlar.md`
+
+### Doğrulama
+
+- `npm run test -- --run` — 58/58 test geçti
+- `npm run build` — production build başarılı
+- Chrome mobil emülasyonunda 390×844, 360×640 ve 320×568 boyutlarında:
+  - rol onay butonu görünür ve tıklanabilir; modal sayfası kaymıyor.
+  - EVET/HAYIR kartları yan yana, ikisi de tam görünür; gönder butonu da
+    ekranda kalıyor.
+
+### Commit
+
+- `7616847` olarak commit edildi ve `main` dalına push edildi.
 - `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
 
 ---
