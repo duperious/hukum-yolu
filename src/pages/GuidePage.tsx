@@ -362,9 +362,10 @@ export default function GuidePage() {
               </span>
               <h3>Büyük Vezir</h3>
               <p>
-                Büyük Vezir’in oyu iki sayılır. İlk üç reformdan sonra tarafı
-                belirlenir; kimliği geçiş veya idamla açıklanabilir. Demokrat Parti
-                Başkanı makamına geçebilir.
+                Büyük Vezir’in oyu iki sayılır. İlk üç reform sonunda Otokratlar
+                3-0 galip gelirse idam edilir; aksi hâlde Demokratik tarafa
+                geçerek Demokrat Parti Başkanı olabilir. Kimliği bu geçişte
+                açıklanır.
               </p>
             </article>
             <article className="power-guide-card">

@@ -503,8 +503,10 @@ function resolveFirstThree(state: GameState): void {
   const bigVezir = roleHolder(state, 'buyuk_vezir');
   const notr = roleHolder(state, 'notr');
   const intel = roleHolder(state, 'istihbarat_baskani');
+  // Büyük Vezir yalnızca Otokratlar ilk üç reformu 3-0 kazanırsa idam edilir.
+  const otokratSweep = democratic === 0 && fascist === 3;
 
-  if (democratic > fascist) {
+  if (!otokratSweep) {
     state.bigVezirOutcome = 'demokrat';
     if (bigVezir?.alive) {
       bigVezir.effectiveTeam = 'demokrat';

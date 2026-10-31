@@ -296,13 +296,13 @@ describe('ilk üç reform geçişi ve Nötr', () => {
     expect(afterTerm.round).toBe(2);
   });
 
-  it('Otokratlar öndeyse Büyük Vezir idam edilir ve kimliği açıklanır', () => {
+  it('Otokratlar ilk üç reformu 3-0 kazanırsa Büyük Vezir idam edilir ve kimliği açıklanır', () => {
     const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
     const state = forceLegislative(base, 'p1', 'p2', ['otokrat', 'demokratik']);
     const prepared: GameState = {
       ...state,
-      enacted: { democratic: 1, fascist: 1 },
-      policyHistory: ['demokratik', 'otokrat'],
+      enacted: { democratic: 0, fascist: 2 },
+      policyHistory: ['otokrat', 'otokrat'],
     };
     const revealed = applyAction(prepared, 'p2', {
       type: 'chancellor_enact',
@@ -318,13 +318,37 @@ describe('ilk üç reform geçişi ve Nötr', () => {
     expect(next.democraticPartyPresidentId).toBe('p4');
   });
 
-  it('kırmızı Nötr, Büyük Vezir ölmüşse İstihbarat Başkanlığını gizlice devralır', () => {
+  it('Otokratlar 2-1 öndeyse Büyük Vezir ölmez ve Demokratik tarafa geçer', () => {
     const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
-    const state = forceLegislative(base, 'p1', 'p2', ['otokrat', 'demokratik']);
+    const state = forceLegislative(base, 'p1', 'p2', ['demokratik', 'otokrat']);
     const prepared: GameState = {
       ...state,
       enacted: { democratic: 1, fascist: 1 },
       policyHistory: ['demokratik', 'otokrat'],
+    };
+    const revealed = applyAction(prepared, 'p2', {
+      type: 'chancellor_enact',
+      card: 'otokrat',
+    });
+    expect(revealed.phase).toBe('policyReveal');
+
+    const next = closeGate(revealed);
+    expect(next.phase).toBe('notrChoice');
+    expect(next.bigVezirOutcome).toBe('demokrat');
+    expect(getPlayer(next, 'p3').alive).toBe(true);
+    expect(getPlayer(next, 'p3').effectiveTeam).toBe('demokrat');
+    expect(getPlayer(next, 'p3').votePower).toBe(1);
+    expect(next.democraticPartyPresidentId).toBe('p3');
+    expect(next.publiclyRevealedRoles['p3']).toBe('buyuk_vezir');
+  });
+
+  it('kırmızı Nötr, Büyük Vezir 3-0 sonucu ölmüşse İstihbarat Başkanlığını gizlice devralır', () => {
+    const base = ackAll(makeControlledGame({ startPresidentIndex: 0 }));
+    const state = forceLegislative(base, 'p1', 'p2', ['otokrat', 'demokratik']);
+    const prepared: GameState = {
+      ...state,
+      enacted: { democratic: 0, fascist: 2 },
+      policyHistory: ['otokrat', 'otokrat'],
     };
     const afterPolicy = applyAction(prepared, 'p2', {
       type: 'chancellor_enact',

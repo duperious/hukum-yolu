@@ -48,13 +48,13 @@ export const ROLE_INFO: Record<Role, RoleInfo> = {
     teamLabel: 'Monarşi Görevlisi',
     shortDescription: 'İki oy gücüne sahip saray görevlisi.',
     mission:
-      'İlk üç reformun sonucunu bekle. Demokratlar öndeyse onlara katıl; Otokratlar öndeyse idamdan kurtul.',
+      'İlk üç reformun sonucunu bekle. Otokratlar 3-0 galip gelmezse Demokratik tarafa geç; 3-0 galip gelirse idam edilirsin.',
     description:
-      'Başlangıçta 2 oy gücüne sahipsin. İlk üç reform sonunda Demokratlar öndeyse Demokratik tarafa geçer, Demokrat Parti Başkanı olur ve oy gücün 1’e düşer. Otokratlar öndeyse idam edilirsin. Bir oylamada engellenirsen oy gücün kalıcı olarak 0’a düşer.',
+      'Başlangıçta 2 oy gücüne sahipsin. İlk üç reform sonunda Otokratlar 3-0 galip gelirse idam edilirsin. Aksi hâlde Demokratik tarafa geçer, Demokrat Parti Başkanı olur ve oy gücün 1’e düşer. Bir oylamada engellenirsen oy gücün kalıcı olarak 0’a düşer.',
     abilities: [
       'Başlangıçta 2 oy gücün vardır.',
-      'İlk üç reformda Demokratlar öndeyse Demokratik tarafa geçersin.',
-      'Otokratlar öndeyse idam edilir ve rolün açıklanırsın.',
+      'İlk üç reformda Otokratlar 3-0 galip gelmezse Demokratik tarafa geçersin.',
+      'Otokratlar ilk üç reformu 3-0 kazanırsa idam edilir ve rolün açıklanır.',
       'Engellenirsen oy gücün kalıcı olarak 0 olur.',
     ],
     investigation: 'iyi',

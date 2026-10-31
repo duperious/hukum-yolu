@@ -86,7 +86,7 @@ function statusNotes(
     notes.push({
       tone: 'gold',
       title: 'Monarşi görevlisi',
-      text: 'İlk üç reform sonunda tarafın belirlenecek. Demokratlar öndeyse geçer, Otokratlar öndeyse idam edilirsin.',
+      text: 'İlk üç reform sonunda Otokratlar 3-0 galip gelirse idam edilirsin; aksi hâlde Demokratik tarafa geçersin.',
     });
   }
   if (role === 'istihbarat_baskani' && view.canInvestigate) {
