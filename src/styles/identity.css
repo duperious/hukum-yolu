@@ -1889,6 +1889,8 @@ body[data-era] .deck-art--discard > span {
   --track-paper: #f2ead7;
   --track-line: rgba(23, 63, 79, 0.34);
   position: relative;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   padding: 5px;
   border: 1px solid color-mix(in srgb, var(--track-edge) 40%, #9a8a6d);
@@ -1928,6 +1930,9 @@ body[data-era] .deck-art--discard > span {
 .policy-track__inner {
   position: relative;
   z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--track-edge);
   background: var(--track-paper);
@@ -2088,6 +2093,7 @@ body[data-era] .deck-art--discard > span {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
+  flex: 1;
   gap: 5px;
   padding: 7px;
   background:
@@ -2102,6 +2108,7 @@ body[data-era] .deck-art--discard > span {
   grid-template-rows: auto minmax(0, 1fr);
   min-width: 0;
   min-height: 72px;
+  height: 100%;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--track-line) 80%, #b8a480);
   border-radius: 1px;
@@ -2156,7 +2163,7 @@ body[data-era] .deck-art--discard > span {
   position: relative;
   z-index: 1;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   padding: 7px 5px 7px;
   color: var(--track-ink);
