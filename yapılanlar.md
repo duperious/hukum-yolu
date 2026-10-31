@@ -7,8 +7,8 @@
 
 - **Proje:** Hüküm Yolu
 - **Son güncelleme:** 2026-10-31
-- **Son özellik commit'i:** `a893fdd` — Büyük Vezir ölüm koşulunu dengele
-- **Bu dosyadaki son değişiklikler:** Büyük Vezir’in ilk üç reform sonundaki ölüm koşulu yalnızca Otokratlar 3-0 galip geldiğinde geçerli olacak şekilde dengelendi (`a893fdd`); `main` dalına push edildi.
+- **Son özellik commit'i:** `6a808ac` — Reform destesini Demokratlar lehine güncelle
+- **Bu dosyadaki son değişiklikler:** Reform destesi 9 Demokratik + 11 Otokrat karta güncellendi; Otokrat ilerleme kâğıdındaki 3. reform etiketi oyuncu sayısına göre yetkiyi ayrıntılı gösteriyor (`6a808ac`); `main` dalına push edildi.
 
 ---
 
@@ -720,6 +720,43 @@ Yapılanlar:
 ### Commit
 
 - `a893fdd` olarak commit edildi ve `main` dalına push edildi.
+- `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
+
+---
+
+## 2026-10-31 — Yerel: Reform destesini Demokratlar lehine güncelle
+
+### Yapılanlar
+
+- Reform destesi 8 Demokratik + 12 Otokrat yerine **9 Demokratik + 11
+  Otokrat** karta güncellendi. Demokratik kart oranı %40’tan %45’e çıktı.
+- Otokrat ilerleme kâğıdındaki 3. reform etiketi, görseldeki gibi ayrıntılı
+  hâle getirildi:
+  - 5-6 oyuncu: Başkan üstteki 3 kartı görür.
+  - 7-10 oyuncu: Başkan bir oyuncunun oyunu engelleyebilir.
+- Çok satırlı etiketler için ilerleme kâğıdına küçük punto ve satır koruma
+  desteği eklendi; mobilde dikey adım listesinde de okunaklı kalıyor.
+- README’deki deste bileşimi ve ilgili test güncellendi.
+
+### Etkilenen dosyalar
+
+- `src/game/config.ts`
+- `src/components/PolicyTrack.tsx`
+- `src/styles/identity.css`
+- `tests/roles.test.ts`
+- `README.md`
+- `yapılanlar.md`
+
+### Doğrulama
+
+- `npm run test -- --run` — 59/59 test geçti
+- `npm run build` — production build başarılı
+- Masaüstü ve 390×844 mobil görünümde Otokrat ilerleme kâğıdı kontrol
+  edildi; 3. adım metni kırpılmadan görünüyor.
+
+### Commit
+
+- `6a808ac` olarak commit edildi ve `main` dalına push edildi.
 - `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
 
 ---
