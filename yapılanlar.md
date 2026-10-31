@@ -7,8 +7,8 @@
 
 - **Proje:** Hüküm Yolu
 - **Son güncelleme:** 2026-10-31
-- **Son özellik commit'i:** `6a808ac` — Reform destesini Demokratlar lehine güncelle
-- **Bu dosyadaki son değişiklikler:** Reform destesi 9 Demokratik + 11 Otokrat karta güncellendi; Otokrat ilerleme kâğıdındaki 3. reform etiketi oyuncu sayısına göre yetkiyi ayrıntılı gösteriyor (`6a808ac`); `main` dalına push edildi.
+- **Son özellik commit'i:** `c8604d3` — Reform kâğıtlarının kart yüksekliklerini eşitle
+- **Bu dosyadaki son değişiklikler:** Demokratik ve Otokrat ilerleme kâğıtlarının kart yükseklikleri eşitlendi; kısa etiketli kartlar Otokrat çizelgesindeki uzun içerikle aynı yüksekliğe yayılıyor (`c8604d3`); `main` dalına push edildi.
 
 ---
 
@@ -757,6 +757,40 @@ Yapılanlar:
 ### Commit
 
 - `6a808ac` olarak commit edildi ve `main` dalına push edildi.
+- `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
+
+---
+
+## 2026-10-31 — Yerel: Reform kâğıtlarının kart yüksekliklerini eşitle
+
+### Yapılanlar
+
+- Demokratik ve Otokrat ilerleme kâğıtlarındaki adım kartları artık aynı
+  yükseklikte. Kısa etiketli Demokratik kartlar, Otokrat çizelgesindeki uzun
+  3. reform metninin belirlediği yüksekliğe kadar yayılıyor.
+- İlerleme kâğıdı ve iç gövdesi dikey flex’e alındı; adım alanı kalan alanı
+  dolduruyor, alt açıklama şeritleri iki çizelgede de aynı hizada kalıyor.
+- Kart etiketleri dikey olarak ortalandı; uzun metinli kartta da taşma olmadan
+  okunaklı kalıyor.
+- Mobil dikey adım listesinde kart yükseklikleri doğal içerik boyutunda kalıyor.
+
+### Etkilenen dosyalar
+
+- `src/styles/identity.css`
+- `yapılanlar.md`
+
+### Doğrulama
+
+- `npm run test -- --run` — 59/59 test geçti
+- `npm run build` — production build başarılı
+- Masaüstünde iki çizelgenin kart yükseklikleri, üst/alt hizaları ve alt
+  şerit konumları ölçüldü; eşitlendi.
+- 390×844 mobil görünümde dikey adım listesi kontrol edildi; kartlar
+  kırpılmıyor.
+
+### Commit
+
+- `c8604d3` olarak commit edildi ve `main` dalına push edildi.
 - `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
 
 ---
