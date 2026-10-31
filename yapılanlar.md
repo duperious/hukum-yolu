@@ -7,8 +7,8 @@
 
 - **Proje:** Hüküm Yolu
 - **Son güncelleme:** 2026-10-31
-- **Son özellik commit'i:** `7616847` — Mobil rol onayını ve oylama kartlarını düzenle
-- **Bu dosyadaki son değişiklikler:** Mobilde rol kartı onay butonu sabit footer’a alındı ve EVET/HAYIR oylama kartları yan yana getirildi (`7616847`); `main` dalına push edildi.
+- **Son özellik commit'i:** `a893fdd` — Büyük Vezir ölüm koşulunu dengele
+- **Bu dosyadaki son değişiklikler:** Büyük Vezir’in ilk üç reform sonundaki ölüm koşulu yalnızca Otokratlar 3-0 galip geldiğinde geçerli olacak şekilde dengelendi (`a893fdd`); `main` dalına push edildi.
 
 ---
 
@@ -684,6 +684,42 @@ Yapılanlar:
 ### Commit
 
 - `7616847` olarak commit edildi ve `main` dalına push edildi.
+- `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
+
+---
+
+## 2026-10-31 — Yerel: Büyük Vezir ölüm koşulunu dengele
+
+### Yapılanlar
+
+- Büyük Vezir’in ilk üç reform sonundaki idam koşulu yalnızca Otokratların
+  3-0 galip gelmesine bağlandı.
+- Otokratlar 2-1 öndeyken veya Demokratlar öndeyken Büyük Vezir artık ölmüyor;
+  Demokratik tarafa geçiyor, Demokrat Parti Başkanı oluyor ve oy gücü 1’e
+  düşüyor.
+- Rol kartı, rehber ve kural varsayımlarındaki metinler yeni koşula göre
+  güncellendi.
+- 2-1 Otokrat üstünlüğünde geçişin yaşandığını doğrulayan test eklendi; idam
+  testi 3-0 senaryosuna taşındı.
+
+### Etkilenen dosyalar
+
+- `src/game/engine.ts`
+- `src/game/roles.ts`
+- `src/game/config.ts`
+- `src/components/RoleCard.tsx`
+- `src/pages/GuidePage.tsx`
+- `tests/engine.test.ts`
+- `yapılanlar.md`
+
+### Doğrulama
+
+- `npm run test -- --run` — 59/59 test geçti
+- `npm run build` — production build başarılı
+
+### Commit
+
+- `a893fdd` olarak commit edildi ve `main` dalına push edildi.
 - `düzenlemeler/` klasörüne dokunulmadı; untracked olarak bırakıldı.
 
 ---
