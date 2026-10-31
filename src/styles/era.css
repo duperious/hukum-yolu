@@ -455,6 +455,7 @@ body[data-era='light'] .result-badge--reject {
 }
 
 body[data-era='light'] .role-card {
+  --role-footer-bg: #f5ead6;
   border-color: var(--role-border, rgba(139, 101, 35, 0.26));
   background:
     radial-gradient(

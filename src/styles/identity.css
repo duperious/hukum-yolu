@@ -5568,23 +5568,13 @@ body[data-era] .era-ambience--dark .era-ambience__motes {
   }
 
   .vote-stage__choices {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .vote-stage__choice {
-    min-height: 92px;
-    flex-direction: row;
-    justify-content: flex-start;
-    text-align: left;
-    padding: 12px 14px;
-  }
-
-  .vote-stage__choice strong {
-    font-size: 24px;
-  }
-
-  .vote-stage__choice small {
-    display: none;
+    min-height: 0;
+    padding: 0;
   }
 
   .vote-stage__government {
