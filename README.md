@@ -36,7 +36,7 @@ Gizli rollü, sosyal çıkarım masa oyununun Türkçe, mobil öncelikli PWA uyg
 - **Belirgin rol ve görev kartı:** Rolünüz, takımınız, göreviniz ve yetenekleriniz oyun içinde öne çıkar.
 - **Büyük Evet/Hayır oyları:** Hükümet oylamasında iki büyük kart; ilk üç reforma kadar oylar gizli, sonrasında açık.
 - **16 avatar** ve cihazda saklanan profil.
-- **Reform destesi:** 8 demokratik + 12 otokrat reform, iki ayrı çizelge.
+- **Reform destesi:** 9 demokratik + 11 otokrat reform, iki ayrı çizelge.
 - **Gizli oylama:** İlk üç reform tamamlanana kadar yalnızca kabul/ret sonucu açıklanır; sonrasında açık oylama başlar. Ağırlıklı Büyük Vezir oyu, 3 ret sonrası otomatik reform.
 - **Soruşturma**, 3. reform özel yetkileri, tutuklama, liderlik devri, tasfiye. İstihbarat Başkanı 2. dönemden itibaren iki dönemde bir zorunlu sorgu yapar.
 - **Kazanma koşulları:** 5 Demokratik Reform, 7 Otokrat Reform veya Nötr kişisel zaferi.

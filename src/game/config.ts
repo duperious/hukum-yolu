@@ -18,7 +18,7 @@ export const GAME_CONFIG: GameConfig = {
   maxPlayers: 10,
   democraticWinThreshold: 5,
   fascistTrackLength: 7,
-  deck: { democratic: 8, fascist: 12 },
+  deck: { democratic: 9, fascist: 11 },
   drawCount: 3,
   passCount: 2,
   failedGovernmentLimit: 3,
@@ -71,7 +71,7 @@ export const DEMOCRATIC_WIN_THRESHOLD = GAME_CONFIG.democraticWinThreshold;
 export const FASCIST_TRACK_LABELS: string[] = [
   'Özel yetki yok',
   'Özel yetki yok',
-  'Oyuncu sayısına göre yetki',
+  '5-6 oyuncu:\nBaşkan üstteki 3 kartı görür.\n\n7-10 oyuncu:\nBaşkan bir oyuncunun oyunu engelleyebilir.',
   'Lider Başbakan olursa zafer',
   'Tutuklama',
   'Tutuklama',

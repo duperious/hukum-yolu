@@ -47,7 +47,7 @@ describe('rol dağılımı ve sabitler', () => {
     }
   });
 
-  it('deste 8 Demokratik ve 12 Otokrat kartından oluşur', () => {
+  it('deste 9 Demokratik ve 11 Otokrat kartından oluşur', () => {
     const players = Array.from({ length: 5 }, (_, index) => ({
       id: `p${index + 1}`,
       name: `Oyuncu ${index + 1}`,
@@ -58,8 +58,8 @@ describe('rol dağılımı ve sabitler', () => {
     }));
     const state = startGame({ players, mode: 'local', rng: mulberry32(1) });
     const allCards = [...state.deck, ...state.discardPile];
-    expect(allCards.filter((card) => card === 'demokratik')).toHaveLength(8);
-    expect(allCards.filter((card) => card === 'otokrat')).toHaveLength(12);
+    expect(allCards.filter((card) => card === 'demokratik')).toHaveLength(9);
+    expect(allCards.filter((card) => card === 'otokrat')).toHaveLength(11);
   });
 
   it('soruşturma sonucu yalnızca sıradan Otokrat için Kötü döner', () => {

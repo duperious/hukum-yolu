@@ -2166,6 +2166,12 @@ body[data-era] .deck-art--discard > span {
   letter-spacing: 0.005em;
   line-height: 1.16;
   text-align: center;
+  white-space: pre-line;
+}
+
+.policy-step--multiline .policy-step__label {
+  font-size: 7px;
+  line-height: 1.12;
 }
 
 .policy-step__mark {
@@ -5750,6 +5756,10 @@ body[data-era] .era-ambience--dark .era-ambience__motes {
     font-size: 9.5px;
     line-height: 1.2;
     text-align: left;
+  }
+
+  .policy-step--multiline .policy-step__label {
+    font-size: 8.5px;
   }
 
   .policy-step__mark {

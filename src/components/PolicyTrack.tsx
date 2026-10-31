@@ -105,12 +105,14 @@ export function PolicyTrack({
             const current = index === safeEnacted;
             const just = index === safeEnacted - 1;
             const win = index === length - 1;
+            const multiline = resolvedLabels[index]?.includes('\n') ?? false;
             return (
               <div
                 key={index}
                 role="listitem"
                 className={cn(
                   'policy-step',
+                  multiline && 'policy-step--multiline',
                   filled && 'policy-step--filled',
                   current && 'policy-step--current',
                   just && 'policy-step--just',
